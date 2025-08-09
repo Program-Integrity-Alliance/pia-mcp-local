@@ -2,7 +2,7 @@
 [![Tests](https://github.com/Program-Integrity-Alliance/pia-mcp-local/actions/workflows/tests.yml/badge.svg)](https://github.com/Program-Integrity-Alliance/pia-mcp-local/actions/workflows/tests.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-# PIA MCP Server
+# Program Integrity Alliance (PIA) MCP Server
 
 > 🔍 Enable AI assistants to search and access Program Integrity Alliance documents through a simple MCP interface.
 
