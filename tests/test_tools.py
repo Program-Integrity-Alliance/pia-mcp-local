@@ -3,8 +3,10 @@
 import pytest
 from unittest.mock import AsyncMock, patch, PropertyMock, Mock
 import httpx
-from pia_mcp_server.tools.pia_search import handle_pia_search
-from pia_mcp_server.tools.pia_search_facets import handle_pia_search_facets
+from pia_mcp_server.tools.search_tools import (
+    handle_pia_search,
+    handle_pia_search_facets,
+)
 from pia_mcp_server.config import Settings
 
 settings = Settings()
