@@ -24,10 +24,9 @@ This data is updated weekly, and we will be adding more datasets and tools soon.
 
 ## ✨ Core Features
 
-- 🔎 **Document Search**: Query PIA database with comprehensive filtering options
-- 📄 **Document Access**: Retrieve full contents of specific documents
-- 📊 **Faceted Search**: Explore available filter values and categories
-- 📈 **Rate Limiting**: Monitor API usage and limits
+- 🔎 **Document Search**: Query PIA database with comprehensive OData filtering options
+- 📊 **Faceted Search**: Discover available filter fields and values
+- 📈 **Rate Limiting**: Monitor API usage and current limits
 - 📝 **Research Prompts**: Specialized prompts for fraud investigation, compliance, and risk analysis
 
 ## 🚀 Quick Start
@@ -103,7 +102,7 @@ For Development:
 
 ## 💡 Available Tools
 
-The server provides five main tools:
+The server provides three main tools:
 
 ### 1. PIA Search
 Comprehensive search with OData filtering and faceting. The `filters` parameter uses standard [OData query syntax](https://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part2-url-conventions.html).
@@ -163,23 +162,7 @@ Discover available field names and values for filtering.
 
 This information helps you construct proper `filters` for the `pia_search` tool.
 
-### 3. Basic Search
-Simple search for quick results.
-
-**Tool Name:** `search`
-
-**Parameters:**
-- `query` (required): A search query string to find relevant documents
-
-### 4. Fetch Document
-Retrieve full document content.
-
-**Tool Name:** `fetch`
-
-**Parameters:**
-- `id` (required): A unique identifier for the document to retrieve
-
-### 5. Rate Limit Stats
+### 3. Rate Limit Stats
 Monitor API usage and current configuration.
 
 **Tool Name:** `get_rate_limit_stats`

@@ -17,15 +17,11 @@ from .tools import (
     handle_pia_search,
     handle_pia_search_facets,
     handle_get_rate_limit_stats,
-    handle_search,
-    handle_fetch,
 )
 from .tools import (
     pia_search_tool,
     pia_search_facets_tool,
     get_rate_limit_stats_tool,
-    search_tool,
-    fetch_tool,
 )
 from .prompts.handlers import list_prompts as handler_list_prompts
 from .prompts.handlers import get_prompt as handler_get_prompt
@@ -57,8 +53,6 @@ async def list_tools() -> List[types.Tool]:
         pia_search_tool,
         pia_search_facets_tool,
         get_rate_limit_stats_tool,
-        search_tool,
-        fetch_tool,
     ]
 
 
@@ -73,10 +67,6 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[types.TextCont
             return await handle_pia_search_facets(arguments)
         elif name == "get_rate_limit_stats":
             return await handle_get_rate_limit_stats(arguments)
-        elif name == "search":
-            return await handle_search(arguments)
-        elif name == "fetch":
-            return await handle_fetch(arguments)
         else:
             return [types.TextContent(type="text", text=f"Error: Unknown tool {name}")]
     except Exception as e:

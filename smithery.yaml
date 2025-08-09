@@ -10,8 +10,6 @@ mcp:
     - pia_search
     - pia_search_facets
     - get_rate_limit_stats
-    - search
-    - fetch
   prompts:
     - fraud_investigation_search
     - compliance_recommendations
