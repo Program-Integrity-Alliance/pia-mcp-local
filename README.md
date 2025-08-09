@@ -12,21 +12,26 @@
 
 <br/>
 
-This MCP Server provides tools for working with Government Open Data which has been processed by the [The Program Integrity Alliance (PIA)](https://programintegrity.org/).
+[The Program Integrity Alliance (PIA)](https://programintegrity.org/) aims to make working with U.S. Government datasets easier and AI-friendly. We have ingested hundreds of thousands of documents and articles across a range of sources, and this list is growing. This MCP server enables AIs to search this data at a more detailed level than on most source websites, for example, searching within PDF reports to find the exact pages where text and images appear.
 
-Currently this includes:
+Full attribution is given to the amazing open federal data sources, and all links in the data provided by PIA will always direct back to the original source.
+
+Currently, the list of datasets includes:
 
 1. [U.S. Government Accountability Office (GAO)](https://www.gao.gov/) - 10k Federal Reports since 2010 and 5.5k Open Oversight Recommendations
 2. [Oversight.gov](https://www.oversight.gov/) - 28k OIG Federal Reports since 2010, and 29k Open Oversight Recommendations
 3. [U.S. Congress](https://www.congress.gov/) - Bill texts for sessions 118 and 119
 4. [Department of Justice (DOJ)](https://www.justice.gov/) - 195k Press Releases since 2000
+5. Federal Agency annual reports - Congressional Justification, Financial Report, Performance Report - 139 reports across 10 priority agencies, with best coverage in 2024.
 
 This data is updated weekly, and we will be adding more datasets and tools soon.
+
+If you have any questions, we look forward to hearing from you by raising a question [here](https://github.com/Program-Integrity-Alliance/pia-mcp-local/issues)
 
 <div align="center">
 
 🤝 **[Contribute](CONTRIBUTING.md)** •
-📝 **[Report Bug](https://github.com/Program-Integrity-Alliance/pia-mcp-local/issues)**
+📝 **[Report Bugs or Questions](https://github.com/Program-Integrity-Alliance/pia-mcp-local/issues)**
 
 </div>
 
