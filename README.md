@@ -4,9 +4,19 @@
 
 # Program Integrity Alliance (PIA) MCP Server
 
+<div align="center">
+  <a href="https://programintegrity.org/">
+    <img src="https://programintegrity.org/wp-content/uploads/2024/01/pia-logo-horizontal.png" alt="Program Integrity Alliance" width="400"/>
+  </a>
+</div>
+
+<br/>
+
 > 🔍 Enable AI assistants to search and access Program Integrity Alliance documents through a simple MCP interface.
 
-This MCP Server provides tools for working with Government Open Data which has been processed by the [The Program Integrity Alliance (PIA)](https://programintegrity.org/). Currently this includes:
+This MCP Server provides tools for working with Government Open Data which has been processed by the [The Program Integrity Alliance (PIA)](https://programintegrity.org/).
+
+Currently this includes:
 
 1. [U.S. Government Accountability Office (GAO)](https://www.gao.gov/) - 10k Federal Reports since 2010 and 5.5k Open Oversight Recommendations
 2. [Oversight.gov](https://www.oversight.gov/) - 28k OIG Federal Reports since 2010, and 29k Open Oversight Recommendations
