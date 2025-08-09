@@ -110,6 +110,7 @@ Your task:
 
 3. **References section format:**
    - Numbered list matching the inline citations.
+   - **Each reference on a separate line**.
    - Each reference must include:
      - **Document title**
      - **Page number** (or "n/a" if page not given in source)
@@ -140,6 +141,7 @@ Summary:
 References:
 [1] Document Title — Page X — Source Name — URL
 [2] Document Title — Page X — Source Name — URL
+[3] Document Title — Page X — Source Name — URL
 ...
 ---
 
