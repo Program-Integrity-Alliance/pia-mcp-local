@@ -37,10 +37,16 @@ async def test_call_unknown_tool():
 async def test_call_tool_exception():
     """Test that exceptions in tool calls are handled properly."""
     with patch(
-        "pia_mcp_server.tools.handle_pia_search", side_effect=Exception("Test error")
+        "pia_mcp_server.config.Settings._get_api_key_from_args", return_value="test_key"
     ):
-        result = await call_tool("pia_search", {"query": "test"})
+        with patch("httpx.AsyncClient") as mock_client:
+            # Make the client throw an exception when post is called
+            mock_client_instance = AsyncMock()
+            mock_client_instance.post.side_effect = Exception("Test error")
+            mock_client.return_value.__aenter__.return_value = mock_client_instance
 
-        assert len(result) == 1
-        assert result[0].type == "text"
-        assert "Error: Test error" in result[0].text
+            result = await call_tool("pia_search", {"query": "test"})
+
+            assert len(result) == 1
+            assert result[0].type == "text"
+            assert "Error: Test error" in result[0].text
