@@ -11,13 +11,12 @@ async def test_list_tools():
     """Test that tools are properly listed."""
     tools = await list_tools()
 
-    assert len(tools) == 3
+    assert len(tools) == 2
     tool_names = [tool.name for tool in tools]
 
     expected_tools = [
         "pia_search",
         "pia_search_facets",
-        "get_rate_limit_stats",
     ]
 
     for expected_tool in expected_tools:

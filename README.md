@@ -26,7 +26,6 @@ This data is updated weekly, and we will be adding more datasets and tools soon.
 
 - 🔎 **Document Search**: Query PIA database with comprehensive OData filtering options
 - 📊 **Faceted Search**: Discover available filter fields and values
-- 📈 **Rate Limiting**: Monitor API usage and current limits
 - 📝 **Research Prompts**: Specialized prompts for fraud investigation, compliance, and risk analysis
 
 ## 🚀 Quick Start
@@ -102,7 +101,7 @@ For Development:
 
 ## 💡 Available Tools
 
-The server provides three main tools:
+The server provides two main tools:
 
 ### 1. PIA Search
 Comprehensive search with OData filtering and faceting. The `filters` parameter uses standard [OData query syntax](https://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part2-url-conventions.html).
@@ -161,15 +160,6 @@ Discover available field names and values for filtering.
 - Understand data types for each field (string, date, number)
 
 This information helps you construct proper `filters` for the `pia_search` tool.
-
-### 3. Rate Limit Stats
-Monitor API usage and current configuration.
-
-**Tool Name:** `get_rate_limit_stats`
-
-**Parameters:** None
-
-**Returns:** JSON structure with rate limiting statistics including request counts, blocked requests, and current limits configuration.
 
 ## 🔍 Filter Discovery Workflow
 

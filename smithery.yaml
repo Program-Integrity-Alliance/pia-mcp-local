@@ -9,7 +9,6 @@ mcp:
   tools:
     - pia_search
     - pia_search_facets
-    - get_rate_limit_stats
   prompts:
     - fraud_investigation_search
     - compliance_recommendations
