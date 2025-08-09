@@ -15,8 +15,6 @@ class Settings(BaseSettings):
     MAX_RESULTS: int = 50
     BATCH_SIZE: int = 20
     REQUEST_TIMEOUT: int = 60
-    HOST: str = "0.0.0.0"
-    PORT: int = 8000
 
     # PIA Server Configuration
     PIA_API_URL: str = "https://mcp.programintegrity.org/"
