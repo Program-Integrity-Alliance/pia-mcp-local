@@ -288,7 +288,6 @@ The API key must be provided in your MCP client configuration using the `--api-k
 
 Replace `YOUR_API_KEY` with your actual PIA API key.
 
-> ⚠️ **Security Note**: Never commit real API keys to version control. Always use placeholder values in documentation and configuration examples.
 
 ## 🧪 Testing
 
