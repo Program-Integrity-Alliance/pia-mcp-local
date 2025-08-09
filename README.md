@@ -17,8 +17,8 @@ This data is updated weekly, and we will be adding more datasets and tools soon.
 
 <div align="center">
   
-🤝 **[Contribute](https://github.com/YOUR-ORG/pia-mcp-server/blob/main/CONTRIBUTING.md)** • 
-📝 **[Report Bug](https://github.com/YOUR-ORG/pia-mcp-server/issues)**
+🤝 **[Contribute](CONTRIBUTING.md)** • 
+📝 **[Report Bug](https://github.com/Program-Integrity-Alliance/pia-mcp-local/issues)**
 
 </div>
 
