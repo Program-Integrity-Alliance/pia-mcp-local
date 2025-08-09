@@ -70,6 +70,15 @@ source .venv/bin/activate
 uv pip install -e ".[test]"
 ```
 
+For Docker:
+
+```bash
+# Build the Docker image
+git clone https://github.com/Program-Integrity-Alliance/pia-mcp-local.git
+cd pia-mcp-local
+docker build -t pia-mcp-server:latest .
+```
+
 ### 🔌 MCP Integration
 
 Add this configuration to your MCP client config file:
@@ -90,18 +99,18 @@ Add this configuration to your MCP client config file:
 }
 ```
 
-For Development:
+For Docker:
 
 ```json
 {
     "mcpServers": {
         "pia-mcp-server": {
-            "command": "uv",
+            "command": "docker",
             "args": [
-                "--directory",
-                "path/to/cloned/pia-mcp-local",
                 "run",
-                "pia-mcp-server",
+                "--rm",
+                "-i",
+                "pia-mcp-server:latest",
                 "--api-key", "YOUR_API_KEY"
             ]
         }
