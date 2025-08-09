@@ -7,7 +7,7 @@
     <img src="https://programintegrity.org/wp-content/uploads/2024/07/PIA-Logo.svg" alt="Program Integrity Alliance" width="400"/>
   </a>
 
-# PIA MCP Server
+# MCP Server
 </div>
 
 <br/>
