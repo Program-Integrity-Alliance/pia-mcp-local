@@ -14,6 +14,7 @@ RUN pip install uv
 
 # Copy project files
 COPY pyproject.toml .
+COPY README.md .
 COPY src/ src/
 
 # Install Python dependencies
@@ -24,12 +25,9 @@ RUN groupadd -r pia && useradd -r -g pia pia
 RUN chown -R pia:pia /app
 USER pia
 
-# Expose port (if needed for future HTTP interface)
-EXPOSE 8000
-
 # Set environment variables
 ENV PYTHONPATH=/app/src
 ENV PIA_API_URL=https://mcp.programintegrity.org/
 
 # Run the server
-CMD ["python", "-m", "pia_mcp_server"]
+ENTRYPOINT ["python", "-m", "pia_mcp_server"]

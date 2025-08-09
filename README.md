@@ -73,7 +73,7 @@ uv pip install -e ".[test]"
 For Docker:
 
 ```bash
-# Build the Docker image
+# Build the Docker image if you want to use a local image
 git clone https://github.com/Program-Integrity-Alliance/pia-mcp-local.git
 cd pia-mcp-local
 docker build -t pia-mcp-server:latest .
