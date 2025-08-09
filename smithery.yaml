@@ -1,0 +1,19 @@
+package:
+  name: pia-mcp-server
+  description: "Program Integrity Alliance MCP server for government watchdog documents"
+  author: "Matthew Harris"
+  homepage: "https://github.com/YOUR-ORG/pia-mcp-server"
+  license: "MIT"
+  
+mcp:
+  tools:
+    - pia_search
+    - pia_search_facets
+    - get_rate_limit_stats
+    - search
+    - fetch
+  prompts:
+    - fraud_investigation_search
+    - compliance_recommendations
+    - risk_analysis
+    - findings_summary
