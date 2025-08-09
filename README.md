@@ -1,5 +1,5 @@
 [![Python Version](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![Tests](https://github.com/YOUR-ORG/pia-mcp-server/actions/workflows/tests.yml/badge.svg)](https://github.com/YOUR-ORG/pia-mcp-server/actions/workflows/tests.yml)
+[![Tests](https://github.com/Program-Integrity-Alliance/pia-mcp-local/actions/workflows/tests.yml/badge.svg)](https://github.com/Program-Integrity-Alliance/pia-mcp-local/actions/workflows/tests.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 # PIA MCP Server
@@ -49,8 +49,8 @@ For development:
 
 ```bash
 # Clone and set up development environment
-git clone https://github.com/YOUR-ORG/pia-mcp-server.git
-cd pia-mcp-server
+git clone https://github.com/Program-Integrity-Alliance/pia-mcp-local.git
+cd pia-mcp-local
 
 # Create and activate virtual environment
 uv venv
@@ -89,7 +89,7 @@ For Development:
             "command": "uv",
             "args": [
                 "--directory",
-                "path/to/cloned/pia-mcp-server",
+                "path/to/cloned/pia-mcp-local",
                 "run",
                 "pia-mcp-server",
                 "--api-key", "YOUR_API_KEY"
