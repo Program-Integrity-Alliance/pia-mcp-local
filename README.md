@@ -12,8 +12,6 @@
 
 <br/>
 
-> 🔍 Enable AI assistants to search and access Program Integrity Alliance documents through a simple MCP interface.
-
 This MCP Server provides tools for working with Government Open Data which has been processed by the [The Program Integrity Alliance (PIA)](https://programintegrity.org/).
 
 Currently this includes:
@@ -36,7 +34,7 @@ This data is updated weekly, and we will be adding more datasets and tools soon.
 
 - 🔎 **Document Search**: Query PIA database with comprehensive OData filtering options
 - 📊 **Faceted Search**: Discover available filter fields and values
-- 📝 **Research Prompts**: Specialized prompts for fraud investigation, compliance, and risk analysis
+- 📝 **AI Instruction Prompts**: Prompts that instruct LLMs on how to summarize search results and use search tools
 
 ## 🚀 Quick Start
 
@@ -213,45 +211,42 @@ Query: "healthcare violations"
 Filters: "(data_source eq 'OIG' or data_source eq 'CMS') and (severity eq 'High' or amount gt 1000000) and published_date ge '2023-01-01'"
 ```
 
-## 📝 Research Prompts
+## 📝 AI Instruction Prompts
 
-The server offers specialized prompts for different research workflows:
+The server provides prompts that instruct the calling LLM on how to effectively use PIA tools and format responses:
 
-### Fraud Investigation Search
-Systematically search for fraud investigations and related findings.
+### Summary Prompt
+Instructions for LLM to summarize information only from provided search results with proper citations.
 
-**Prompt Name:** `fraud_investigation_search`
+**Prompt Name:** `summary_prompt`
 
-**Arguments:**
-- `topic` (required): The fraud topic or area to investigate
-- `time_period` (optional): Time period for the search (e.g., 'last 5 years')
-
-### Compliance Recommendations
-Find compliance recommendations and regulatory guidance.
-
-**Prompt Name:** `compliance_recommendations`
+**Purpose:** Ensures LLM creates fact-based summaries with inline citations and proper reference formatting
 
 **Arguments:**
-- `area` (required): The compliance area or domain to search
-- `data_source` (optional): Specific data source (GAO, OIG, etc.)
+- `search_results` (required): The search results to summarize (inserted into &lt;SEARCH_RESULTS&gt; tags)
 
-### Risk Analysis
-Analyze risk factors and vulnerabilities in specific domains.
+**Returns:** Instructions that guide the LLM to:
+- Only include facts from search results (no prior knowledge)
+- Use inline citations [n] for every factual statement
+- Format references with document title, page, source, and URL
+- Follow strict citation and formatting guidelines
 
-**Prompt Name:** `risk_analysis`
+### Search Prompt
+Instructions for LLM on how to effectively use PIA search tools with proper filtering.
 
-**Arguments:**
-- `domain` (required): The domain or sector to analyze for risks
-- `risk_type` (optional): Type of risk to focus on (financial, operational, etc.)
+**Prompt Name:** `search_prompt`
 
-### Findings Summary
-Generate comprehensive summaries of findings about a specific subject.
-
-**Prompt Name:** `findings_summary`
+**Purpose:** Guides LLM through proper search workflow including filter discovery and OData syntax
 
 **Arguments:**
-- `subject` (required): The subject or entity to summarize findings about
-- `max_results` (optional): Maximum number of results to include in summary
+- `user_query` (required): The user's search query to analyze for filter criteria
+
+**Returns:** Instructions that guide the LLM to:
+- Detect when filters should be applied based on query content
+- Use `pia_search_facets` to discover available filter fields and values
+- Build valid OData filter expressions with correct syntax
+- Fall back to unfiltered search when filtered search returns no results
+- Validate all filter fields against available facets
 
 ## ⚙️ Configuration
 

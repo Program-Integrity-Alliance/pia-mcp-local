@@ -10,7 +10,5 @@ mcp:
     - pia_search
     - pia_search_facets
   prompts:
-    - fraud_investigation_search
-    - compliance_recommendations
-    - risk_analysis
-    - findings_summary
+    - summary_prompt
+    - search_prompt
