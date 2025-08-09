@@ -17,10 +17,10 @@ class Settings(BaseSettings):
     REQUEST_TIMEOUT: int = 60
     HOST: str = "0.0.0.0"
     PORT: int = 8000
-    
+
     # PIA Server Configuration
     PIA_API_URL: str = "https://mcp.programintegrity.org/"
-    
+
     model_config = SettingsConfigDict(extra="allow")
 
     def _get_api_key_from_args(self) -> str | None:
@@ -57,5 +57,7 @@ class Settings(BaseSettings):
         """Get the API key from command line arguments."""
         api_key = self._get_api_key_from_args()
         if not api_key:
-            raise ValueError("PIA API key is required. Please provide --api-key argument.")
+            raise ValueError(
+                "PIA API key is required. Please provide --api-key argument."
+            )
         return api_key

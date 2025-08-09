@@ -14,7 +14,7 @@ from .fetch import handle_fetch, fetch_tool
 __all__ = [
     "handle_pia_search",
     "pia_search_tool",
-    "handle_pia_search_facets", 
+    "handle_pia_search_facets",
     "pia_search_facets_tool",
     "handle_get_rate_limit_stats",
     "get_rate_limit_stats_tool",

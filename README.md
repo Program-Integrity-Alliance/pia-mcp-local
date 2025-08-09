@@ -16,8 +16,8 @@ This MCP Server provides tools for working with Government Open Data which has b
 This data is updated weekly, and we will be adding more datasets and tools soon.
 
 <div align="center">
-  
-🤝 **[Contribute](CONTRIBUTING.md)** • 
+
+🤝 **[Contribute](CONTRIBUTING.md)** •
 📝 **[Report Bug](https://github.com/Program-Integrity-Alliance/pia-mcp-local/issues)**
 
 </div>
@@ -217,7 +217,7 @@ Filters: "data_source in ('OIG', 'CMS') and published_date ge '2023-01-01' and d
 
 **Complex Example:**
 ```
-Query: "healthcare violations"  
+Query: "healthcare violations"
 Filters: "(data_source eq 'OIG' or data_source eq 'CMS') and (severity eq 'High' or amount gt 1000000) and published_date ge '2023-01-01'"
 ```
 

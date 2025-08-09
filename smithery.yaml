@@ -4,7 +4,7 @@ package:
   author: "Matthew Harris"
   homepage: "https://github.com/YOUR-ORG/pia-mcp-server"
   license: "MIT"
-  
+
 mcp:
   tools:
     - pia_search

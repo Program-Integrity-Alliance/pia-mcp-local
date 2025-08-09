@@ -7,7 +7,7 @@ from pia_mcp_server.config import Settings
 def test_default_settings():
     """Test default configuration values."""
     settings = Settings()
-    
+
     assert settings.APP_NAME == "pia-mcp-server"
     assert settings.APP_VERSION == "0.1.0"
     assert settings.PIA_API_URL == "https://mcp.programintegrity.org/"
@@ -18,7 +18,7 @@ def test_default_settings():
 def test_api_key_property_no_args():
     """Test API key property without arguments raises error."""
     settings = Settings()
-    
+
     # With no API key argument should raise ValueError
     with pytest.raises(ValueError, match="PIA API key is required"):
         api_key = settings.API_KEY
@@ -27,8 +27,9 @@ def test_api_key_property_no_args():
 def test_api_key_from_args(monkeypatch):
     """Test API key loaded from command line arguments."""
     import sys
-    monkeypatch.setattr(sys, 'argv', ['pia-mcp-server', '--api-key', 'test_key_123'])
-    
+
+    monkeypatch.setattr(sys, "argv", ["pia-mcp-server", "--api-key", "test_key_123"])
+
     settings = Settings()
-    
+
     assert settings.API_KEY == "test_key_123"

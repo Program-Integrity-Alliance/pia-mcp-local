@@ -128,10 +128,10 @@ Additional hooks may be added as the project grows.
    ```bash
    # Run tests
    python -m pytest
-   
+
    # Run with coverage
    python -m pytest --cov=pia_mcp_server
-   
+
    # Run pre-commit checks
    pre-commit run --all-files
    ```
@@ -232,10 +232,10 @@ async def test_tool_functionality():
     """Test description explaining what this tests."""
     # Arrange
     test_data = {"query": "test"}
-    
+
     # Act
     result = await handle_tool(test_data)
-    
+
     # Assert
     assert len(result) == 1
     assert "expected content" in result[0].text
@@ -357,13 +357,13 @@ logger = logging.getLogger(__name__)
 
 async def handle_pia_search(arguments: Dict[str, Any]) -> List[types.TextContent]:
     """Handle PIA search requests with OData filtering.
-    
+
     Args:
         arguments: Search parameters including query and filters
-        
+
     Returns:
         List of text content with search results
-        
+
     Raises:
         ValueError: If required parameters are missing
     """

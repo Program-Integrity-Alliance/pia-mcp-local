@@ -12,62 +12,98 @@ AVAILABLE_PROMPTS = [
         "name": "fraud_investigation_search",
         "description": "Search for fraud investigations and related findings in the PIA database",
         "arguments": [
-            {"name": "topic", "description": "The fraud topic or area to investigate", "required": True},
-            {"name": "time_period", "description": "Time period for the search (e.g., 'last 5 years')", "required": False}
-        ]
+            {
+                "name": "topic",
+                "description": "The fraud topic or area to investigate",
+                "required": True,
+            },
+            {
+                "name": "time_period",
+                "description": "Time period for the search (e.g., 'last 5 years')",
+                "required": False,
+            },
+        ],
     },
     {
         "name": "compliance_recommendations",
         "description": "Find compliance recommendations and regulatory guidance",
         "arguments": [
-            {"name": "area", "description": "The compliance area or domain to search", "required": True},
-            {"name": "data_source", "description": "Specific data source (GAO, OIG, etc.)", "required": False}
-        ]
+            {
+                "name": "area",
+                "description": "The compliance area or domain to search",
+                "required": True,
+            },
+            {
+                "name": "data_source",
+                "description": "Specific data source (GAO, OIG, etc.)",
+                "required": False,
+            },
+        ],
     },
     {
         "name": "risk_analysis",
         "description": "Analyze risk factors and vulnerabilities in specific domains",
         "arguments": [
-            {"name": "domain", "description": "The domain or sector to analyze for risks", "required": True},
-            {"name": "risk_type", "description": "Type of risk to focus on (financial, operational, etc.)", "required": False}
-        ]
+            {
+                "name": "domain",
+                "description": "The domain or sector to analyze for risks",
+                "required": True,
+            },
+            {
+                "name": "risk_type",
+                "description": "Type of risk to focus on (financial, operational, etc.)",
+                "required": False,
+            },
+        ],
     },
     {
         "name": "findings_summary",
         "description": "Generate a comprehensive summary of findings about a specific subject",
         "arguments": [
-            {"name": "subject", "description": "The subject or entity to summarize findings about", "required": True},
-            {"name": "max_results", "description": "Maximum number of results to include in summary", "required": False}
-        ]
-    }
+            {
+                "name": "subject",
+                "description": "The subject or entity to summarize findings about",
+                "required": True,
+            },
+            {
+                "name": "max_results",
+                "description": "Maximum number of results to include in summary",
+                "required": False,
+            },
+        ],
+    },
 ]
 
 
 async def list_prompts() -> List[types.Prompt]:
     """List all available prompts."""
     prompts = []
-    
+
     for prompt_data in AVAILABLE_PROMPTS:
         # Convert arguments to proper format
         arguments = []
         for arg in prompt_data["arguments"]:
-            arguments.append(types.PromptArgument(
-                name=arg["name"],
-                description=arg["description"],
-                required=arg["required"]
-            ))
-        
+            arguments.append(
+                types.PromptArgument(
+                    name=arg["name"],
+                    description=arg["description"],
+                    required=arg["required"],
+                )
+            )
+
         prompt = types.Prompt(
             name=prompt_data["name"],
             description=prompt_data["description"],
-            arguments=arguments
+            arguments=arguments,
         )
         prompts.append(prompt)
-    
+
     return prompts
 
 
-async def get_prompt(name: str, arguments: Dict[str, str] | None = None) -> types.GetPromptResult:
+async def get_prompt(
+    name: str, arguments: Dict[str, str] | None = None
+) -> types.GetPromptResult:
     """Get a specific prompt with its content."""
     # Find the prompt
     prompt_data = None
@@ -75,12 +111,12 @@ async def get_prompt(name: str, arguments: Dict[str, str] | None = None) -> type
         if p["name"] == name:
             prompt_data = p
             break
-    
+
     if not prompt_data:
         raise ValueError(f"Prompt '{name}' not found")
-    
+
     arguments = arguments or {}
-    
+
     # Generate prompt content based on the type
     if name == "fraud_investigation_search":
         content = _generate_fraud_investigation_prompt(arguments)
@@ -92,15 +128,14 @@ async def get_prompt(name: str, arguments: Dict[str, str] | None = None) -> type
         content = _generate_findings_summary_prompt(arguments)
     else:
         content = f"Prompt template for {name} - implement specific logic based on arguments: {arguments}"
-    
+
     return types.GetPromptResult(
         description=prompt_data["description"],
         messages=[
             types.PromptMessage(
-                role="user",
-                content=types.TextContent(type="text", text=content)
+                role="user", content=types.TextContent(type="text", text=content)
             )
-        ]
+        ],
     )
 
 
@@ -108,8 +143,8 @@ def _generate_fraud_investigation_prompt(arguments: Dict[str, str]) -> str:
     """Generate fraud investigation search prompt."""
     topic = arguments.get("topic", "")
     time_period = arguments.get("time_period", "all available years")
-    
-    return f"""You are a fraud investigation analyst using the Program Integrity Alliance (PIA) database. 
+
+    return f"""You are a fraud investigation analyst using the Program Integrity Alliance (PIA) database.
 
 Your task is to search for fraud investigations and related findings on the topic: "{topic}"
 
@@ -136,7 +171,7 @@ def _generate_compliance_recommendations_prompt(arguments: Dict[str, str]) -> st
     """Generate compliance recommendations prompt."""
     area = arguments.get("area", "")
     data_source = arguments.get("data_source", "all sources")
-    
+
     return f"""You are a compliance analyst using the Program Integrity Alliance (PIA) database.
 
 Your task is to find compliance recommendations and regulatory guidance for: "{area}"
@@ -168,7 +203,7 @@ def _generate_risk_analysis_prompt(arguments: Dict[str, str]) -> str:
     """Generate risk analysis prompt."""
     domain = arguments.get("domain", "")
     risk_type = arguments.get("risk_type", "all risk types")
-    
+
     return f"""You are a risk analyst using the Program Integrity Alliance (PIA) database.
 
 Your task is to analyze risk factors and vulnerabilities in: "{domain}"
@@ -200,7 +235,7 @@ def _generate_findings_summary_prompt(arguments: Dict[str, str]) -> str:
     """Generate findings summary prompt."""
     subject = arguments.get("subject", "")
     max_results = arguments.get("max_results", "20")
-    
+
     return f"""You are a research analyst using the Program Integrity Alliance (PIA) database.
 
 Your task is to generate a comprehensive summary of findings about: "{subject}"

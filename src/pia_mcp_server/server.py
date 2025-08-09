@@ -18,14 +18,14 @@ from .tools import (
     handle_pia_search_facets,
     handle_get_rate_limit_stats,
     handle_search,
-    handle_fetch
+    handle_fetch,
 )
 from .tools import (
     pia_search_tool,
     pia_search_facets_tool,
     get_rate_limit_stats_tool,
     search_tool,
-    fetch_tool
+    fetch_tool,
 )
 from .prompts.handlers import list_prompts as handler_list_prompts
 from .prompts.handlers import get_prompt as handler_get_prompt
@@ -58,7 +58,7 @@ async def list_tools() -> List[types.Tool]:
         pia_search_facets_tool,
         get_rate_limit_stats_tool,
         search_tool,
-        fetch_tool
+        fetch_tool,
     ]
 
 
