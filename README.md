@@ -6,7 +6,7 @@
 
 <div align="center">
   <a href="https://programintegrity.org/">
-    <img src="https://programintegrity.org/wp-content/uploads/2024/01/pia-logo-horizontal.png" alt="Program Integrity Alliance" width="400"/>
+    <img src="https://programintegrity.org/wp-content/uploads/2024/07/PIA-Logo.svg" alt="Program Integrity Alliance" width="400"/>
   </a>
 </div>
 
