@@ -28,7 +28,7 @@ pia_search_facets_tool = types.Tool(
 
 
 async def handle_pia_search_facets(
-    arguments: Dict[str, Any]
+    arguments: Dict[str, Any],
 ) -> List[types.TextContent]:
     """Handle PIA search facets requests."""
     try:
