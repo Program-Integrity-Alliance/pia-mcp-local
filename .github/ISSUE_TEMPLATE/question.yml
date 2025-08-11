@@ -1,0 +1,82 @@
+name: Question
+description: Ask a question about the project
+title: "[Question]: "
+labels: ["question"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for your interest in the project! Please provide as much detail as possible to help us understand your question.
+  - type: input
+    id: contact
+    attributes:
+      label: Contact Details
+      description: How can we get in touch with you if we need more info?
+      placeholder: ex. email@example.com
+    validations:
+      required: false
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: What would you like to know?
+      placeholder: Please describe your question in detail...
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Please provide any relevant context about what you're trying to accomplish
+      placeholder: |
+        - What are you trying to achieve?
+        - What have you already tried?
+        - Any relevant documentation you've already consulted?
+    validations:
+      required: false
+  - type: dropdown
+    id: category
+    attributes:
+      label: Question Category
+      description: What type of question is this?
+      options:
+        - Installation/Setup
+        - Usage/How-to
+        - Configuration
+        - API/Integration
+        - Performance
+        - Troubleshooting
+        - Best Practices
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment Details
+      description: Please provide details about your environment if relevant
+      placeholder: |
+        - Operating System:
+        - Python Version:
+        - Package Version:
+        - Other relevant details:
+      render: markdown
+    validations:
+      required: false
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional Information
+      description: Any other information that might be helpful
+    validations:
+      required: false
+  - type: checkboxes
+    id: searched
+    attributes:
+      label: Pre-submission Checklist
+      description: Please confirm you've done the following
+      options:
+        - label: I have searched existing issues and discussions
+        - label: I have consulted the documentation
+        - label: I have provided sufficient context for my question

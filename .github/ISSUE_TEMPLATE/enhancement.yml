@@ -1,0 +1,146 @@
+name: Enhancement/Data Request
+description: Suggest an enhancement or request new data features
+title: "[Enhancement]: "
+labels: ["enhancement"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting an enhancement! Please provide as much detail as possible to help us understand your request.
+  - type: input
+    id: contact
+    attributes:
+      label: Contact Details
+      description: How can we get in touch with you if we need more info?
+      placeholder: ex. email@example.com
+    validations:
+      required: false
+  - type: dropdown
+    id: request-type
+    attributes:
+      label: Request Type
+      description: What type of enhancement are you requesting?
+      options:
+        - New Feature
+        - Data Source Addition
+        - API Enhancement
+        - Performance Improvement
+        - User Interface Improvement
+        - Documentation Enhancement
+        - Integration Request
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Feature Description
+      description: Describe the enhancement or data request in detail
+      placeholder: |
+        What would you like to see added or improved?
+        Be as specific as possible about the functionality you're requesting.
+    validations:
+      required: true
+  - type: textarea
+    id: problem-statement
+    attributes:
+      label: Problem Statement
+      description: What problem does this enhancement solve?
+      placeholder: |
+        - What challenge are you currently facing?
+        - How would this enhancement help you or other users?
+        - What are the current limitations?
+    validations:
+      required: true
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: Proposed Solution
+      description: How do you envision this being implemented?
+      placeholder: |
+        - How should this feature work?
+        - What should the user experience be like?
+        - Any specific implementation details you have in mind?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: What alternative solutions have you considered?
+      placeholder: |
+        - Are there workarounds you're currently using?
+        - Other tools or approaches you've tried?
+        - Why are those alternatives insufficient?
+    validations:
+      required: false
+  - type: textarea
+    id: data-sources
+    attributes:
+      label: Data Sources (if applicable)
+      description: If this is a data request, please specify the data sources
+      placeholder: |
+        - What data sources would you like to see supported?
+        - Are there specific APIs or datasets you need access to?
+        - Do you have access to the data source or API keys?
+        - Any specific data formats or schemas?
+    validations:
+      required: false
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority Level
+      description: How important is this enhancement to you?
+      options:
+        - Low - Nice to have
+        - Medium - Would be helpful
+        - High - Important for my use case
+        - Critical - Blocking my work
+    validations:
+      required: true
+  - type: dropdown
+    id: user-impact
+    attributes:
+      label: Expected User Impact
+      description: How many users would benefit from this enhancement?
+      options:
+        - Just me
+        - Small group (< 10 users)
+        - Medium group (10-100 users)
+        - Large group (100+ users)
+        - All users
+        - Not sure
+    validations:
+      required: true
+  - type: textarea
+    id: implementation-help
+    attributes:
+      label: Implementation Assistance
+      description: Are you willing and able to help with implementation?
+      placeholder: |
+        - Can you contribute code, testing, or documentation?
+        - Do you have expertise in relevant areas?
+        - What kind of support would you need?
+    validations:
+      required: false
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other information that would be helpful
+      placeholder: |
+        - Links to relevant documentation, examples, or specifications
+        - Screenshots or mockups if applicable
+        - Any other relevant details
+    validations:
+      required: false
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      description: Please confirm you've done the following
+      options:
+        - label: I have searched existing issues for similar requests
+        - label: I have provided a clear description of the problem and solution
+        - label: I have considered the impact on other users
