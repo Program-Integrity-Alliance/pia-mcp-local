@@ -126,13 +126,13 @@ For Docker:
 The server provides two main tools:
 
 ### 1. PIA Search
-Comprehensive search with OData filtering and faceting. The `filters` parameter uses standard [OData query syntax](https://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part2-url-conventions.html).
+Comprehensive search with OData filtering and faceting. The `filter` parameter uses standard [OData query syntax](https://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part2-url-conventions.html).
 
 **Tool Name:** `pia_search`
 
 **Parameters:**
 - `query` (required): Search query text
-- `filters` (optional): OData filter expression
+- `filter` (optional): OData filter expression
 - `page` (optional): Page number (default: 1)
 - `page_size` (optional): Results per page (default: 10)
 - `search_mode` (optional): Search mode (default: "content")
@@ -181,7 +181,7 @@ Discover available field names and values for filtering.
 - Find possible field values (e.g., "OIG", "GAO", "audit_report")
 - Understand data types for each field (string, date, number)
 
-This information helps you construct proper `filters` for the `pia_search` tool.
+This information helps you construct proper `filter` expressions for the `pia_search` tool.
 
 ## 🔍 Filter Discovery Workflow
 
@@ -207,13 +207,13 @@ Use the `pia_search` tool with discovered fields to create precise OData filters
 **Basic Example:**
 ```
 Query: "Medicare fraud"
-Filters: "data_source in ('OIG', 'CMS') and published_date ge '2023-01-01' and document_type eq 'audit_report'"
+Filter: "data_source in ('OIG', 'CMS') and published_date ge '2023-01-01' and document_type eq 'audit_report'"
 ```
 
 **Complex Example:**
 ```
 Query: "healthcare violations"
-Filters: "(data_source eq 'OIG' or data_source eq 'CMS') and (severity eq 'High' or amount gt 1000000) and published_date ge '2023-01-01'"
+Filter: "(data_source eq 'OIG' or data_source eq 'CMS') and (severity eq 'High' or amount gt 1000000) and published_date ge '2023-01-01'"
 ```
 
 ## 📝 AI Instruction Prompts

@@ -13,14 +13,14 @@ settings = Settings()
 # Tool definitions based on the API response
 pia_search_tool = types.Tool(
     name="pia_search",
-    description="Search the Program Integrity Alliance (PIA) database for documents and recommendations. Returns comprehensive results with full citation information and clickable links for proper attribution. Each result includes corresponding citations with data source attribution (GAO, OIG, etc.). Supports structured filtering using index field names with operators like eq, ne, in, not_in, gte, lte, etc.",
+    description="Search the Program Integrity Alliance (PIA) database for documents and recommendations. Returns comprehensive results with full citation information and clickable links for proper attribution. Each result includes corresponding citations with data source attribution (GAO, OIG, etc.). Supports OData filter expressions using operators like eq, ne, gt, ge, lt, le, and, or, etc.",
     inputSchema={
         "type": "object",
         "properties": {
             "query": {"type": "string", "description": "Search query text"},
-            "filters": {
-                "type": "object",
-                "description": "Optional filters for narrowing results",
+            "filter": {
+                "type": "string",
+                "description": "Optional OData filter expression for narrowing results (e.g., \"data_source eq 'GAO'\")",
             },
             "page": {
                 "type": "integer",
