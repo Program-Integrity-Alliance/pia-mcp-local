@@ -13,34 +13,37 @@ settings = Settings()
 # Tool definitions based on the API response
 pia_search_tool = types.Tool(
     name="pia_search",
-    description="Search the Program Integrity Alliance (PIA) database for documents and recommendations. Returns comprehensive results with full citation information and clickable links for proper attribution. Each result includes corresponding citations with data source attribution (GAO, OIG, etc.). Supports OData filter expressions using operators like eq, ne, gt, ge, lt, le, and, or, etc.",
+    description="Search the Program Integrity Alliance (PIA) database for documents and recommendations. Returns comprehensive results with full citation information and clickable links for proper attribution. Each result includes corresponding citations with data source attribution (GAO, OIG, etc.). Supports complex OData filtering with boolean logic, operators, and grouping.",
     inputSchema={
         "type": "object",
         "properties": {
             "query": {"type": "string", "description": "Search query text"},
             "filter": {
                 "type": "string",
-                "description": "Optional OData filter expression for narrowing results (e.g., \"data_source eq 'GAO'\")",
+                "description": "OData filter expression supporting complex boolean logic. Examples: \"SourceDocumentDataSource eq 'GAO'\", \"SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'OIG'\", \"SourceDocumentDataSource eq 'GAO' and RecStatus ne 'Closed'\", \"SourceDocumentDataSource ne 'Department of Justice' and not (RecStatus eq 'Closed')\", \"IsIntegrityRelated eq 'Yes' and RecPriorityFlag in ('High', 'Critical')\", \"SourceDocumentPublishDate ge '2020-01-01' and SourceDocumentPublishDate le '2024-12-31'\", \"(SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'OIG') and RecStatus eq 'Open'\"",
             },
             "page": {
                 "type": "integer",
-                "description": "Page number (default: 1)",
+                "description": "Page number (1-based)",
                 "default": 1,
             },
             "page_size": {
                 "type": "integer",
-                "description": "Results per page (default: 10)",
+                "description": "Number of results per page (max 50)",
                 "default": 10,
             },
             "search_mode": {
                 "type": "string",
-                "description": "Search mode (default: content)",
+                "description": 'Search mode - "content" for full-text search or "titles" for title-only search',
                 "default": "content",
             },
-            "limit": {"type": "integer", "description": "Maximum results limit"},
+            "limit": {
+                "type": "integer",
+                "description": "Alternative name for page_size (for compatibility)",
+            },
             "include_facets": {
                 "type": "boolean",
-                "description": "Include facets in results",
+                "description": "Whether to include facets in response (default False to reduce token usage)",
                 "default": False,
             },
         },
@@ -50,15 +53,19 @@ pia_search_tool = types.Tool(
 
 pia_search_facets_tool = types.Tool(
     name="pia_search_facets",
-    description="Get available facets (filter values) for the PIA database. This can help understand what filter values are available before performing searches.",
+    description="Get available facets (filter values) for the PIA database. This can help understand what filter values are available before performing searches. Supports complex OData filtering with boolean logic, operators, and grouping.",
     inputSchema={
         "type": "object",
         "properties": {
             "query": {
                 "type": "string",
-                "description": "Optional query to get facets for",
+                "description": "Optional query to get facets for (if empty, gets all facets)",
                 "default": "",
-            }
+            },
+            "filter": {
+                "type": "string",
+                "description": "Optional OData filter expression. Examples: \"SourceDocumentDataSource eq 'GAO'\", \"SourceDocumentDataSource eq 'GAO' and RecStatus ne 'Closed'\", \"IsIntegrityRelated eq 'Yes' and RecPriorityFlag in ('High', 'Critical')\", \"SourceDocumentPublishDate ge '2020-01-01' and SourceDocumentPublishDate le '2024-12-31'\"",
+            },
         },
     },
 )

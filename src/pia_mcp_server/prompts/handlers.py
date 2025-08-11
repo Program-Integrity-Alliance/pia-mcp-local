@@ -179,8 +179,8 @@ Process for applying filters:
 3. **Build the filter expression**:
    - Use **only field names and values** returned by `pia_search_facets`.
    - Construct the filter in **OData syntax**:
-     - `data_source eq 'GAO'`
-     - `(data_source eq 'GAO' or data_source eq 'CIGIE') and year ge 2020`
+     - `SourceDocumentDataSource eq 'GAO'`
+     - `(SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'OIG') and SourceDocumentPublishDate ge '2020-01-01'`
    - Use correct operators: `eq`, `ne`, `gt`, `ge`, `lt`, `le`, `and`, `or`.
    - Wrap string values in single quotes `'value'`.
 
@@ -190,7 +190,7 @@ Process for applying filters:
      ```
      {{
        "query": "fraud detection",
-       "filter": "data_source eq 'GAO' and year ge 2021"
+       "filter": "SourceDocumentDataSource eq 'GAO' and SourceDocumentPublishDate ge '2021-01-01'"
      }}
      ```
 

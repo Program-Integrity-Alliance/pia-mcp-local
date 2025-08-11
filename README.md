@@ -140,11 +140,13 @@ Comprehensive search with OData filtering and faceting. The `filter` parameter u
 - `include_facets` (optional): Include facets in results (default: false)
 
 **Example Filter Expressions:**
-- Basic filter: `"data_source eq 'OIG'"`
-- Multiple conditions: `"data_source in ('OIG', 'GAO') and published_date ge '2023-01-01'"`
-- Complex grouping: `"(agency ne 'Department of Defense') and (severity in ('High', 'Critical'))"`
-- Date ranges: `"published_date ge '2023-01-01' and published_date le '2023-12-31'"`
-- String functions: `"contains(title, 'Medicare') and startswith(agency, 'Department')"`
+- Basic filter: `"SourceDocumentDataSource eq 'GAO'"`
+- Multiple conditions: `"SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'OIG'"`
+- Complex grouping: `"SourceDocumentDataSource eq 'GAO' and RecStatus ne 'Closed'"`
+- Negation: `"SourceDocumentDataSource ne 'Department of Justice' and not (RecStatus eq 'Closed')"`
+- List membership: `"IsIntegrityRelated eq 'Yes' and RecPriorityFlag in ('High', 'Critical')"`
+- Date ranges: `"SourceDocumentPublishDate ge '2020-01-01' and SourceDocumentPublishDate le '2024-12-31'"`
+- Boolean grouping: `"(SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'OIG') and RecStatus eq 'Open'"`
 
 **OData Filter Operators:**
 - `eq` - equals: `field eq 'value'`
@@ -194,10 +196,11 @@ Use the `pia_search_facets` tool to explore what fields are available for filter
 The facets response will show available fields and their possible values:
 ```json
 {
-  "data_source": ["OIG", "GAO", "CMS", "FBI"],
-  "document_type": ["audit_report", "investigation", "enforcement_action"],
-  "agency": ["Department of Health", "Department of Defense"],
-  "published_date": "2020-01-01 to 2024-12-31"
+  "SourceDocumentDataSource": ["OIG", "GAO", "CMS", "FBI"],
+  "RecStatus": ["Open", "Closed", "In Progress"],
+  "RecPriorityFlag": ["High", "Medium", "Low", "Critical"],
+  "IsIntegrityRelated": ["Yes", "No"],
+  "SourceDocumentPublishDate": "2020-01-01 to 2024-12-31"
 }
 ```
 
@@ -207,13 +210,13 @@ Use the `pia_search` tool with discovered fields to create precise OData filters
 **Basic Example:**
 ```
 Query: "Medicare fraud"
-Filter: "data_source in ('OIG', 'CMS') and published_date ge '2023-01-01' and document_type eq 'audit_report'"
+Filter: "SourceDocumentDataSource eq 'GAO' and SourceDocumentPublishDate ge '2023-01-01' and IsIntegrityRelated eq 'Yes'"
 ```
 
 **Complex Example:**
 ```
 Query: "healthcare violations"
-Filter: "(data_source eq 'OIG' or data_source eq 'CMS') and (severity eq 'High' or amount gt 1000000) and published_date ge '2023-01-01'"
+Filter: "(SourceDocumentDataSource eq 'OIG' or SourceDocumentDataSource eq 'CMS') and RecPriorityFlag in ('High', 'Critical') and SourceDocumentPublishDate ge '2023-01-01'"
 ```
 
 ## 📝 AI Instruction Prompts
