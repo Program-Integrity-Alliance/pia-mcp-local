@@ -9,26 +9,14 @@ logger = logging.getLogger(__name__)
 # Available prompts for PIA MCP server
 AVAILABLE_PROMPTS = [
     {
-        "name": "summary_prompt",
-        "description": "Instructions for LLM to summarize information only from provided search results with proper citations",
-        "arguments": [
-            {
-                "name": "search_results",
-                "description": "The search results to summarize (will be inserted into <SEARCH_RESULTS> tags)",
-                "required": True,
-            },
-        ],
+        "name": "summarization_guidance",
+        "description": "Provides guidance on how to summarize information from PIA search results with proper citations",
+        "arguments": [],
     },
     {
-        "name": "search_prompt",
-        "description": "Instructions for LLM on how to effectively use PIA search tools with proper filtering",
-        "arguments": [
-            {
-                "name": "user_query",
-                "description": "The user's search query to analyze for filter criteria",
-                "required": True,
-            },
-        ],
+        "name": "search_guidance",
+        "description": "Provides guidance on how to perform PIA searches with or without filters",
+        "arguments": [],
     },
 ]
 
@@ -76,10 +64,10 @@ async def get_prompt(
     arguments = arguments or {}
 
     # Generate prompt content based on the type
-    if name == "summary_prompt":
-        content = _generate_summary_prompt(arguments)
-    elif name == "search_prompt":
-        content = _generate_search_prompt(arguments)
+    if name == "summarization_guidance":
+        content = _generate_summarization_guidance()
+    elif name == "search_guidance":
+        content = _generate_search_guidance()
     else:
         content = f"Prompt template for {name} - implement specific logic based on arguments: {arguments}"
 
@@ -93,11 +81,9 @@ async def get_prompt(
     )
 
 
-def _generate_summary_prompt(arguments: Dict[str, str]) -> str:
-    """Generate summary prompt for LLM."""
-    search_results = arguments.get("search_results", "")
-
-    return f"""You are an assistant that summarizes information **only** from the provided search results.
+def _generate_summarization_guidance() -> str:
+    """Generate summarization guidance prompt."""
+    return """You are an assistant that summarizes information **only** from the provided search results.
 
 Your task:
 1. **Only include facts that appear in the provided search results.**
@@ -130,8 +116,6 @@ Your task:
 
 Input to use:
 <SEARCH_RESULTS>
-{search_results}
-</SEARCH_RESULTS>
 
 Output template:
 ---
@@ -151,18 +135,22 @@ Remember:
 - If you can't find enough information for a point, omit it entirely."""
 
 
-def _generate_search_prompt(arguments: Dict[str, str]) -> str:
-    """Generate search prompt for LLM."""
-    user_query = arguments.get("user_query", "")
-
-    return f"""You can perform searches using the PIA Search tools with or without filters.
+def _generate_search_guidance() -> str:
+    """Generate search guidance prompt."""
+    return """You can perform searches using the PIA Search tools with or without filters.
 
 General rules:
 - Run an **unfiltered search** by default if no filter criteria are mentioned in the user's request.
 - If the user's request includes any specific filter criteria (e.g., agency name, year, category):
-  1. Call `pia_search_facets` once to discover the filterable field names and allowed values.
+  1. Call `pia_search_content_facets` or `pia_search_titles_facets` once to discover the filterable field names and allowed values.
   2. Use these to build a valid OData filter expression.
   3. Call the search tool with the filter applied.
+
+Available search tools:
+- `pia_search_content`: Search within document content and recommendations
+- `pia_search_content_facets`: Get available filter values for content search
+- `pia_search_titles`: Search document titles only (faster, good for discovery)
+- `pia_search_titles_facets`: Get available filter values for title search
 
 Process for applying filters:
 
@@ -171,13 +159,13 @@ Process for applying filters:
    - If such references are present, treat the search as **filtered**.
 
 2. **Discover filterable fields and values** (only if filtering):
-   - Call the `pia_search_facets` tool (one time per session unless filters change).
+   - Call the appropriate facets tool (one time per session unless filters change).
    - Review the output to see:
      - Field names that support filtering.
      - Possible values for each field.
 
 3. **Build the filter expression**:
-   - Use **only field names and values** returned by `pia_search_facets`.
+   - Use **only field names and values** returned by the facets tools.
    - Construct the filter in **OData syntax**:
      - `SourceDocumentDataSource eq 'GAO'`
      - `(SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'OIG') and SourceDocumentPublishDate ge '2020-01-01'`
@@ -200,12 +188,12 @@ Process for applying filters:
      - Inform the user you are showing unfiltered results because no matches were found with the filter.
 
 6. **Validation**:
-   - Never use a field or value not provided by `pia_search_facets`.
-   - If the user requests a filter that doesn't exist in `pia_search_facets`, explain it's not available and offer an unfiltered search instead.
+   - Never use a field or value not provided by the facets tools.
+   - If the user requests a filter that doesn't exist in facets, explain it's not available and offer an unfiltered search instead.
 
 Goal:
 - Default to unfiltered search unless filter criteria are clearly present in the query.
 - Always validate filter fields/values before applying them.
 - Fall back to unfiltered if filtering produces zero results and it hasn't already been run.
 
-User query to analyze: "{user_query}\""""
+"""

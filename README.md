@@ -123,12 +123,13 @@ For Docker:
 
 ## 💡 Available Tools
 
-The server provides two main tools:
+The server provides four main tools:
 
-### 1. PIA Search
-Comprehensive search with OData filtering and faceting. The `filter` parameter uses standard [OData query syntax](https://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part2-url-conventions.html).
+### 1. `pia_search_content`
 
-**Tool Name:** `pia_search`
+Comprehensive search tool for querying document content and recommendations in the PIA database.
+
+**Tool Name:** `pia_search_content`
 
 **Parameters:**
 - `query` (required): Search query text
@@ -136,8 +137,42 @@ Comprehensive search with OData filtering and faceting. The `filter` parameter u
 - `page` (optional): Page number (default: 1)
 - `page_size` (optional): Results per page (default: 10)
 - `search_mode` (optional): Search mode (default: "content")
+
+### 2. `pia_search_content_facets`
+
+Tool for discovering available filter values before performing content searches.
+
+**Parameters:**
+- `query` (optional): Query to get facets for (if empty, gets all facets)
+- `filter` (optional): OData filter expression
+
+### 3. `pia_search_titles`
+
+Search document titles only for faster discovery of available documents.
+
+**Parameters:**
+- `query` (required): Search query text (searches document titles only)
+- `filter` (optional): OData filter expression
+- `page` (optional): Page number (default: 1)
+- `page_size` (optional): Results per page (default: 10)
+- `search_mode` (optional): Search mode (default: "titles")
 - `limit` (optional): Maximum results limit
 - `include_facets` (optional): Include facets in results (default: false)
+
+### 4. `pia_search_titles_facets`
+
+Tool for discovering available filter values before performing title searches.
+
+**Parameters:**
+- `query` (optional): Query to get facets for (if empty, gets all facets)
+- `filter` (optional): OData filter expression
+
+## Search Modes
+
+Comprehensive search with OData filtering and faceting. The `filter` parameter uses standard [OData query syntax](https://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part2-url-conventions.html).
+
+- **Content Search** (`pia_search_content`): Searches within document content and recommendations for comprehensive results
+- **Title Search** (`pia_search_titles`): Searches document titles only - faster and useful for document discovery
 
 **Example Filter Expressions:**
 - Basic filter: `"SourceDocumentDataSource eq 'GAO'"`
@@ -183,7 +218,7 @@ Discover available field names and values for filtering.
 - Find possible field values (e.g., "OIG", "GAO", "audit_report")
 - Understand data types for each field (string, date, number)
 
-This information helps you construct proper `filter` expressions for the `pia_search` tool.
+This information helps you construct proper `filter` expressions for the search tools.
 
 ## 🔍 Filter Discovery Workflow
 

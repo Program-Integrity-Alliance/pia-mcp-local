@@ -14,12 +14,16 @@ from mcp.server import NotificationOptions
 from mcp.server.stdio import stdio_server
 from .config import Settings
 from .tools import (
-    handle_pia_search,
-    handle_pia_search_facets,
+    handle_pia_search_content,
+    handle_pia_search_content_facets,
+    handle_pia_search_titles,
+    handle_pia_search_titles_facets,
 )
 from .tools import (
-    pia_search_tool,
-    pia_search_facets_tool,
+    pia_search_content_tool,
+    pia_search_content_facets_tool,
+    pia_search_titles_tool,
+    pia_search_titles_facets_tool,
 )
 from .prompts.handlers import list_prompts as handler_list_prompts
 from .prompts.handlers import get_prompt as handler_get_prompt
@@ -48,8 +52,10 @@ async def get_prompt(
 async def list_tools() -> List[types.Tool]:
     """List available PIA research tools."""
     return [
-        pia_search_tool,
-        pia_search_facets_tool,
+        pia_search_content_tool,
+        pia_search_content_facets_tool,
+        pia_search_titles_tool,
+        pia_search_titles_facets_tool,
     ]
 
 
@@ -58,10 +64,14 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[types.TextCont
     """Handle tool calls for PIA research functionality."""
     logger.debug(f"Calling tool {name} with arguments {arguments}")
     try:
-        if name == "pia_search":
-            return await handle_pia_search(arguments)
-        elif name == "pia_search_facets":
-            return await handle_pia_search_facets(arguments)
+        if name == "pia_search_content":
+            return await handle_pia_search_content(arguments)
+        elif name == "pia_search_content_facets":
+            return await handle_pia_search_content_facets(arguments)
+        elif name == "pia_search_titles":
+            return await handle_pia_search_titles(arguments)
+        elif name == "pia_search_titles_facets":
+            return await handle_pia_search_titles_facets(arguments)
         else:
             return [types.TextContent(type="text", text=f"Error: Unknown tool {name}")]
     except Exception as e:

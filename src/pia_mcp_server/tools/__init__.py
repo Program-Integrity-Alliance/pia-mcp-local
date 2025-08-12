@@ -6,15 +6,23 @@ This module provides tools for interacting with the Program Integrity Alliance A
 """
 
 from .search_tools import (
-    handle_pia_search,
-    pia_search_tool,
-    handle_pia_search_facets,
-    pia_search_facets_tool,
+    handle_pia_search_content,
+    pia_search_content_tool,
+    handle_pia_search_content_facets,
+    pia_search_content_facets_tool,
+    handle_pia_search_titles,
+    pia_search_titles_tool,
+    handle_pia_search_titles_facets,
+    pia_search_titles_facets_tool,
 )
 
 __all__ = [
-    "handle_pia_search",
-    "pia_search_tool",
-    "handle_pia_search_facets",
-    "pia_search_facets_tool",
+    "handle_pia_search_content",
+    "pia_search_content_tool",
+    "handle_pia_search_content_facets",
+    "pia_search_content_facets_tool",
+    "handle_pia_search_titles",
+    "pia_search_titles_tool",
+    "handle_pia_search_titles_facets",
+    "pia_search_titles_facets_tool",
 ]

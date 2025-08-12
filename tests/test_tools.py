@@ -4,8 +4,10 @@ import pytest
 from unittest.mock import AsyncMock, patch, Mock
 import httpx
 from pia_mcp_server.tools.search_tools import (
-    handle_pia_search,
-    handle_pia_search_facets,
+    handle_pia_search_content,
+    handle_pia_search_content_facets,
+    handle_pia_search_titles,
+    handle_pia_search_titles_facets,
 )
 from pia_mcp_server.config import Settings
 
@@ -13,18 +15,18 @@ settings = Settings()
 
 
 @pytest.mark.asyncio
-async def test_pia_search_no_api_key():
-    """Test PIA search without API key."""
+async def test_pia_search_content_no_api_key():
+    """Test PIA content search without API key."""
     with patch.object(Settings, "_get_api_key_from_args", return_value=None):
-        result = await handle_pia_search({"query": "test"})
+        result = await handle_pia_search_content({"query": "test"})
 
         assert len(result) == 1
         assert "PIA API key is required" in result[0].text
 
 
 @pytest.mark.asyncio
-async def test_pia_search_success():
-    """Test successful PIA search."""
+async def test_pia_search_content_success():
+    """Test successful PIA content search."""
     mock_response = {
         "jsonrpc": "2.0",
         "id": 1,
@@ -46,14 +48,14 @@ async def test_pia_search_success():
             mock_client_instance.post.return_value = mock_response_obj
             mock_client.return_value.__aenter__.return_value = mock_client_instance
 
-            result = await handle_pia_search({"query": "test fraud"})
+            result = await handle_pia_search_content({"query": "test fraud"})
 
             assert len(result) == 1
             assert "Test Document" in result[0].text
 
 
 @pytest.mark.asyncio
-async def test_pia_search_with_odata_filter():
+async def test_pia_search_content_with_odata_filter():
     """Test PIA search with OData filter parameter."""
     mock_response = {
         "jsonrpc": "2.0",
@@ -81,7 +83,7 @@ async def test_pia_search_with_odata_filter():
             mock_client.return_value.__aenter__.return_value = mock_client_instance
 
             # Test with actual field names from the remote implementation
-            result = await handle_pia_search(
+            result = await handle_pia_search_content(
                 {"query": "fraud", "filter": "SourceDocumentDataSource eq 'GAO'"}
             )
 
@@ -99,7 +101,7 @@ async def test_pia_search_with_odata_filter():
 
 
 @pytest.mark.asyncio
-async def test_pia_search_with_complex_odata_filter():
+async def test_pia_search_content_with_complex_odata_filter():
     """Test PIA search with complex OData filter."""
     mock_response = {
         "jsonrpc": "2.0",
@@ -128,7 +130,7 @@ async def test_pia_search_with_complex_odata_filter():
 
             # Test complex boolean logic filter
             complex_filter = "(SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'OIG') and RecPriorityFlag in ('High', 'Critical')"
-            result = await handle_pia_search(
+            result = await handle_pia_search_content(
                 {"query": "integrity violations", "filter": complex_filter}
             )
 
@@ -143,7 +145,7 @@ async def test_pia_search_with_complex_odata_filter():
 
 
 @pytest.mark.asyncio
-async def test_pia_search_api_error():
+async def test_pia_search_content_api_error():
     """Test PIA search with API error."""
     mock_response = {
         "jsonrpc": "2.0",
@@ -161,14 +163,14 @@ async def test_pia_search_api_error():
             mock_client_instance.post.return_value = mock_response_obj
             mock_client.return_value.__aenter__.return_value = mock_client_instance
 
-            result = await handle_pia_search({"query": "test"})
+            result = await handle_pia_search_content({"query": "test"})
 
             assert len(result) == 1
             assert "API Error: Invalid API key" in result[0].text
 
 
 @pytest.mark.asyncio
-async def test_pia_search_http_error():
+async def test_pia_search_content_http_error():
     """Test PIA search with HTTP error."""
     with patch.object(Settings, "_get_api_key_from_args", return_value="test_key"):
         with patch("httpx.AsyncClient") as mock_client:
@@ -184,24 +186,24 @@ async def test_pia_search_http_error():
             mock_client_instance.post.side_effect = http_error
             mock_client.return_value.__aenter__.return_value = mock_client_instance
 
-            result = await handle_pia_search({"query": "test"})
+            result = await handle_pia_search_content({"query": "test"})
 
             assert len(result) == 1
             assert "HTTP Error 500" in result[0].text
 
 
 @pytest.mark.asyncio
-async def test_pia_search_facets_no_api_key():
+async def test_pia_search_content_facets_no_api_key():
     """Test PIA search facets without API key."""
     with patch.object(Settings, "_get_api_key_from_args", return_value=None):
-        result = await handle_pia_search_facets({"query": "test"})
+        result = await handle_pia_search_content_facets({"query": "test"})
 
         assert len(result) == 1
         assert "PIA API key is required" in result[0].text
 
 
 @pytest.mark.asyncio
-async def test_pia_search_facets_success():
+async def test_pia_search_content_facets_success():
     """Test successful PIA search facets."""
     mock_response = {
         "jsonrpc": "2.0",
@@ -226,7 +228,7 @@ async def test_pia_search_facets_success():
             mock_client_instance.post.return_value = mock_response_obj
             mock_client.return_value.__aenter__.return_value = mock_client_instance
 
-            result = await handle_pia_search_facets({"query": "healthcare"})
+            result = await handle_pia_search_content_facets({"query": "healthcare"})
 
             assert len(result) == 1
             assert "SourceDocumentDataSource" in result[0].text
@@ -235,7 +237,7 @@ async def test_pia_search_facets_success():
 
 
 @pytest.mark.asyncio
-async def test_pia_search_facets_with_filter():
+async def test_pia_search_content_facets_with_filter():
     """Test PIA search facets with OData filter parameter."""
     mock_response = {
         "jsonrpc": "2.0",
@@ -260,7 +262,7 @@ async def test_pia_search_facets_with_filter():
             mock_client.return_value.__aenter__.return_value = mock_client_instance
 
             # Test facets with filter parameter
-            result = await handle_pia_search_facets(
+            result = await handle_pia_search_content_facets(
                 {
                     "query": "fraud",
                     "filter": "SourceDocumentDataSource eq 'GAO' and RecStatus ne 'Closed'",
@@ -282,7 +284,7 @@ async def test_pia_search_facets_with_filter():
 
 
 @pytest.mark.asyncio
-async def test_pia_search_facets_api_error():
+async def test_pia_search_content_facets_api_error():
     """Test PIA search facets with API error."""
     mock_response = {
         "jsonrpc": "2.0",
@@ -300,14 +302,14 @@ async def test_pia_search_facets_api_error():
             mock_client_instance.post.return_value = mock_response_obj
             mock_client.return_value.__aenter__.return_value = mock_client_instance
 
-            result = await handle_pia_search_facets({"query": "test"})
+            result = await handle_pia_search_content_facets({"query": "test"})
 
             assert len(result) == 1
             assert "API Error: Invalid query format" in result[0].text
 
 
 @pytest.mark.asyncio
-async def test_pia_search_facets_http_error():
+async def test_pia_search_content_facets_http_error():
     """Test PIA search facets with HTTP error."""
     with patch.object(Settings, "_get_api_key_from_args", return_value="test_key"):
         with patch("httpx.AsyncClient") as mock_client:
@@ -323,14 +325,14 @@ async def test_pia_search_facets_http_error():
             mock_client_instance.post.side_effect = http_error
             mock_client.return_value.__aenter__.return_value = mock_client_instance
 
-            result = await handle_pia_search_facets({"query": "test"})
+            result = await handle_pia_search_content_facets({"query": "test"})
 
             assert len(result) == 1
             assert "HTTP Error 403" in result[0].text
 
 
 @pytest.mark.asyncio
-async def test_pia_search_empty_filter():
+async def test_pia_search_content_empty_filter():
     """Test PIA search with empty filter parameter."""
     mock_response = {
         "jsonrpc": "2.0",
@@ -354,14 +356,16 @@ async def test_pia_search_empty_filter():
             mock_client.return_value.__aenter__.return_value = mock_client_instance
 
             # Test with empty filter (should work normally)
-            result = await handle_pia_search({"query": "test query", "filter": ""})
+            result = await handle_pia_search_content(
+                {"query": "test query", "filter": ""}
+            )
 
             assert len(result) == 1
             assert "Test Document" in result[0].text
 
 
 @pytest.mark.asyncio
-async def test_pia_search_with_all_parameters():
+async def test_pia_search_content_with_all_parameters():
     """Test PIA search with all parameters including filter."""
     mock_response = {
         "jsonrpc": "2.0",
@@ -385,7 +389,7 @@ async def test_pia_search_with_all_parameters():
             mock_client.return_value.__aenter__.return_value = mock_client_instance
 
             # Test with all parameters
-            result = await handle_pia_search(
+            result = await handle_pia_search_content(
                 {
                     "query": "comprehensive test",
                     "filter": "SourceDocumentDataSource eq 'GAO' and IsIntegrityRelated eq 'Yes'",
@@ -419,7 +423,7 @@ async def test_pia_search_with_all_parameters():
 
 
 @pytest.mark.asyncio
-async def test_pia_search_facets_empty_filter():
+async def test_pia_search_content_facets_empty_filter():
     """Test PIA search facets with empty filter parameter."""
     mock_response = {
         "jsonrpc": "2.0",
@@ -443,7 +447,9 @@ async def test_pia_search_facets_empty_filter():
             mock_client.return_value.__aenter__.return_value = mock_client_instance
 
             # Test facets with empty filter
-            result = await handle_pia_search_facets({"query": "test", "filter": ""})
+            result = await handle_pia_search_content_facets(
+                {"query": "test", "filter": ""}
+            )
 
             assert len(result) == 1
             assert "SourceDocumentDataSource" in result[0].text
