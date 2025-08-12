@@ -11,12 +11,14 @@ async def test_list_tools():
     """Test that tools are properly listed."""
     tools = await list_tools()
 
-    assert len(tools) == 2
+    assert len(tools) == 4
     tool_names = [tool.name for tool in tools]
 
     expected_tools = [
-        "pia_search",
-        "pia_search_facets",
+        "pia_search_content",
+        "pia_search_content_facets",
+        "pia_search_titles",
+        "pia_search_titles_facets",
     ]
 
     for expected_tool in expected_tools:
@@ -45,7 +47,7 @@ async def test_call_tool_exception():
             mock_client_instance.post.side_effect = Exception("Test error")
             mock_client.return_value.__aenter__.return_value = mock_client_instance
 
-            result = await call_tool("pia_search", {"query": "test"})
+            result = await call_tool("pia_search_content", {"query": "test"})
 
             assert len(result) == 1
             assert result[0].type == "text"
