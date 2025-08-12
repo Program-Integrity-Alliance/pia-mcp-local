@@ -82,7 +82,13 @@ pia_search_titles_tool = types.Tool(
             },
             "filter": {
                 "type": "string",
-                "description": "OData filter expression supporting complex boolean logic. Examples: \"SourceDocumentDataSource eq 'GAO'\", \"SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'OIG'\", \"SourceDocumentDataSource eq 'GAO' and RecStatus ne 'Closed'\", \"SourceDocumentTitle contains 'fraud'\"",
+                "description": (
+                    "OData filter expression supporting complex boolean logic. "
+                    "Examples: \"SourceDocumentDataSource eq 'GAO'\", "
+                    "\"SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'OIG'\", "
+                    "\"SourceDocumentDataSource eq 'GAO' and RecStatus ne 'Closed'\", "
+                    "\"SourceDocumentTitle contains 'fraud'\""
+                ),
             },
             "page": {
                 "type": "integer",
