@@ -55,13 +55,24 @@ class Settings(BaseSettings):
     def API_KEY(self) -> str:
         """Get the API key"""
 
+        logger.info(f"Attempting to retrieve API key. sys.argv: {sys.argv}")
         api_key = self._get_api_key_from_args()
+        logger.info(f"API key from args: {'Found' if api_key else 'Not found'}")
 
         if not api_key:
             api_key = os.getenv("PIA_API_KEY")
+            logger.info(
+                f"API key from env PIA_API_KEY: {'Found' if api_key else 'Not found'}"
+            )
 
         if not api_key:
+            logger.error("No API key found in args or environment")
             raise ValueError(
                 "PIA API key is required. Please provide --api-key argument or set as PIA_API_KEY environment variable."
             )
+        logger.info(
+            f"API key successfully retrieved: {api_key[:10]}..."
+            if len(api_key) > 10
+            else "API key retrieved"
+        )
         return api_key

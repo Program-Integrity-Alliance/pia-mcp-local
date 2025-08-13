@@ -149,7 +149,13 @@ async def handle_pia_search_content(
 
         try:
             api_key = settings.API_KEY
+            logger.info(
+                f"API_KEY retrieved successfully: {api_key[:10]}..."
+                if api_key
+                else "API_KEY is None or empty"
+            )
         except ValueError as e:
+            logger.error(f"Failed to retrieve API key: {str(e)}")
             return [
                 types.TextContent(
                     type="text",
@@ -158,6 +164,9 @@ async def handle_pia_search_content(
             ]
 
         headers = {"Content-Type": "application/json", "x-api-key": api_key}
+        logger.info(
+            f"Making API call to {settings.PIA_API_URL} with headers: {dict(headers)}"
+        )
 
         async with httpx.AsyncClient(timeout=settings.REQUEST_TIMEOUT) as client:
             response = await client.post(
