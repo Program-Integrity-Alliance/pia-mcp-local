@@ -26,7 +26,7 @@ Currently, the list of datasets includes:
 
 This data is updated weekly, and we will be adding more datasets and tools soon.
 
-If you have any questions, we look forward to hearing from you by raising a question [here](https://github.com/Program-Integrity-Alliance/pia-mcp-local/issues)
+If you have any questions, or requests for other datasets, we look forward to hearing from you by raising an issue [here](https://github.com/Program-Integrity-Alliance/pia-mcp-local/issues).
 
 <div align="center">
 
