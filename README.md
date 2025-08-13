@@ -43,6 +43,26 @@ If you have any questions, we look forward to hearing from you by raising a ques
 
 ## 🚀 Quick Start
 
+### Getting a PIA API Key
+
+1. Got to [https://mcp.programintegrity.org/register](https://mcp.programintegrity.org/register)
+2. Enter your email and a few quick details
+3. You should automatically receive your key
+
+### Installing using Docker MCP Toolkit (Recommended)
+
+*Note: This is pending PR review to be accepted to catalog*
+
+1. Download and run the latest version of [Docker Desktop](https://docs.docker.com/desktop/)
+2. Navigate to 'MCP Toolkit'
+3. Search for 'Program Integrity Alliance'
+4. Add as a server by clicking '+'
+5. Under 'Configuration' enter your key
+6. In 'MCP Toolkit' navigate to 'Clients'
+7. Choose one, eg 'Claude Desktop'
+8. Start your Client
+9. You should now see 'pia_search_content' and other tools
+
 ### Installing via Smithery
 
 To install PIA Server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/pia-mcp-server):
@@ -123,49 +143,56 @@ For Docker:
 
 ## 💡 Available Tools
 
-The server provides four main tools:
+The server provides four main tools for searching the Program Integrity Alliance (PIA) database:
 
 ### 1. `pia_search_content`
 
-Comprehensive search tool for querying document content and recommendations in the PIA database.
+**Purpose:** Comprehensive search tool for querying document content and recommendations in the PIA database.
 
-**Tool Name:** `pia_search_content`
+**Description:** Returns comprehensive results with full citation information and clickable links for proper attribution. Each result includes corresponding citations with data source attribution (GAO, OIG, etc.). Supports complex OData filtering with boolean logic, operators, and grouping.
 
 **Parameters:**
 - `query` (required): Search query text
-- `filter` (optional): OData filter expression
-- `page` (optional): Page number (default: 1)
-- `page_size` (optional): Results per page (default: 10)
-- `search_mode` (optional): Search mode (default: "content")
+- `filter` (optional): OData filter expression supporting complex boolean logic
+- `page` (optional): Page number (1-based, default: 1)
+- `page_size` (optional): Number of results per page (max 50, default: 10)
+- `search_mode` (optional): Search mode - "content" for full-text search or "titles" for title-only search (default: "content")
+- `limit` (optional): Alternative name for page_size (for compatibility)
+- `include_facets` (optional): Whether to include facets in response (default: false to reduce token usage)
 
 ### 2. `pia_search_content_facets`
 
-Tool for discovering available filter values before performing content searches.
+**Purpose:** Get available facets (filter values) for the PIA database content search.
+
+**Description:** This can help understand what filter values are available before performing content searches. Supports complex OData filtering with boolean logic, operators, and grouping.
 
 **Parameters:**
-- `query` (optional): Query to get facets for (if empty, gets all facets)
-- `filter` (optional): OData filter expression
+- `query` (optional): Optional query to get facets for (if empty, gets all facets, default: "")
+- `filter` (optional): Optional OData filter expression
 
 ### 3. `pia_search_titles`
 
-Search document titles only for faster discovery of available documents.
+**Purpose:** Search the Program Integrity Alliance (PIA) database for document titles only.
+
+**Description:** Returns document titles and metadata without searching the full content. Useful for finding specific documents by title or discovering available documents. Supports complex OData filtering with boolean logic, operators, and grouping.
 
 **Parameters:**
 - `query` (required): Search query text (searches document titles only)
-- `filter` (optional): OData filter expression
-- `page` (optional): Page number (default: 1)
-- `page_size` (optional): Results per page (default: 10)
-- `search_mode` (optional): Search mode (default: "titles")
-- `limit` (optional): Maximum results limit
-- `include_facets` (optional): Include facets in results (default: false)
+- `filter` (optional): OData filter expression supporting complex boolean logic
+- `page` (optional): Page number (1-based, default: 1)
+- `page_size` (optional): Number of results per page (max 50, default: 10)
+- `limit` (optional): Alternative name for page_size (for compatibility)
+- `include_facets` (optional): Whether to include facets in response (default: false to reduce token usage)
 
 ### 4. `pia_search_titles_facets`
 
-Tool for discovering available filter values before performing title searches.
+**Purpose:** Get available facets (filter values) for the PIA database title search.
+
+**Description:** This can help understand what filter values are available before performing title searches. Supports complex OData filtering with boolean logic, operators, and grouping.
 
 **Parameters:**
-- `query` (optional): Query to get facets for (if empty, gets all facets)
-- `filter` (optional): OData filter expression
+- `query` (optional): Optional query to get facets for (if empty, gets all facets, default: "")
+- `filter` (optional): Optional OData filter expression
 
 ## Search Modes
 
@@ -258,38 +285,40 @@ Filter: "(SourceDocumentDataSource eq 'OIG' or SourceDocumentDataSource eq 'CMS'
 
 The server provides prompts that instruct the calling LLM on how to effectively use PIA tools and format responses:
 
-### Summary Prompt
-Instructions for LLM to summarize information only from provided search results with proper citations.
+### 1. Summarization Guidance
+Provides guidance on how to summarize information from PIA search results with proper citations.
 
-**Prompt Name:** `summary_prompt`
+**Prompt Name:** `summarization_guidance`
 
 **Purpose:** Ensures LLM creates fact-based summaries with inline citations and proper reference formatting
 
-**Arguments:**
-- `search_results` (required): The search results to summarize (inserted into &lt;SEARCH_RESULTS&gt; tags)
+**Arguments:** None (reusable guidance)
 
-**Returns:** Instructions that guide the LLM to:
-- Only include facts from search results (no prior knowledge)
-- Use inline citations [n] for every factual statement
-- Format references with document title, page, source, and URL
-- Follow strict citation and formatting guidelines
+**Returns:** Comprehensive instructions that guide the LLM to:
+- Only include facts that appear in the provided search results (no prior knowledge)
+- Use proper inline citation format [n] for every factual statement
+- Create a References section with format: [n] Document Title — Page X — Source Name — URL
+- Follow objective, factual style guidelines without speculation or filler
+- Include all necessary attribution elements exactly as provided in search results
+- Organize information logically and ensure every fact has supporting citations
 
-### Search Prompt
-Instructions for LLM on how to effectively use PIA search tools with proper filtering.
+### 2. Search Guidance
+Provides guidance on how to perform PIA searches with or without filters.
 
-**Prompt Name:** `search_prompt`
+**Prompt Name:** `search_guidance`
 
-**Purpose:** Guides LLM through proper search workflow including filter discovery and OData syntax
+**Purpose:** Guides LLM through proper search workflow including filter discovery and OData syntax for all four search tools
 
-**Arguments:**
-- `user_query` (required): The user's search query to analyze for filter criteria
+**Arguments:** None (reusable guidance)
 
-**Returns:** Instructions that guide the LLM to:
-- Detect when filters should be applied based on query content
-- Use `pia_search_facets` to discover available filter fields and values
-- Build valid OData filter expressions with correct syntax
+**Returns:** Comprehensive instructions that guide the LLM to:
+- Run unfiltered searches by default unless filter criteria are mentioned
+- Choose between content search (comprehensive) and title search (fast discovery)
+- Use `pia_search_content_facets` or `pia_search_titles_facets` to discover available filter fields and values
+- Build valid OData filter expressions with correct syntax and actual field names
+- Apply proper OData operators: `eq`, `ne`, `gt`, `ge`, `lt`, `le`, `and`, `or`
 - Fall back to unfiltered search when filtered search returns no results
-- Validate all filter fields against available facets
+- Validate all filter fields against available facets before use
 
 ## ⚙️ Configuration
 
