@@ -78,9 +78,10 @@ pre-commit install
 Our pre-commit configuration (`.pre-commit-config.yaml`) automatically:
 
 - **Code Formatting**: Runs `black` to format Python code
-- **Import Sorting**: Organizes imports consistently
-- **Linting**: Checks for code quality issues
-- **File Checks**: Ensures proper file formatting and structure
+- **File Checks**: Removes trailing whitespace, fixes end-of-file formatting
+- **YAML/JSON Validation**: Checks syntax of configuration files
+- **Merge Conflict Detection**: Prevents committing unresolved conflicts
+- **Large File Prevention**: Blocks accidentally committed large files
 
 ### Running Pre-commit Manually
 
@@ -101,14 +102,21 @@ Our `.pre-commit-config.yaml` includes:
 
 ```yaml
 repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-added-large-files
+      - id: check-merge-conflict
   - repo: https://github.com/psf/black
     rev: 23.3.0
     hooks:
       - id: black
         language_version: python3.11
 ```
-
-Additional hooks may be added as the project grows.
 
 ## 🛠️ Making Changes
 
@@ -185,7 +193,7 @@ We use [Conventional Commits](https://www.conventionalcommits.org/) format:
 feat: add new OData string function support
 fix: resolve API key validation error
 docs: update README with filter examples
-test: add unit tests for pia_search tool
+test: add unit tests for pia_search_content tool
 chore: update dependencies to latest versions
 ```
 
@@ -217,7 +225,7 @@ python -m pytest -v
 ### Writing Tests
 
 - Place tests in the `tests/` directory
-- Use descriptive test names: `test_pia_search_with_valid_filters`
+- Use descriptive test names: `test_pia_search_content_with_valid_filters`
 - Mock external API calls
 - Test both success and error scenarios
 - Aim for high test coverage (>90%)
@@ -355,7 +363,7 @@ import mcp.types as types
 logger = logging.getLogger(__name__)
 
 
-async def handle_pia_search(arguments: Dict[str, Any]) -> List[types.TextContent]:
+async def handle_pia_search_content(arguments: Dict[str, Any]) -> List[types.TextContent]:
     """Handle PIA search requests with OData filtering.
 
     Args:
