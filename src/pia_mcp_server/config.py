@@ -3,6 +3,7 @@
 import sys
 from pydantic_settings import BaseSettings, SettingsConfigDict
 import logging
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +39,10 @@ class Settings(BaseSettings):
             api_key_index = args.index("--api-key")
         except ValueError:
             return None
+
+        # Try and get from environment variable
+        if not api_key:
+            api_key = os.getenv("PIA_API_KEY")
 
         # Early return if --api-key is the last argument
         if api_key_index + 1 >= len(args):
