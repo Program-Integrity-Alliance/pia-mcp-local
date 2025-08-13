@@ -1,0 +1,198 @@
+name: Security Issue
+description: Report a security vulnerability (please use private reporting for sensitive issues)
+title: "[Security]: "
+labels: ["security", "triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # Security Issue Report
+
+        **⚠️ IMPORTANT: For sensitive security vulnerabilities, please use GitHub's private vulnerability reporting feature instead of creating a public issue.**
+
+        You can report security vulnerabilities privately by going to the Security tab of this repository and clicking "Report a vulnerability".
+
+        Use this public template only for security-related issues that are not sensitive or have already been disclosed.
+
+  - type: input
+    id: contact
+    attributes:
+      label: Contact Details
+      description: How can we get in touch with you if we need more info?
+      placeholder: ex. email@example.com
+    validations:
+      required: false
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity Level
+      description: How severe do you consider this security issue?
+      options:
+        - Low
+        - Medium
+        - High
+        - Critical
+    validations:
+      required: true
+
+  - type: dropdown
+    id: issue-type
+    attributes:
+      label: Security Issue Type
+      description: What type of security issue is this?
+      options:
+        - Authentication/Authorization
+        - Data Exposure
+        - Input Validation
+        - Injection Attack
+        - Cross-Site Scripting (XSS)
+        - Cross-Site Request Forgery (CSRF)
+        - Denial of Service (DoS)
+        - Configuration Issue
+        - Dependency Vulnerability
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Security Issue Description
+      description: Please provide a detailed description of the security issue.
+      placeholder: |
+        Describe the security vulnerability or concern...
+
+        Include:
+        - What the issue is
+        - Where it occurs
+        - Why it's a security concern
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: How can this security issue be reproduced?
+      placeholder: |
+        1. Go to '...'
+        2. Enter '...'
+        3. Observe '...'
+        4. See security issue
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Potential Impact
+      description: What could an attacker potentially do with this vulnerability?
+      placeholder: |
+        Describe the potential impact:
+        - Data that could be accessed
+        - Systems that could be compromised
+        - Users that could be affected
+    validations:
+      required: true
+
+  - type: textarea
+    id: affected-components
+    attributes:
+      label: Affected Components
+      description: Which parts of the system are affected?
+      placeholder: |
+        - API endpoints
+        - Authentication system
+        - Database queries
+        - File handling
+        - etc.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: version
+    attributes:
+      label: Affected Version
+      description: What version of the project is affected?
+      options:
+        - Latest (main branch)
+        - 1.0.0
+        - 0.9.0
+        - Other (please specify in Additional Context)
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: environment
+    attributes:
+      label: Environment
+      description: In what environment did you discover this issue?
+      options:
+        - label: Production
+          required: false
+        - label: Development
+          required: false
+        - label: Testing/Staging
+          required: false
+        - label: Docker
+          required: false
+        - label: Local Development
+          required: false
+
+  - type: textarea
+    id: mitigation
+    attributes:
+      label: Suggested Mitigation
+      description: Do you have any suggestions for how to fix this issue?
+      placeholder: |
+        If you have ideas for how to address this security issue, please share them here.
+        This is optional but helpful.
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Logs/Evidence
+      description: Please provide any relevant logs, screenshots, or other evidence (redact sensitive information).
+      render: shell
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: disclosure
+    attributes:
+      label: Responsible Disclosure
+      description: Please confirm your commitment to responsible disclosure
+      options:
+        - label: I understand this is a public issue and will not include sensitive details that could be exploited
+          required: true
+        - label: I have not disclosed this vulnerability publicly elsewhere
+          required: false
+        - label: I am willing to work with the maintainers to resolve this issue
+          required: true
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our Code of Conduct
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any other context about the security issue here.
+      placeholder: |
+        Any additional information that might be helpful:
+        - Related security research
+        - Similar issues in other projects
+        - Timeline constraints
+        - etc.
+    validations:
+      required: false

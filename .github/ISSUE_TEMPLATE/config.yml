@@ -1,8 +1,11 @@
 blank_issues_enabled: false
 contact_links:
+  - name: 🔒 Private Security Report
+    url: https://github.com/Program-Integrity-Alliance/pia-mcp-local/security/advisories/new
+    about: Report sensitive security vulnerabilities privately
   - name: 💬 Discussions
-    url: https://github.com/your-username/pia-mcp-local/discussions
+    url: https://github.com/Program-Integrity-Alliance/pia-mcp-local/discussions
     about: Ask questions and discuss ideas with the community
   - name: 📚 Documentation
-    url: https://github.com/your-username/pia-mcp-local/blob/main/README.md
+    url: https://github.com/Program-Integrity-Alliance/pia-mcp-local/blob/main/README.md
     about: Check out the project documentation
