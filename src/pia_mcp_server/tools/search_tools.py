@@ -20,7 +20,21 @@ pia_search_content_tool = types.Tool(
             "query": {"type": "string", "description": "Search query text"},
             "filter": {
                 "type": "string",
-                "description": "OData filter expression supporting complex boolean logic. Examples: \"SourceDocumentDataSource eq 'GAO'\", \"SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'OIG'\", \"SourceDocumentDataSource eq 'GAO' and RecStatus ne 'Closed'\", \"SourceDocumentDataSource ne 'Department of Justice' and not (RecStatus eq 'Closed')\", \"IsIntegrityRelated eq 'Yes' and RecPriorityFlag in ('High', 'Critical')\", \"SourceDocumentPublishDate ge '2020-01-01' and SourceDocumentPublishDate le '2024-12-31'\", \"(SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'OIG') and RecStatus eq 'Open'\"",
+                "description": (
+                    "OData filter expression supporting complex boolean logic. "
+                    "Examples: \"SourceDocumentDataSource eq 'GAO'\", "
+                    "\"SourceDocumentDataSource eq 'GAO' or "
+                    "SourceDocumentDataSource eq 'OIG'\", "
+                    "\"SourceDocumentDataSource eq 'GAO' and RecStatus ne 'Closed'\", "
+                    "\"SourceDocumentDataSource ne 'Department of Justice' and not "
+                    "(RecStatus eq 'Closed')\", "
+                    "\"IsIntegrityRelated eq 'Yes' and RecPriorityFlag in "
+                    "('High', 'Critical')\", "
+                    "\"SourceDocumentPublishDate ge '2020-01-01' and "
+                    "SourceDocumentPublishDate le '2024-12-31'\", "
+                    "\"(SourceDocumentDataSource eq 'GAO' or "
+                    "SourceDocumentDataSource eq 'OIG') and RecStatus eq 'Open'\""
+                ),
             },
             "page": {
                 "type": "integer",
@@ -64,7 +78,15 @@ pia_search_content_facets_tool = types.Tool(
             },
             "filter": {
                 "type": "string",
-                "description": "Optional OData filter expression. Examples: \"SourceDocumentDataSource eq 'GAO'\", \"SourceDocumentDataSource eq 'GAO' and RecStatus ne 'Closed'\", \"IsIntegrityRelated eq 'Yes' and RecPriorityFlag in ('High', 'Critical')\", \"SourceDocumentPublishDate ge '2020-01-01' and SourceDocumentPublishDate le '2024-12-31'\"",
+                "description": (
+                    "Optional OData filter expression. "
+                    "Examples: \"SourceDocumentDataSource eq 'GAO'\", "
+                    "\"SourceDocumentDataSource eq 'GAO' and RecStatus ne 'Closed'\", "
+                    "\"IsIntegrityRelated eq 'Yes' and RecPriorityFlag in "
+                    "('High', 'Critical')\", "
+                    "\"SourceDocumentPublishDate ge '2020-01-01' and "
+                    "SourceDocumentPublishDate le '2024-12-31'\""
+                ),
             },
         },
     },
@@ -85,7 +107,8 @@ pia_search_titles_tool = types.Tool(
                 "description": (
                     "OData filter expression supporting complex boolean logic. "
                     "Examples: \"SourceDocumentDataSource eq 'GAO'\", "
-                    "\"SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'OIG'\", "
+                    "\"SourceDocumentDataSource eq 'GAO' or "
+                    "SourceDocumentDataSource eq 'OIG'\", "
                     "\"SourceDocumentDataSource eq 'GAO' and RecStatus ne 'Closed'\", "
                     "\"SourceDocumentTitle contains 'fraud'\""
                 ),
@@ -127,7 +150,11 @@ pia_search_titles_facets_tool = types.Tool(
             },
             "filter": {
                 "type": "string",
-                "description": "Optional OData filter expression. Examples: \"SourceDocumentDataSource eq 'GAO'\", \"SourceDocumentDataSource eq 'GAO' and RecStatus ne 'Closed'\"",
+                "description": (
+                    "Optional OData filter expression. "
+                    "Examples: \"SourceDocumentDataSource eq 'GAO'\", "
+                    "\"SourceDocumentDataSource eq 'GAO' and RecStatus ne 'Closed'\""
+                ),
             },
         },
     },
