@@ -30,4 +30,4 @@ ENV PYTHONPATH=/app/src
 ENV PIA_API_URL=https://mcp.programintegrity.org/
 
 # Run the server
-ENTRYPOINT ["python", "-m", "pia_mcp_server", "-api-key", "${PIA_API_KEY}"]
+ENTRYPOINT ["python", "-m", "pia_mcp_server", "--api-key", "${PIA_API_KEY}"]
