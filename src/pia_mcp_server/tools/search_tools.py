@@ -162,7 +162,7 @@ pia_search_titles_facets_tool = types.Tool(
 
 
 async def handle_pia_search_content(
-    arguments: Dict[str, Any]
+    arguments: Dict[str, Any],
 ) -> List[types.TextContent]:
     """Handle PIA content search requests."""
     try:
@@ -293,7 +293,7 @@ async def handle_pia_search_content_facets(
 
 
 async def handle_pia_search_titles(
-    arguments: Dict[str, Any]
+    arguments: Dict[str, Any],
 ) -> List[types.TextContent]:
     """Handle PIA titles search requests."""
     try:
