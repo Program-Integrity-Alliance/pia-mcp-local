@@ -40,10 +40,6 @@ class Settings(BaseSettings):
         except ValueError:
             return None
 
-        # Try and get from environment variable
-        if not api_key:
-            api_key = os.getenv("PIA_API_KEY")
-
         # Early return if --api-key is the last argument
         if api_key_index + 1 >= len(args):
             return None
@@ -57,10 +53,15 @@ class Settings(BaseSettings):
 
     @property
     def API_KEY(self) -> str:
-        """Get the API key from command line arguments."""
+        """Get the API key"""
+
         api_key = self._get_api_key_from_args()
+
+        if not api_key:
+            api_key = os.getenv("PIA_API_KEY")
+
         if not api_key:
             raise ValueError(
-                "PIA API key is required. Please provide --api-key argument."
+                "PIA API key is required. Please provide --api-key argument or set as PIA_API_KEY environment variable."
             )
         return api_key
