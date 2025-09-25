@@ -46,8 +46,8 @@ If you have any questions, or requests for other datasets, we look forward to he
 ### Getting a PIA API Key
 
 1. Go to [https://mcp.programintegrity.org/get-api-key](https://mcp.programintegrity.org/get-api-key)
-2. Enter your email and a few quick details
-3. You should automatically receive your key
+2. If you don't have a **free** PIA account, click the 'No account? Create one' link, otherwise log in
+3. Once logged in, you should automatically receive your key
 
 ### Installing using Docker MCP Toolkit (Recommended)
 
