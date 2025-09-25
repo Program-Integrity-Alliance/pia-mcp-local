@@ -51,8 +51,6 @@ If you have any questions, or requests for other datasets, we look forward to he
 
 ### Installing using Docker MCP Toolkit (Recommended)
 
-*Note: This is pending PR review to be accepted to catalog*
-
 1. Download and run the latest version of [Docker Desktop](https://docs.docker.com/desktop/)
 2. Navigate to 'MCP Toolkit'
 3. Search for 'Program Integrity Alliance'
