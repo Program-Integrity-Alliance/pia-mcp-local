@@ -45,7 +45,7 @@ If you have any questions, or requests for other datasets, we look forward to he
 
 ### Getting a PIA API Key
 
-1. Got to [https://mcp.programintegrity.org/register](https://mcp.programintegrity.org/register)
+1. Go to [https://mcp.programintegrity.org/get-api-key](https://mcp.programintegrity.org/get-api-key)
 2. Enter your email and a few quick details
 3. You should automatically receive your key
 
