@@ -128,6 +128,11 @@ ENV/
 env.bak/
 venv.bak/
 
+# Development utilities output
+remote_tools.json
+remote_prompts.json
+remote_prompt_details.json
+
 # Spyder project settings
 .spyderproject
 .spyproject
