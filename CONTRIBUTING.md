@@ -288,6 +288,58 @@ Brief description of changes
 - [ ] Performance improvement
 - [ ] Other: ___
 
+## Development Tools
+
+### Server Interrogation Utility
+
+The `utils/interrogate_server.py` script is a development utility that helps developers understand what tools and prompts are available on the remote PIA MCP server. This is particularly useful when implementing new local server tools or updating existing ones to match the remote server's capabilities.
+
+#### Usage
+
+```bash
+# Set your API key (required)
+export PIA_API_KEY=your_api_key_here
+# Or create a .env file with: PIA_API_KEY=your_api_key_here
+
+# Run the interrogation script
+python utils/interrogate_server.py [--output-dir OUTPUT_DIR]
+```
+
+#### What it does
+
+1. **Discovers available tools**: Queries the remote server's `tools/list` endpoint to get all available tools with their descriptions and parameter schemas
+2. **Discovers available prompts**: Queries the remote server's `prompts/list` endpoint to get all available prompts
+3. **Retrieves prompt content**: Gets the actual content/text for each prompt using `prompts/get`
+4. **Saves results to JSON files**:
+   - `remote_tools.json` - Complete tool definitions
+   - `remote_prompts.json` - Prompt list and metadata
+   - `remote_prompt_details.json` - Full prompt content
+
+#### Using the results for development
+
+When implementing new tools or updating existing ones:
+
+1. **Compare tool definitions**: Use the `remote_tools.json` to see exact parameter schemas, descriptions, and available tools
+2. **Update tool descriptions**: Copy the exact descriptions from the remote server to ensure consistency
+3. **Add missing tools**: Identify tools that exist remotely but not locally
+4. **Update prompts**: Use the prompt details to ensure local prompts match the remote server exactly
+
+#### Example workflow
+
+```bash
+# 1. Interrogate the remote server
+python utils/interrogate_server.py --output-dir ./analysis
+
+# 2. Review the generated JSON files
+cat analysis/remote_tools.json | jq '.tools[].name'  # List all tool names
+cat analysis/remote_prompts.json | jq '.prompts[].name'  # List all prompt names
+
+# 3. Compare with local implementation and update as needed
+# 4. Test changes to ensure compatibility
+```
+
+This utility was used to discover and implement the agency-specific search tools (`pia_search_content_gao`, `pia_search_content_oig`, etc.) and the ChatGPT Connector tools (`search`, `fetch`) that are available on the remote server.
+
 ## Testing
 - [ ] Tests pass locally
 - [ ] New tests added for new functionality

@@ -3,15 +3,16 @@
 import pytest
 from unittest.mock import AsyncMock, patch
 import mcp.types as types
-from pia_mcp_server.server import list_tools, call_tool
+from pia_mcp_server.server import server
 
 
 @pytest.mark.asyncio
 async def test_list_tools():
     """Test that tools are properly listed."""
-    tools = await list_tools()
+    # Get the list_tools function from the server instance
+    tools = await server._handlers.tools_list()
 
-    assert len(tools) == 4
+    assert len(tools) == 11  # Updated to match new tool count
     tool_names = [tool.name for tool in tools]
 
     expected_tools = [
@@ -19,6 +20,13 @@ async def test_list_tools():
         "pia_search_content_facets",
         "pia_search_titles",
         "pia_search_titles_facets",
+        "pia_search_content_gao",
+        "pia_search_content_oig",
+        "pia_search_content_crs",
+        "pia_search_content_doj",
+        "pia_search_content_congress",
+        "search",
+        "fetch",
     ]
 
     for expected_tool in expected_tools:
@@ -28,7 +36,7 @@ async def test_list_tools():
 @pytest.mark.asyncio
 async def test_call_unknown_tool():
     """Test calling an unknown tool."""
-    result = await call_tool("unknown_tool", {})
+    result = await server._handlers.tools_call("unknown_tool", {})
 
     assert len(result) == 1
     assert result[0].type == "text"
@@ -47,7 +55,9 @@ async def test_call_tool_exception():
             mock_client_instance.post.side_effect = Exception("Test error")
             mock_client.return_value.__aenter__.return_value = mock_client_instance
 
-            result = await call_tool("pia_search_content", {"query": "test"})
+            result = await server._handlers.tools_call(
+                "pia_search_content", {"query": "test"}
+            )
 
             assert len(result) == 1
             assert result[0].type == "text"
