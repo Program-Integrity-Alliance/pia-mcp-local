@@ -114,13 +114,20 @@ Add this configuration to your MCP client config file:
                 "run",
                 "pia-mcp-server",
                 "--api-key", "YOUR_API_KEY"
-            ]
+            ],
+            "cwd": "/path/to/your/pia-mcp-local"
         }
     }
 }
 ```
 
 For Docker:
+
+You must build the Docker image ...
+
+`docker build -t pia-mcp-server:latest .`
+
+Then add this to your Client, eg Claude ...
 
 ```json
 {
@@ -141,56 +148,155 @@ For Docker:
 
 ## 💡 Available Tools
 
-The server provides four main tools for searching the Program Integrity Alliance (PIA) database:
+The server provides 11 tools for searching the Program Integrity Alliance (PIA) database:
+
+### Core Search Tools
 
 ### 1. `pia_search_content`
 
 **Purpose:** Comprehensive search tool for querying document content and recommendations in the PIA database.
 
-**Description:** Returns comprehensive results with full citation information and clickable links for proper attribution. Each result includes corresponding citations with data source attribution (GAO, OIG, etc.). Supports complex OData filtering with boolean logic, operators, and grouping.
+**Description:** Returns comprehensive results with full citation information and clickable links for proper attribution. Each result includes corresponding citations with data source attribution. Major data sources include: Department of Justice (198k+ docs), Congress.gov (29k+ docs), Oversight.gov (22k+ docs), CRS (22k+ docs), GAO (10k+ docs). Supports complex OData filtering with boolean logic, operators, and grouping.
 
 **Parameters:**
 - `query` (required): Search query text
 - `filter` (optional): OData filter expression supporting complex boolean logic
-- `page` (optional): Page number (1-based, default: 1)
-- `page_size` (optional): Number of results per page (max 50, default: 10)
-- `search_mode` (optional): Search mode - "content" for full-text search or "titles" for title-only search (default: "content")
-- `limit` (optional): Alternative name for page_size (for compatibility)
-- `include_facets` (optional): Whether to include facets in response (default: false to reduce token usage)
+- `page` (optional): Page number (default: 1)
+- `page_size` (optional): Results per page (default: 10)
+- `search_mode` (optional): Search mode (default: content)
+- `limit` (optional): Maximum results limit
+- `include_facets` (optional): Include facets in results (default: false)
 
 ### 2. `pia_search_content_facets`
 
 **Purpose:** Get available facets (filter values) for the PIA database content search.
 
-**Description:** This can help understand what filter values are available before performing content searches. Supports complex OData filtering with boolean logic, operators, and grouping.
+**Description:** This can help understand what filter values are available before performing content searches. Major data sources include: Department of Justice (198k+ docs), Congress.gov (29k+ docs), Oversight.gov (22k+ docs), CRS (22k+ docs), GAO (10k+ docs).
 
 **Parameters:**
-- `query` (optional): Optional query to get facets for (if empty, gets all facets, default: "")
+- `query` (optional): Optional query to get facets for (default: "")
 - `filter` (optional): Optional OData filter expression
 
 ### 3. `pia_search_titles`
 
 **Purpose:** Search the Program Integrity Alliance (PIA) database for document titles only.
 
-**Description:** Returns document titles and metadata without searching the full content. Useful for finding specific documents by title or discovering available documents. Supports complex OData filtering with boolean logic, operators, and grouping.
+**Description:** Returns document titles and metadata without searching the full content. Useful for finding specific documents by title or discovering available documents. Major data sources include: Department of Justice (198k+ docs), Congress.gov (29k+ docs), Oversight.gov (22k+ docs), CRS (22k+ docs), GAO (10k+ docs).
 
 **Parameters:**
 - `query` (required): Search query text (searches document titles only)
 - `filter` (optional): OData filter expression supporting complex boolean logic
-- `page` (optional): Page number (1-based, default: 1)
-- `page_size` (optional): Number of results per page (max 50, default: 10)
-- `limit` (optional): Alternative name for page_size (for compatibility)
-- `include_facets` (optional): Whether to include facets in response (default: false to reduce token usage)
+- `page` (optional): Page number (default: 1)
+- `page_size` (optional): Results per page (default: 10)
+- `limit` (optional): Maximum results limit
+- `include_facets` (optional): Include facets in results (default: false)
 
 ### 4. `pia_search_titles_facets`
 
 **Purpose:** Get available facets (filter values) for the PIA database title search.
 
-**Description:** This can help understand what filter values are available before performing title searches. Supports complex OData filtering with boolean logic, operators, and grouping.
+**Description:** This can help understand what filter values are available before performing title searches. Major data sources include: Department of Justice (198k+ docs), Congress.gov (29k+ docs), Oversight.gov (22k+ docs), CRS (22k+ docs), GAO (10k+ docs).
 
 **Parameters:**
-- `query` (optional): Optional query to get facets for (if empty, gets all facets, default: "")
+- `query` (optional): Optional query to get facets for (default: "")
 - `filter` (optional): Optional OData filter expression
+
+### Agency-Specific Search Tools
+
+### 5. `pia_search_content_gao`
+
+**Purpose:** Search for GAO document content and recommendations.
+
+**Description:** This tool automatically filters results to only include documents from the Government Accountability Office (GAO). Returns comprehensive results with full citation information and clickable links for proper attribution.
+
+**Parameters:**
+- `query` (required): Search query text
+- `filter` (optional): OData filter expression (SourceDocumentDataSource is automatically set to 'GAO')
+- `page` (optional): Page number (default: 1)
+- `page_size` (optional): Results per page (default: 10)
+- `search_mode` (optional): Search mode (default: content)
+- `limit` (optional): Maximum results limit
+- `include_facets` (optional): Include facets in results (default: false)
+
+### 6. `pia_search_content_oig`
+
+**Purpose:** Search for OIG document content and recommendations.
+
+**Description:** This tool automatically filters results to only include documents from Office of Inspector General (OIG) sources. Returns comprehensive results with full citation information and clickable links for proper attribution.
+
+**Parameters:**
+- `query` (required): Search query text
+- `filter` (optional): OData filter expression (SourceDocumentDataSource is automatically set to 'OIG')
+- `page` (optional): Page number (default: 1)
+- `page_size` (optional): Results per page (default: 10)
+- `search_mode` (optional): Search mode (default: content)
+- `limit` (optional): Maximum results limit
+- `include_facets` (optional): Include facets in results (default: false)
+
+### 7. `pia_search_content_crs`
+
+**Purpose:** Search for CRS document content and recommendations.
+
+**Description:** This tool automatically filters results to only include documents from Congressional Research Service (CRS). Returns comprehensive results with full citation information and clickable links for proper attribution.
+
+**Parameters:**
+- `query` (required): Search query text
+- `filter` (optional): OData filter expression (SourceDocumentDataSource is automatically set to 'CRS')
+- `page` (optional): Page number (default: 1)
+- `page_size` (optional): Results per page (default: 10)
+- `search_mode` (optional): Search mode (default: content)
+- `limit` (optional): Maximum results limit
+- `include_facets` (optional): Include facets in results (default: false)
+
+### 8. `pia_search_content_doj`
+
+**Purpose:** Search for Department of Justice document content and recommendations.
+
+**Description:** This tool automatically filters results to only include documents from the Department of Justice. Returns comprehensive results with full citation information and clickable links for proper attribution.
+
+**Parameters:**
+- `query` (required): Search query text
+- `filter` (optional): OData filter expression (SourceDocumentDataSource is automatically set to 'Department of Justice')
+- `page` (optional): Page number (default: 1)
+- `page_size` (optional): Results per page (default: 10)
+- `search_mode` (optional): Search mode (default: content)
+- `limit` (optional): Maximum results limit
+- `include_facets` (optional): Include facets in results (default: false)
+
+### 9. `pia_search_content_congress`
+
+**Purpose:** Search for Congress.gov document content and recommendations.
+
+**Description:** This tool automatically filters results to only include documents from Congress.gov. Returns comprehensive results with full citation information and clickable links for proper attribution.
+
+**Parameters:**
+- `query` (required): Search query text
+- `filter` (optional): OData filter expression (SourceDocumentDataSource is automatically set to 'Congress.gov')
+- `page` (optional): Page number (default: 1)
+- `page_size` (optional): Results per page (default: 10)
+- `search_mode` (optional): Search mode (default: content)
+- `limit` (optional): Maximum results limit
+- `include_facets` (optional): Include facets in results (default: false)
+
+### ChatGPT Connector Tools
+
+### 10. `search`
+
+**Purpose:** Simple search interface for ChatGPT Connectors.
+
+**Description:** Search the Program Integrity Alliance (PIA) database and return a list of potentially relevant search results with titles, snippets, and URLs for citation. This endpoint is one of the supported for OpenAI's MCP spec when integrating ChatGPT Connectors.
+
+**Parameters:**
+- `query` (required): A search query string to find relevant documents in the PIA database
+
+### 11. `fetch`
+
+**Purpose:** Document retrieval by ID for ChatGPT Connectors.
+
+**Description:** Retrieve the full contents of a specific document from the PIA database using its unique identifier. This endpoint is one of the supported for OpenAI's MCP spec when integrating ChatGPT Connectors.
+
+**Parameters:**
+- `id` (required): A unique identifier for the document to retrieve
 
 ## Search Modes
 
