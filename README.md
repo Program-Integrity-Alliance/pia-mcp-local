@@ -141,7 +141,7 @@ For Docker:
 
 ## 💡 Available Tools
 
-The server provides four main tools for searching the Program Integrity Alliance (PIA) database:
+The server provides five tools for searching the Program Integrity Alliance (PIA) database:
 
 ### 1. `pia_search_content`
 
@@ -191,6 +191,21 @@ The server provides four main tools for searching the Program Integrity Alliance
 **Parameters:**
 - `query` (optional): Optional query to get facets for (if empty, gets all facets, default: "")
 - `filter` (optional): Optional OData filter expression
+
+### 5. `pia_search_content_executive_orders`
+
+**Purpose:** Search for Executive Orders document content from the Federal Register.
+
+**Description:** This tool automatically filters results to only include Executive Orders from the Federal Register (https://www.federalregister.gov/). Returns comprehensive results with full citation information and clickable links for proper attribution. Each result includes corresponding citations with data source attribution. Supports complex OData filtering with boolean logic, operators, and grouping.
+
+**Parameters:**
+- `query` (required): Search query text
+- `filter` (optional): OData filter expression (SourceDocumentDataSource is automatically set to 'Federal Register' and SourceDocumentDataSet is set to 'executive orders')
+- `page` (optional): Page number (default: 1)
+- `page_size` (optional): Results per page (default: 10)
+- `search_mode` (optional): Search mode (default: content)
+- `limit` (optional): Maximum results limit
+- `include_facets` (optional): Include facets in results (default: false)
 
 ## Search Modes
 

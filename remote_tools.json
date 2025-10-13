@@ -1,0 +1,375 @@
+{
+  "tools": [
+    {
+      "name": "pia_search_content",
+      "description": "Search the Program Integrity Alliance (PIA) database for document content and recommendations. Returns comprehensive results with full citation information and clickable links for proper attribution. Each result includes corresponding citations with data source attribution. Major data sources include: Department of Justice (198k+ docs), Congress.gov (29k+ docs), Oversight.gov (22k+ docs), CRS (22k+ docs), GAO (10k+ docs). Supports complex OData filtering with boolean logic, operators, and grouping.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query text"
+          },
+          "filter": {
+            "type": "string",
+            "description": "Optional OData filter expression supporting complex boolean logic.\n\nAVAILABLE FIELDS:\n\u2022 SourceDocumentDataSource: Data source/agency that published the document. Major sources (>1k documents): 'Department of Justice', 'Congress.gov', 'Oversight.gov', 'CRS', 'GAO', 'Federal Register'\n\u2022 SourceDocumentDataSet: Dataset or collection the document belongs to. Values: 'press-releases', 'reports', 'bills-and-laws', 'federal-reports', 'executive orders', 'state-and-local-reports', 'federal reports'\n\u2022 SourceDocumentOrg: Organization associated with the document. There are many values, use pia_search_content_facets tool to see available options\n\u2022 SourceDocumentTitle: Document title - use contains, eq for text matching\n\u2022 SourceDocumentPublishDate: Publication date - ISO 8601 format YYYY-MM-DD (e.g., '2023-01-01'). Use ge/le for ranges\n\u2022 RecStatus: Recommendation status\n\u2022 RecPriorityFlag: Priority flag for recommendations\n\u2022 IsIntegrityRelated: Whether the content is integrity-related\n\u2022 SourceDocumentIsRecDoc: Whether the document contains recommendations. Values: 'No', 'Yes'\n\u2022 RecFraudRiskManagementThemePIA: Fraud risk management theme classification\n\u2022 RecMatterForCongressPIA: Whether the matter is for Congressional attention\n\u2022 RecRecommendation: Recommendation text - use contains, eq for text matching\n\u2022 RecAgencyComments: Agency comments on recommendations - use contains, eq for text matching\n\nOPERATORS:\n\u2022 Text: contains, eq, ne, startswith, endswith\n\u2022 Exact: eq (equals), ne (not equals), in (in list)\n\u2022 Date: ge (greater/equal), le (less/equal), eq (equals)\n\u2022 Logic: and, or, not, parentheses for grouping\n\nEXAMPLES:\n\u2022 \"SourceDocumentDataSource eq 'GAO'\"\n\u2022 \"SourceDocumentDataSource eq 'GAO' and RecStatus ne 'Closed'\"\n\u2022 \"IsIntegrityRelated eq 'True' and RecPriorityFlag eq 'Yes'\"\n\u2022 \"(SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'OIG') and RecStatus eq 'Open'\"\n\u2022 \"SourceDocumentPublishDate ge '2020-01-01' and SourceDocumentPublishDate le '2024-12-31'\"\n\nTIP: Use pia_search_content_facets tool to get the most current available values."
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number (default: 1)",
+            "default": 1
+          },
+          "page_size": {
+            "type": "integer",
+            "description": "Results per page (default: 10)",
+            "default": 10
+          },
+          "search_mode": {
+            "type": "string",
+            "description": "Search mode (default: content)",
+            "default": "content"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum results limit"
+          },
+          "include_facets": {
+            "type": "boolean",
+            "description": "Include facets in results",
+            "default": false
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "pia_search_content_facets",
+      "description": "Get available facets (filter values) for the PIA database content search. This can help understand what filter values are available before performing content searches. Major data sources include: Department of Justice (198k+ docs), Congress.gov (29k+ docs), Oversight.gov (22k+ docs), CRS (22k+ docs), GAO (10k+ docs).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Optional query to get facets for",
+            "default": ""
+          },
+          "filter": {
+            "type": "string",
+            "description": "Optional OData filter expression supporting complex boolean logic.\n\nAVAILABLE FIELDS:\n\u2022 SourceDocumentDataSource: Data source/agency that published the document. Major sources (>1k documents): 'Department of Justice', 'Congress.gov', 'Oversight.gov', 'CRS', 'GAO', 'Federal Register'\n\u2022 SourceDocumentDataSet: Dataset or collection the document belongs to. Values: 'press-releases', 'reports', 'bills-and-laws', 'federal-reports', 'executive orders', 'state-and-local-reports', 'federal reports'\n\u2022 SourceDocumentOrg: Organization associated with the document. There are many values, use pia_search_content_facets tool to see available options\n\u2022 SourceDocumentTitle: Document title - use contains, eq for text matching\n\u2022 SourceDocumentPublishDate: Publication date - ISO 8601 format YYYY-MM-DD (e.g., '2023-01-01'). Use ge/le for ranges\n\u2022 RecStatus: Recommendation status\n\u2022 RecPriorityFlag: Priority flag for recommendations\n\u2022 IsIntegrityRelated: Whether the content is integrity-related\n\u2022 SourceDocumentIsRecDoc: Whether the document contains recommendations. Values: 'No', 'Yes'\n\u2022 RecFraudRiskManagementThemePIA: Fraud risk management theme classification\n\u2022 RecMatterForCongressPIA: Whether the matter is for Congressional attention\n\u2022 RecRecommendation: Recommendation text - use contains, eq for text matching\n\u2022 RecAgencyComments: Agency comments on recommendations - use contains, eq for text matching\n\nOPERATORS:\n\u2022 Text: contains, eq, ne, startswith, endswith\n\u2022 Exact: eq (equals), ne (not equals), in (in list)\n\u2022 Date: ge (greater/equal), le (less/equal), eq (equals)\n\u2022 Logic: and, or, not, parentheses for grouping\n\nEXAMPLES:\n\u2022 \"SourceDocumentDataSource eq 'GAO'\"\n\u2022 \"SourceDocumentDataSource eq 'GAO' and RecStatus ne 'Closed'\"\n\u2022 \"IsIntegrityRelated eq 'True' and RecPriorityFlag eq 'Yes'\"\n\u2022 \"(SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'OIG') and RecStatus eq 'Open'\"\n\u2022 \"SourceDocumentPublishDate ge '2020-01-01' and SourceDocumentPublishDate le '2024-12-31'\"\n\nTIP: Use pia_search_content_facets tool to get the most current available values."
+          }
+        }
+      }
+    },
+    {
+      "name": "pia_search_titles",
+      "description": "Search the Program Integrity Alliance (PIA) database for document titles only. Returns document titles and metadata without searching the full content. Useful for finding specific documents by title or discovering available documents. Major data sources include: Department of Justice (198k+ docs), Congress.gov (29k+ docs), Oversight.gov (22k+ docs), CRS (22k+ docs), GAO (10k+ docs).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query text (searches document titles only)"
+          },
+          "filter": {
+            "type": "string",
+            "description": "Optional OData filter expression supporting complex boolean logic.\n\nAVAILABLE FIELDS:\n\u2022 SourceDocumentDataSource: Data source/agency that published the document. Major sources (>1k documents): 'Department of Justice', 'Congress.gov', 'Oversight.gov', 'CRS', 'GAO', 'Federal Register'\n\u2022 SourceDocumentDataSet: Dataset or collection the document belongs to. Values: 'press-releases', 'reports', 'bills-and-laws', 'federal-reports', 'executive orders', 'state-and-local-reports', 'federal reports'\n\u2022 SourceDocumentOrg: Organization associated with the document. There are many values, use pia_search_content_facets tool to see available options\n\u2022 SourceDocumentTitle: Document title - use contains, eq for text matching\n\u2022 SourceDocumentPublishDate: Publication date - ISO 8601 format YYYY-MM-DD (e.g., '2023-01-01'). Use ge/le for ranges\n\u2022 RecStatus: Recommendation status\n\u2022 RecPriorityFlag: Priority flag for recommendations\n\u2022 IsIntegrityRelated: Whether the content is integrity-related\n\u2022 SourceDocumentIsRecDoc: Whether the document contains recommendations. Values: 'No', 'Yes'\n\u2022 RecFraudRiskManagementThemePIA: Fraud risk management theme classification\n\u2022 RecMatterForCongressPIA: Whether the matter is for Congressional attention\n\u2022 RecRecommendation: Recommendation text - use contains, eq for text matching\n\u2022 RecAgencyComments: Agency comments on recommendations - use contains, eq for text matching\n\nOPERATORS:\n\u2022 Text: contains, eq, ne, startswith, endswith\n\u2022 Exact: eq (equals), ne (not equals), in (in list)\n\u2022 Date: ge (greater/equal), le (less/equal), eq (equals)\n\u2022 Logic: and, or, not, parentheses for grouping\n\nEXAMPLES:\n\u2022 \"SourceDocumentDataSource eq 'GAO'\"\n\u2022 \"SourceDocumentDataSource eq 'GAO' and RecStatus ne 'Closed'\"\n\u2022 \"IsIntegrityRelated eq 'True' and RecPriorityFlag eq 'Yes'\"\n\u2022 \"(SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'OIG') and RecStatus eq 'Open'\"\n\u2022 \"SourceDocumentPublishDate ge '2020-01-01' and SourceDocumentPublishDate le '2024-12-31'\"\n\nTIP: Use pia_search_content_facets tool to get the most current available values."
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number (default: 1)",
+            "default": 1
+          },
+          "page_size": {
+            "type": "integer",
+            "description": "Results per page (default: 10)",
+            "default": 10
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum results limit"
+          },
+          "include_facets": {
+            "type": "boolean",
+            "description": "Include facets in results",
+            "default": false
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "pia_search_titles_facets",
+      "description": "Get available facets (filter values) for the PIA database title search. This can help understand what filter values are available before performing title searches. Major data sources include: Department of Justice (198k+ docs), Congress.gov (29k+ docs), Oversight.gov (22k+ docs), CRS (22k+ docs), GAO (10k+ docs).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Optional query to get facets for",
+            "default": ""
+          },
+          "filter": {
+            "type": "string",
+            "description": "Optional OData filter expression supporting complex boolean logic.\n\nAVAILABLE FIELDS:\n\u2022 SourceDocumentDataSource: Data source/agency that published the document. Major sources (>1k documents): 'Department of Justice', 'Congress.gov', 'Oversight.gov', 'CRS', 'GAO', 'Federal Register'\n\u2022 SourceDocumentDataSet: Dataset or collection the document belongs to. Values: 'press-releases', 'reports', 'bills-and-laws', 'federal-reports', 'executive orders', 'state-and-local-reports', 'federal reports'\n\u2022 SourceDocumentOrg: Organization associated with the document. There are many values, use pia_search_content_facets tool to see available options\n\u2022 SourceDocumentTitle: Document title - use contains, eq for text matching\n\u2022 SourceDocumentPublishDate: Publication date - ISO 8601 format YYYY-MM-DD (e.g., '2023-01-01'). Use ge/le for ranges\n\u2022 RecStatus: Recommendation status\n\u2022 RecPriorityFlag: Priority flag for recommendations\n\u2022 IsIntegrityRelated: Whether the content is integrity-related\n\u2022 SourceDocumentIsRecDoc: Whether the document contains recommendations. Values: 'No', 'Yes'\n\u2022 RecFraudRiskManagementThemePIA: Fraud risk management theme classification\n\u2022 RecMatterForCongressPIA: Whether the matter is for Congressional attention\n\u2022 RecRecommendation: Recommendation text - use contains, eq for text matching\n\u2022 RecAgencyComments: Agency comments on recommendations - use contains, eq for text matching\n\nOPERATORS:\n\u2022 Text: contains, eq, ne, startswith, endswith\n\u2022 Exact: eq (equals), ne (not equals), in (in list)\n\u2022 Date: ge (greater/equal), le (less/equal), eq (equals)\n\u2022 Logic: and, or, not, parentheses for grouping\n\nEXAMPLES:\n\u2022 \"SourceDocumentDataSource eq 'GAO'\"\n\u2022 \"SourceDocumentDataSource eq 'GAO' and RecStatus ne 'Closed'\"\n\u2022 \"IsIntegrityRelated eq 'True' and RecPriorityFlag eq 'Yes'\"\n\u2022 \"(SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'OIG') and RecStatus eq 'Open'\"\n\u2022 \"SourceDocumentPublishDate ge '2020-01-01' and SourceDocumentPublishDate le '2024-12-31'\"\n\nTIP: Use pia_search_content_facets tool to get the most current available values."
+          }
+        }
+      }
+    },
+    {
+      "name": "pia_search_content_gao",
+      "description": "Search the Program Integrity Alliance (PIA) database for GAO document content and recommendations. This tool automatically filters results to only include documents from the Government Accountability Office (GAO). Returns comprehensive results with full citation information and clickable links for proper attribution. Each result includes corresponding citations with data source attribution. Supports complex OData filtering with boolean logic, operators, and grouping.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query text"
+          },
+          "filter": {
+            "type": "string",
+            "description": "Optional OData filter expression supporting complex boolean logic.\n\nAVAILABLE FIELDS:\n\u2022 Note: SourceDocumentDataSource is automatically set to 'GAO' for this tool. Major sources (>1k documents): 'Department of Justice', 'Congress.gov', 'Oversight.gov', 'CRS', 'GAO', 'Federal Register'\n\u2022 SourceDocumentDataSet: Dataset or collection the document belongs to. Values: 'press-releases', 'reports', 'bills-and-laws', 'federal-reports', 'executive orders', 'state-and-local-reports', 'federal reports'\n\u2022 SourceDocumentOrg: Organization associated with the document. There are many values, use pia_search_content_facets tool to see available options\n\u2022 SourceDocumentTitle: Document title - use contains, eq for text matching\n\u2022 SourceDocumentPublishDate: Publication date - ISO 8601 format YYYY-MM-DD (e.g., '2023-01-01'). Use ge/le for ranges\n\u2022 RecStatus: Recommendation status\n\u2022 RecPriorityFlag: Priority flag for recommendations\n\u2022 IsIntegrityRelated: Whether the content is integrity-related\n\u2022 SourceDocumentIsRecDoc: Whether the document contains recommendations. Values: 'No', 'Yes'\n\u2022 RecFraudRiskManagementThemePIA: Fraud risk management theme classification\n\u2022 RecMatterForCongressPIA: Whether the matter is for Congressional attention\n\u2022 RecRecommendation: Recommendation text - use contains, eq for text matching\n\u2022 RecAgencyComments: Agency comments on recommendations - use contains, eq for text matching\n\nOPERATORS:\n\u2022 Text: contains, eq, ne, startswith, endswith\n\u2022 Exact: eq (equals), ne (not equals), in (in list)\n\u2022 Date: ge (greater/equal), le (less/equal), eq (equals)\n\u2022 Logic: and, or, not, parentheses for grouping\n\nEXAMPLES:\n\u2022 \"RecStatus eq 'Open'\"\n\u2022 \"RecStatus ne 'Closed' and RecPriorityFlag eq 'Yes'\"\n\u2022 \"IsIntegrityRelated eq 'True' and RecPriorityFlag eq 'Yes'\"\n\u2022 \"(RecStatus eq 'Open' and RecPriorityFlag eq 'Yes')\"\n\u2022 \"SourceDocumentPublishDate ge '2020-01-01' and SourceDocumentPublishDate le '2024-12-31'\"\n\nTIP: Use pia_search_content_facets tool to get the most current available values."
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number (default: 1)",
+            "default": 1
+          },
+          "page_size": {
+            "type": "integer",
+            "description": "Results per page (default: 10)",
+            "default": 10
+          },
+          "search_mode": {
+            "type": "string",
+            "description": "Search mode (default: content)",
+            "default": "content"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum results limit"
+          },
+          "include_facets": {
+            "type": "boolean",
+            "description": "Include facets in results",
+            "default": false
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "pia_search_content_oig",
+      "description": "Search the Program Integrity Alliance (PIA) database for OIG document content and recommendations. This tool automatically filters results to only include documents from Office of Inspector General (OIG) sources. Returns comprehensive results with full citation information and clickable links for proper attribution. Each result includes corresponding citations with data source attribution. Supports complex OData filtering with boolean logic, operators, and grouping.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query text"
+          },
+          "filter": {
+            "type": "string",
+            "description": "Optional OData filter expression supporting complex boolean logic.\n\nAVAILABLE FIELDS:\n\u2022 Note: SourceDocumentDataSource is automatically set to 'OIG' for this tool. Major sources (>1k documents): 'Department of Justice', 'Congress.gov', 'Oversight.gov', 'CRS', 'GAO', 'Federal Register'\n\u2022 SourceDocumentDataSet: Dataset or collection the document belongs to. Values: 'press-releases', 'reports', 'bills-and-laws', 'federal-reports', 'executive orders', 'state-and-local-reports', 'federal reports'\n\u2022 SourceDocumentOrg: Organization associated with the document. There are many values, use pia_search_content_facets tool to see available options\n\u2022 SourceDocumentTitle: Document title - use contains, eq for text matching\n\u2022 SourceDocumentPublishDate: Publication date - ISO 8601 format YYYY-MM-DD (e.g., '2023-01-01'). Use ge/le for ranges\n\u2022 RecStatus: Recommendation status\n\u2022 RecPriorityFlag: Priority flag for recommendations\n\u2022 IsIntegrityRelated: Whether the content is integrity-related\n\u2022 SourceDocumentIsRecDoc: Whether the document contains recommendations. Values: 'No', 'Yes'\n\u2022 RecFraudRiskManagementThemePIA: Fraud risk management theme classification\n\u2022 RecMatterForCongressPIA: Whether the matter is for Congressional attention\n\u2022 RecRecommendation: Recommendation text - use contains, eq for text matching\n\u2022 RecAgencyComments: Agency comments on recommendations - use contains, eq for text matching\n\nOPERATORS:\n\u2022 Text: contains, eq, ne, startswith, endswith\n\u2022 Exact: eq (equals), ne (not equals), in (in list)\n\u2022 Date: ge (greater/equal), le (less/equal), eq (equals)\n\u2022 Logic: and, or, not, parentheses for grouping\n\nEXAMPLES:\n\u2022 \"RecStatus eq 'Open'\"\n\u2022 \"RecStatus ne 'Closed' and RecPriorityFlag eq 'Yes'\"\n\u2022 \"IsIntegrityRelated eq 'True' and RecPriorityFlag eq 'Yes'\"\n\u2022 \"(RecStatus eq 'Open' and RecPriorityFlag eq 'Yes')\"\n\u2022 \"SourceDocumentPublishDate ge '2020-01-01' and SourceDocumentPublishDate le '2024-12-31'\"\n\nTIP: Use pia_search_content_facets tool to get the most current available values."
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number (default: 1)",
+            "default": 1
+          },
+          "page_size": {
+            "type": "integer",
+            "description": "Results per page (default: 10)",
+            "default": 10
+          },
+          "search_mode": {
+            "type": "string",
+            "description": "Search mode (default: content)",
+            "default": "content"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum results limit"
+          },
+          "include_facets": {
+            "type": "boolean",
+            "description": "Include facets in results",
+            "default": false
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "pia_search_content_crs",
+      "description": "Search the Program Integrity Alliance (PIA) database for CRS document content and recommendations. This tool automatically filters results to only include documents from Congressional Research Service (CRS). Returns comprehensive results with full citation information and clickable links for proper attribution. Each result includes corresponding citations with data source attribution. Supports complex OData filtering with boolean logic, operators, and grouping.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query text"
+          },
+          "filter": {
+            "type": "string",
+            "description": "Optional OData filter expression supporting complex boolean logic.\n\nAVAILABLE FIELDS:\n\u2022 Note: SourceDocumentDataSource is automatically set to 'CRS' for this tool. Major sources (>1k documents): 'Department of Justice', 'Congress.gov', 'Oversight.gov', 'CRS', 'GAO', 'Federal Register'\n\u2022 SourceDocumentDataSet: Dataset or collection the document belongs to. Values: 'press-releases', 'reports', 'bills-and-laws', 'federal-reports', 'executive orders', 'state-and-local-reports', 'federal reports'\n\u2022 SourceDocumentOrg: Organization associated with the document. There are many values, use pia_search_content_facets tool to see available options\n\u2022 SourceDocumentTitle: Document title - use contains, eq for text matching\n\u2022 SourceDocumentPublishDate: Publication date - ISO 8601 format YYYY-MM-DD (e.g., '2023-01-01'). Use ge/le for ranges\n\u2022 RecStatus: Recommendation status\n\u2022 RecPriorityFlag: Priority flag for recommendations\n\u2022 IsIntegrityRelated: Whether the content is integrity-related\n\u2022 SourceDocumentIsRecDoc: Whether the document contains recommendations. Values: 'No', 'Yes'\n\u2022 RecFraudRiskManagementThemePIA: Fraud risk management theme classification\n\u2022 RecMatterForCongressPIA: Whether the matter is for Congressional attention\n\u2022 RecRecommendation: Recommendation text - use contains, eq for text matching\n\u2022 RecAgencyComments: Agency comments on recommendations - use contains, eq for text matching\n\nOPERATORS:\n\u2022 Text: contains, eq, ne, startswith, endswith\n\u2022 Exact: eq (equals), ne (not equals), in (in list)\n\u2022 Date: ge (greater/equal), le (less/equal), eq (equals)\n\u2022 Logic: and, or, not, parentheses for grouping\n\nEXAMPLES:\n\u2022 \"RecStatus eq 'Open'\"\n\u2022 \"RecStatus ne 'Closed' and RecPriorityFlag eq 'Yes'\"\n\u2022 \"IsIntegrityRelated eq 'True' and RecPriorityFlag eq 'Yes'\"\n\u2022 \"(RecStatus eq 'Open' and RecPriorityFlag eq 'Yes')\"\n\u2022 \"SourceDocumentPublishDate ge '2020-01-01' and SourceDocumentPublishDate le '2024-12-31'\"\n\nTIP: Use pia_search_content_facets tool to get the most current available values."
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number (default: 1)",
+            "default": 1
+          },
+          "page_size": {
+            "type": "integer",
+            "description": "Results per page (default: 10)",
+            "default": 10
+          },
+          "search_mode": {
+            "type": "string",
+            "description": "Search mode (default: content)",
+            "default": "content"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum results limit"
+          },
+          "include_facets": {
+            "type": "boolean",
+            "description": "Include facets in results",
+            "default": false
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "pia_search_content_doj",
+      "description": "Search the Program Integrity Alliance (PIA) database for Department of Justice document content and recommendations. This tool automatically filters results to only include documents from the Department of Justice. Returns comprehensive results with full citation information and clickable links for proper attribution. Each result includes corresponding citations with data source attribution. Supports complex OData filtering with boolean logic, operators, and grouping.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query text"
+          },
+          "filter": {
+            "type": "string",
+            "description": "Optional OData filter expression supporting complex boolean logic.\n\nAVAILABLE FIELDS:\n\u2022 Note: SourceDocumentDataSource is automatically set to 'Department of Justice' for this tool. Major sources (>1k documents): 'Department of Justice', 'Congress.gov', 'Oversight.gov', 'CRS', 'GAO', 'Federal Register'\n\u2022 SourceDocumentDataSet: Dataset or collection the document belongs to. Values: 'press-releases', 'reports', 'bills-and-laws', 'federal-reports', 'executive orders', 'state-and-local-reports', 'federal reports'\n\u2022 SourceDocumentOrg: Organization associated with the document. There are many values, use pia_search_content_facets tool to see available options\n\u2022 SourceDocumentTitle: Document title - use contains, eq for text matching\n\u2022 SourceDocumentPublishDate: Publication date - ISO 8601 format YYYY-MM-DD (e.g., '2023-01-01'). Use ge/le for ranges\n\u2022 RecStatus: Recommendation status\n\u2022 RecPriorityFlag: Priority flag for recommendations\n\u2022 IsIntegrityRelated: Whether the content is integrity-related\n\u2022 SourceDocumentIsRecDoc: Whether the document contains recommendations. Values: 'No', 'Yes'\n\u2022 RecFraudRiskManagementThemePIA: Fraud risk management theme classification\n\u2022 RecMatterForCongressPIA: Whether the matter is for Congressional attention\n\u2022 RecRecommendation: Recommendation text - use contains, eq for text matching\n\u2022 RecAgencyComments: Agency comments on recommendations - use contains, eq for text matching\n\nOPERATORS:\n\u2022 Text: contains, eq, ne, startswith, endswith\n\u2022 Exact: eq (equals), ne (not equals), in (in list)\n\u2022 Date: ge (greater/equal), le (less/equal), eq (equals)\n\u2022 Logic: and, or, not, parentheses for grouping\n\nEXAMPLES:\n\u2022 \"RecStatus eq 'Open'\"\n\u2022 \"RecStatus ne 'Closed' and RecPriorityFlag eq 'Yes'\"\n\u2022 \"IsIntegrityRelated eq 'True' and RecPriorityFlag eq 'Yes'\"\n\u2022 \"(RecStatus eq 'Open' and RecPriorityFlag eq 'Yes')\"\n\u2022 \"SourceDocumentPublishDate ge '2020-01-01' and SourceDocumentPublishDate le '2024-12-31'\"\n\nTIP: Use pia_search_content_facets tool to get the most current available values."
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number (default: 1)",
+            "default": 1
+          },
+          "page_size": {
+            "type": "integer",
+            "description": "Results per page (default: 10)",
+            "default": 10
+          },
+          "search_mode": {
+            "type": "string",
+            "description": "Search mode (default: content)",
+            "default": "content"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum results limit"
+          },
+          "include_facets": {
+            "type": "boolean",
+            "description": "Include facets in results",
+            "default": false
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "pia_search_content_congress",
+      "description": "Search the Program Integrity Alliance (PIA) database for Congress.gov document content and recommendations. This tool automatically filters results to only include documents from Congress.gov. Returns comprehensive results with full citation information and clickable links for proper attribution. Each result includes corresponding citations with data source attribution. Supports complex OData filtering with boolean logic, operators, and grouping.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query text"
+          },
+          "filter": {
+            "type": "string",
+            "description": "Optional OData filter expression supporting complex boolean logic.\n\nAVAILABLE FIELDS:\n\u2022 Note: SourceDocumentDataSource is automatically set to 'Congress.gov' for this tool. Major sources (>1k documents): 'Department of Justice', 'Congress.gov', 'Oversight.gov', 'CRS', 'GAO', 'Federal Register'\n\u2022 SourceDocumentDataSet: Dataset or collection the document belongs to. Values: 'press-releases', 'reports', 'bills-and-laws', 'federal-reports', 'executive orders', 'state-and-local-reports', 'federal reports'\n\u2022 SourceDocumentOrg: Organization associated with the document. There are many values, use pia_search_content_facets tool to see available options\n\u2022 SourceDocumentTitle: Document title - use contains, eq for text matching\n\u2022 SourceDocumentPublishDate: Publication date - ISO 8601 format YYYY-MM-DD (e.g., '2023-01-01'). Use ge/le for ranges\n\u2022 RecStatus: Recommendation status\n\u2022 RecPriorityFlag: Priority flag for recommendations\n\u2022 IsIntegrityRelated: Whether the content is integrity-related\n\u2022 SourceDocumentIsRecDoc: Whether the document contains recommendations. Values: 'No', 'Yes'\n\u2022 RecFraudRiskManagementThemePIA: Fraud risk management theme classification\n\u2022 RecMatterForCongressPIA: Whether the matter is for Congressional attention\n\u2022 RecRecommendation: Recommendation text - use contains, eq for text matching\n\u2022 RecAgencyComments: Agency comments on recommendations - use contains, eq for text matching\n\nOPERATORS:\n\u2022 Text: contains, eq, ne, startswith, endswith\n\u2022 Exact: eq (equals), ne (not equals), in (in list)\n\u2022 Date: ge (greater/equal), le (less/equal), eq (equals)\n\u2022 Logic: and, or, not, parentheses for grouping\n\nEXAMPLES:\n\u2022 \"RecStatus eq 'Open'\"\n\u2022 \"RecStatus ne 'Closed' and RecPriorityFlag eq 'Yes'\"\n\u2022 \"IsIntegrityRelated eq 'True' and RecPriorityFlag eq 'Yes'\"\n\u2022 \"(RecStatus eq 'Open' and RecPriorityFlag eq 'Yes')\"\n\u2022 \"SourceDocumentPublishDate ge '2020-01-01' and SourceDocumentPublishDate le '2024-12-31'\"\n\nTIP: Use pia_search_content_facets tool to get the most current available values."
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number (default: 1)",
+            "default": 1
+          },
+          "page_size": {
+            "type": "integer",
+            "description": "Results per page (default: 10)",
+            "default": 10
+          },
+          "search_mode": {
+            "type": "string",
+            "description": "Search mode (default: content)",
+            "default": "content"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum results limit"
+          },
+          "include_facets": {
+            "type": "boolean",
+            "description": "Include facets in results",
+            "default": false
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "search",
+      "description": "Search the Program Integrity Alliance (PIA) database and return a list of potentially relevant search results with titles, snippets, and URLs for citation. This endpoint is one of the supported for OpenAI's MCP spec when integrating ChatGPT Connectors.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "A search query string to find relevant documents in the PIA database"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "fetch",
+      "description": "Retrieve the full contents of a specific document from the PIA database using its unique identifier. This endpoint is one of the supported for OpenAI's MCP spec when integrating ChatGPT Connectors.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "A unique identifier for the document to retrieve"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    }
+  ]
+}

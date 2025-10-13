@@ -18,12 +18,14 @@ from .tools import (
     handle_pia_search_content_facets,
     handle_pia_search_titles,
     handle_pia_search_titles_facets,
+    handle_pia_search_content_executive_orders,
 )
 from .tools import (
     pia_search_content_tool,
     pia_search_content_facets_tool,
     pia_search_titles_tool,
     pia_search_titles_facets_tool,
+    pia_search_content_executive_orders_tool,
 )
 from .prompts.handlers import list_prompts as handler_list_prompts
 from .prompts.handlers import get_prompt as handler_get_prompt
@@ -56,6 +58,7 @@ async def list_tools() -> List[types.Tool]:
         pia_search_content_facets_tool,
         pia_search_titles_tool,
         pia_search_titles_facets_tool,
+        pia_search_content_executive_orders_tool,
     ]
 
 
@@ -72,6 +75,8 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[types.TextCont
             return await handle_pia_search_titles(arguments)
         elif name == "pia_search_titles_facets":
             return await handle_pia_search_titles_facets(arguments)
+        elif name == "pia_search_content_executive_orders":
+            return await handle_pia_search_content_executive_orders(arguments)
         else:
             return [types.TextContent(type="text", text=f"Error: Unknown tool {name}")]
     except Exception as e:

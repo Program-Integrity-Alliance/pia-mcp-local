@@ -14,6 +14,8 @@ from .search_tools import (
     pia_search_titles_tool,
     handle_pia_search_titles_facets,
     pia_search_titles_facets_tool,
+    handle_pia_search_content_executive_orders,
+    pia_search_content_executive_orders_tool,
 )
 
 __all__ = [
@@ -25,4 +27,6 @@ __all__ = [
     "pia_search_titles_tool",
     "handle_pia_search_titles_facets",
     "pia_search_titles_facets_tool",
+    "handle_pia_search_content_executive_orders",
+    "pia_search_content_executive_orders_tool",
 ]
