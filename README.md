@@ -148,7 +148,7 @@ Then add this to your Client, eg Claude ...
 
 ## 💡 Available Tools
 
-The server provides 11 tools for searching the Program Integrity Alliance (PIA) database:
+The server provides 12 tools for searching the Program Integrity Alliance (PIA) database:
 
 ### Core Search Tools
 
@@ -278,9 +278,24 @@ The server provides 11 tools for searching the Program Integrity Alliance (PIA) 
 - `limit` (optional): Maximum results limit
 - `include_facets` (optional): Include facets in results (default: false)
 
+### 10. `pia_search_content_executive_orders`
+
+**Purpose:** Search for Executive Orders document content from the Federal Register.
+
+**Description:** This tool automatically filters results to only include Executive Orders from the Federal Register (https://www.federalregister.gov/). Returns comprehensive results with full citation information and clickable links for proper attribution.
+
+**Parameters:**
+- `query` (required): Search query text
+- `filter` (optional): OData filter expression (SourceDocumentDataSource is automatically set to 'Federal Register' and SourceDocumentDataSet is set to 'executive orders')
+- `page` (optional): Page number (default: 1)
+- `page_size` (optional): Results per page (default: 10)
+- `search_mode` (optional): Search mode (default: content)
+- `limit` (optional): Maximum results limit
+- `include_facets` (optional): Include facets in results (default: false)
+
 ### ChatGPT Connector Tools
 
-### 10. `search`
+### 11. `search`
 
 **Purpose:** Simple search interface for ChatGPT Connectors.
 
@@ -289,7 +304,7 @@ The server provides 11 tools for searching the Program Integrity Alliance (PIA) 
 **Parameters:**
 - `query` (required): A search query string to find relevant documents in the PIA database
 
-### 11. `fetch`
+### 12. `fetch`
 
 **Purpose:** Document retrieval by ID for ChatGPT Connectors.
 
