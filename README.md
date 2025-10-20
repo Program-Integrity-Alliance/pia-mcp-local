@@ -23,6 +23,8 @@ Currently, the list of datasets includes:
 3. [U.S. Congress](https://www.congress.gov/) - Bill texts for sessions 118 and 119
 4. [Department of Justice (DOJ)](https://www.justice.gov/) - 195k Press Releases since 2000
 5. Federal Agency annual reports - Congressional Justification, Financial Report, Performance Report - 139 reports across 10 priority agencies, with best coverage in 2024.
+6. All Congression Research Service reports - 22k reports provided by [EveryCRSReport.com](https://www.everycrsreport.com/)
+7. U.S. Presidential Executive Orders - Order for the last 7 presidencies as provided by the [Federal Register](https://www.federalregister.gov/presidential-documents/executive-orders)
 
 This data is updated weekly, and we will be adding more datasets and tools soon.
 
