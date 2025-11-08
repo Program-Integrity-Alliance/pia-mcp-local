@@ -246,7 +246,7 @@ def _generate_titles_search_guidance() -> str:
    - Construct the filter in **OData syntax**:
      - `SourceDocumentDataSource eq 'GAO'`
      - `SourceDocumentTitle contains 'fraud'`
-     - `(SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'OIG') and SourceDocumentIsRecDoc eq 'Yes'`
+     - `(SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'Oversight.gov') and SourceDocumentIsRecDoc eq 'Yes'`
    - Use correct operators: `eq`, `ne`, `gt`, `ge`, `lt`, `le`, `and`, `or`, `contains`
    - Wrap string values in single quotes `'value'`
 

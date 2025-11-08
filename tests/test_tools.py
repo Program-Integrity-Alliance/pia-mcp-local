@@ -1,5 +1,6 @@
 """Tests for tools module."""
 
+import os
 import pytest
 from unittest.mock import AsyncMock, patch, Mock
 import httpx
@@ -8,6 +9,14 @@ from pia_mcp_server.tools.search_tools import (
     handle_pia_search_content_facets,
     handle_pia_search_titles,
     handle_pia_search_titles_facets,
+    handle_pia_search_content_gao,
+    handle_pia_search_content_oig,
+    handle_pia_search_content_crs,
+    handle_pia_search_content_doj,
+    handle_pia_search_content_congress,
+    handle_pia_search_content_executive_orders,
+    handle_search,
+    handle_fetch,
 )
 from pia_mcp_server.config import Settings
 
@@ -18,10 +27,11 @@ settings = Settings()
 async def test_pia_search_content_no_api_key():
     """Test PIA content search without API key."""
     with patch.object(Settings, "_get_api_key_from_args", return_value=None):
-        result = await handle_pia_search_content({"query": "test"})
+        with patch.dict(os.environ, {}, clear=True):  # Clear all environment variables
+            result = await handle_pia_search_content({"query": "test"})
 
-        assert len(result) == 1
-        assert "PIA API key is required" in result[0].text
+            assert len(result) == 1
+            assert "PIA API key is required" in result[0].text
 
 
 @pytest.mark.asyncio
@@ -129,7 +139,7 @@ async def test_pia_search_content_with_complex_odata_filter():
             mock_client.return_value.__aenter__.return_value = mock_client_instance
 
             # Test complex boolean logic filter
-            complex_filter = "(SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'OIG') and RecPriorityFlag in ('High', 'Critical')"
+            complex_filter = "(SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'Oversight.gov') and RecPriorityFlag in ('High', 'Critical')"
             result = await handle_pia_search_content(
                 {"query": "integrity violations", "filter": complex_filter}
             )
@@ -196,10 +206,11 @@ async def test_pia_search_content_http_error():
 async def test_pia_search_content_facets_no_api_key():
     """Test PIA search facets without API key."""
     with patch.object(Settings, "_get_api_key_from_args", return_value=None):
-        result = await handle_pia_search_content_facets({"query": "test"})
+        with patch.dict(os.environ, {}, clear=True):  # Clear all environment variables
+            result = await handle_pia_search_content_facets({"query": "test"})
 
-        assert len(result) == 1
-        assert "PIA API key is required" in result[0].text
+            assert len(result) == 1
+            assert "PIA API key is required" in result[0].text
 
 
 @pytest.mark.asyncio
@@ -210,7 +221,7 @@ async def test_pia_search_content_facets_success():
         "id": 1,
         "result": {
             "facets": {
-                "SourceDocumentDataSource": ["OIG", "GAO", "CMS"],
+                "SourceDocumentDataSource": ["Oversight.gov", "GAO", "CMS"],
                 "RecStatus": ["Open", "Closed", "In Progress"],
                 "RecPriorityFlag": ["High", "Medium", "Low", "Critical"],
                 "IsIntegrityRelated": ["Yes", "No"],
@@ -232,7 +243,7 @@ async def test_pia_search_content_facets_success():
 
             assert len(result) == 1
             assert "SourceDocumentDataSource" in result[0].text
-            assert "OIG" in result[0].text
+            assert "Oversight.gov" in result[0].text
             assert "RecStatus" in result[0].text
 
 
@@ -430,7 +441,7 @@ async def test_pia_search_content_facets_empty_filter():
         "id": 1,
         "result": {
             "facets": {
-                "SourceDocumentDataSource": ["OIG", "GAO", "CMS"],
+                "SourceDocumentDataSource": ["Oversight.gov", "GAO", "CMS"],
                 "RecStatus": ["Open", "Closed"],
             }
         },
@@ -453,3 +464,286 @@ async def test_pia_search_content_facets_empty_filter():
 
             assert len(result) == 1
             assert "SourceDocumentDataSource" in result[0].text
+
+
+# Agency-specific search tool tests
+@pytest.mark.asyncio
+async def test_pia_search_content_gao_success():
+    """Test successful PIA GAO content search."""
+    mock_response = {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": {
+            "documents": [
+                {"title": "GAO Report", "id": "gao-123", "data_source": "GAO"}
+            ],
+            "total": 1,
+        },
+    }
+
+    with patch.object(Settings, "_get_api_key_from_args", return_value="test_key"):
+        with patch("httpx.AsyncClient") as mock_client:
+            mock_response_obj = Mock()
+            mock_response_obj.json.return_value = mock_response
+            mock_response_obj.raise_for_status.return_value = None
+
+            mock_client_instance = AsyncMock()
+            mock_client_instance.post.return_value = mock_response_obj
+            mock_client.return_value.__aenter__.return_value = mock_client_instance
+
+            result = await handle_pia_search_content_gao({"query": "audit"})
+
+            assert len(result) == 1
+            assert "GAO Report" in result[0].text
+
+
+@pytest.mark.asyncio
+async def test_pia_search_content_oig_success():
+    """Test successful PIA OIG content search."""
+    mock_response = {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": {
+            "documents": [
+                {
+                    "title": "OIG Investigation",
+                    "id": "oig-123",
+                    "data_source": "Oversight.gov",
+                }
+            ],
+            "total": 1,
+        },
+    }
+
+    with patch.object(Settings, "_get_api_key_from_args", return_value="test_key"):
+        with patch("httpx.AsyncClient") as mock_client:
+            mock_response_obj = Mock()
+            mock_response_obj.json.return_value = mock_response
+            mock_response_obj.raise_for_status.return_value = None
+
+            mock_client_instance = AsyncMock()
+            mock_client_instance.post.return_value = mock_response_obj
+            mock_client.return_value.__aenter__.return_value = mock_client_instance
+
+            result = await handle_pia_search_content_oig({"query": "oversight"})
+
+            assert len(result) == 1
+            assert "OIG Investigation" in result[0].text
+
+
+@pytest.mark.asyncio
+async def test_pia_search_content_crs_success():
+    """Test successful PIA CRS content search."""
+    mock_response = {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": {
+            "documents": [
+                {"title": "CRS Report", "id": "crs-123", "data_source": "CRS"}
+            ],
+            "total": 1,
+        },
+    }
+
+    with patch.object(Settings, "_get_api_key_from_args", return_value="test_key"):
+        with patch("httpx.AsyncClient") as mock_client:
+            mock_response_obj = Mock()
+            mock_response_obj.json.return_value = mock_response
+            mock_response_obj.raise_for_status.return_value = None
+
+            mock_client_instance = AsyncMock()
+            mock_client_instance.post.return_value = mock_response_obj
+            mock_client.return_value.__aenter__.return_value = mock_client_instance
+
+            result = await handle_pia_search_content_crs({"query": "research"})
+
+            assert len(result) == 1
+            assert "CRS Report" in result[0].text
+
+
+@pytest.mark.asyncio
+async def test_pia_search_content_doj_success():
+    """Test successful PIA DOJ content search."""
+    mock_response = {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": {
+            "documents": [
+                {
+                    "title": "DOJ Press Release",
+                    "id": "doj-123",
+                    "data_source": "Department of Justice",
+                }
+            ],
+            "total": 1,
+        },
+    }
+
+    with patch.object(Settings, "_get_api_key_from_args", return_value="test_key"):
+        with patch("httpx.AsyncClient") as mock_client:
+            mock_response_obj = Mock()
+            mock_response_obj.json.return_value = mock_response
+            mock_response_obj.raise_for_status.return_value = None
+
+            mock_client_instance = AsyncMock()
+            mock_client_instance.post.return_value = mock_response_obj
+            mock_client.return_value.__aenter__.return_value = mock_client_instance
+
+            result = await handle_pia_search_content_doj({"query": "enforcement"})
+
+            assert len(result) == 1
+            assert "DOJ Press Release" in result[0].text
+
+
+@pytest.mark.asyncio
+async def test_pia_search_content_congress_success():
+    """Test successful PIA Congress content search."""
+    mock_response = {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": {
+            "documents": [
+                {
+                    "title": "Congressional Bill",
+                    "id": "congress-123",
+                    "data_source": "Congress.gov",
+                }
+            ],
+            "total": 1,
+        },
+    }
+
+    with patch.object(Settings, "_get_api_key_from_args", return_value="test_key"):
+        with patch("httpx.AsyncClient") as mock_client:
+            mock_response_obj = Mock()
+            mock_response_obj.json.return_value = mock_response
+            mock_response_obj.raise_for_status.return_value = None
+
+            mock_client_instance = AsyncMock()
+            mock_client_instance.post.return_value = mock_response_obj
+            mock_client.return_value.__aenter__.return_value = mock_client_instance
+
+            result = await handle_pia_search_content_congress({"query": "legislation"})
+
+            assert len(result) == 1
+            assert "Congressional Bill" in result[0].text
+
+
+@pytest.mark.asyncio
+async def test_pia_search_content_executive_orders_success():
+    """Test successful PIA Executive Orders content search."""
+    mock_response = {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": {
+            "documents": [
+                {
+                    "title": "Executive Order 12345",
+                    "id": "eo-123",
+                    "data_source": "Federal Register",
+                }
+            ],
+            "total": 1,
+        },
+    }
+
+    with patch.object(Settings, "_get_api_key_from_args", return_value="test_key"):
+        with patch("httpx.AsyncClient") as mock_client:
+            mock_response_obj = Mock()
+            mock_response_obj.json.return_value = mock_response
+            mock_response_obj.raise_for_status.return_value = None
+
+            mock_client_instance = AsyncMock()
+            mock_client_instance.post.return_value = mock_response_obj
+            mock_client.return_value.__aenter__.return_value = mock_client_instance
+
+            result = await handle_pia_search_content_executive_orders(
+                {"query": "cybersecurity"}
+            )
+
+            assert len(result) == 1
+            assert "Executive Order 12345" in result[0].text
+
+
+@pytest.mark.asyncio
+async def test_fetch_success():
+    """Test successful document fetch."""
+    mock_response = {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": {
+            "id": "doc-123",
+            "title": "Test Document",
+            "content": "Full document content here",
+            "url": "https://example.com/doc-123",
+        },
+    }
+
+    with patch.object(Settings, "_get_api_key_from_args", return_value="test_key"):
+        with patch("httpx.AsyncClient") as mock_client:
+            mock_response_obj = Mock()
+            mock_response_obj.json.return_value = mock_response
+            mock_response_obj.raise_for_status.return_value = None
+
+            mock_client_instance = AsyncMock()
+            mock_client_instance.post.return_value = mock_response_obj
+            mock_client.return_value.__aenter__.return_value = mock_client_instance
+
+            result = await handle_fetch({"id": "doc-123"})
+
+            assert len(result) == 1
+            assert "Test Document" in result[0].text
+            assert "Full document content here" in result[0].text
+
+
+@pytest.mark.asyncio
+async def test_agency_tools_no_api_key():
+    """Test agency-specific tools without API key."""
+    tools_to_test = [
+        (handle_pia_search_content_gao, {"query": "test"}),
+        (handle_pia_search_content_oig, {"query": "test"}),
+        (handle_pia_search_content_crs, {"query": "test"}),
+        (handle_pia_search_content_doj, {"query": "test"}),
+        (handle_pia_search_content_congress, {"query": "test"}),
+        (handle_pia_search_content_executive_orders, {"query": "test"}),
+        (handle_fetch, {"id": "test-123"}),
+    ]
+
+    for tool_handler, args in tools_to_test:
+        with patch.object(Settings, "_get_api_key_from_args", return_value=None):
+            with patch.dict(
+                os.environ, {}, clear=True
+            ):  # Clear all environment variables
+                result = await tool_handler(args)
+                assert len(result) == 1
+                assert "PIA API key is required" in result[0].text
+
+
+@pytest.mark.asyncio
+async def test_agency_tools_http_error():
+    """Test agency-specific tools with HTTP error."""
+    tools_to_test = [
+        (handle_pia_search_content_gao, {"query": "test"}),
+        (handle_pia_search_content_oig, {"query": "test"}),
+        (handle_pia_search_content_crs, {"query": "test"}),
+        (handle_pia_search_content_doj, {"query": "test"}),
+        (handle_pia_search_content_congress, {"query": "test"}),
+        (handle_pia_search_content_executive_orders, {"query": "test"}),
+        (handle_fetch, {"id": "test-123"}),
+    ]
+
+    for tool_handler, args in tools_to_test:
+        with patch.object(Settings, "_get_api_key_from_args", return_value="test_key"):
+            with patch("httpx.AsyncClient") as mock_client:
+                mock_client_instance = AsyncMock()
+                mock_client_instance.post.side_effect = httpx.HTTPStatusError(
+                    "Server Error",
+                    request=Mock(),
+                    response=Mock(status_code=500, text="Server Error"),
+                )
+                mock_client.return_value.__aenter__.return_value = mock_client_instance
+
+                result = await tool_handler(args)
+
+                assert len(result) == 1
+                assert "HTTP Error 500" in result[0].text
