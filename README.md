@@ -158,7 +158,7 @@ The server provides 12 tools for searching the Program Integrity Alliance (PIA) 
 
 **Purpose:** Comprehensive search tool for querying document content and recommendations in the PIA database.
 
-**Description:** Returns comprehensive results with full citation information and clickable links for proper attribution. Each result includes corresponding citations with data source attribution. Major data sources include: Department of Justice (198k+ docs), Congress.gov (29k+ docs), Oversight.gov (22k+ docs), CRS (22k+ docs), GAO (10k+ docs). Supports complex OData filtering with boolean logic, operators, and grouping.
+**Description:** Returns comprehensive results with full citation information and clickable links for proper attribution. Each result includes corresponding citations with data source attribution. Major data sources include: Department of Justice (198k+ docs), Congress.gov (29k+ docs), Oversight.gov (22k+ docs), CRS (22k+ docs), GAO (10k+ docs), Federal Register (1k+ executive orders). Use pia_search_content_executive_orders to search only executive orders. Supports complex OData filtering with boolean logic, operators, and grouping.
 
 **Parameters:**
 - `query` (required): Search query text
@@ -173,7 +173,7 @@ The server provides 12 tools for searching the Program Integrity Alliance (PIA) 
 
 **Purpose:** Get available facets (filter values) for the PIA database content search.
 
-**Description:** This can help understand what filter values are available before performing content searches. Major data sources include: Department of Justice (198k+ docs), Congress.gov (29k+ docs), Oversight.gov (22k+ docs), CRS (22k+ docs), GAO (10k+ docs).
+**Description:** This can help understand what filter values are available before performing content searches. Major data sources include: Department of Justice (198k+ docs), Congress.gov (29k+ docs), Oversight.gov (22k+ docs), CRS (22k+ docs), GAO (10k+ docs), Federal Register (1k+ executive orders). Use pia_search_content_executive_orders to search only executive orders.
 
 **Parameters:**
 - `query` (optional): Optional query to get facets for (default: "")
@@ -183,7 +183,7 @@ The server provides 12 tools for searching the Program Integrity Alliance (PIA) 
 
 **Purpose:** Search the Program Integrity Alliance (PIA) database for document titles only.
 
-**Description:** Returns document titles and metadata without searching the full content. Useful for finding specific documents by title or discovering available documents. Major data sources include: Department of Justice (198k+ docs), Congress.gov (29k+ docs), Oversight.gov (22k+ docs), CRS (22k+ docs), GAO (10k+ docs).
+**Description:** Returns document titles and metadata without searching the full content. Useful for finding specific documents by title or discovering available documents. Major data sources include: Department of Justice (198k+ docs), Congress.gov (29k+ docs), Oversight.gov (22k+ docs), CRS (22k+ docs), GAO (10k+ docs), Federal Register (1k+ executive orders). Use pia_search_content_executive_orders to search only executive orders.
 
 **Parameters:**
 - `query` (required): Search query text (searches document titles only)
@@ -197,7 +197,7 @@ The server provides 12 tools for searching the Program Integrity Alliance (PIA) 
 
 **Purpose:** Get available facets (filter values) for the PIA database title search.
 
-**Description:** This can help understand what filter values are available before performing title searches. Major data sources include: Department of Justice (198k+ docs), Congress.gov (29k+ docs), Oversight.gov (22k+ docs), CRS (22k+ docs), GAO (10k+ docs).
+**Description:** This can help understand what filter values are available before performing title searches. Major data sources include: Department of Justice (198k+ docs), Congress.gov (29k+ docs), Oversight.gov (22k+ docs), CRS (22k+ docs), GAO (10k+ docs), Federal Register (1k+ executive orders). Use pia_search_content_executive_orders to search only executive orders.
 
 **Parameters:**
 - `query` (optional): Optional query to get facets for (default: "")
@@ -280,11 +280,13 @@ The server provides 12 tools for searching the Program Integrity Alliance (PIA) 
 - `limit` (optional): Maximum results limit
 - `include_facets` (optional): Include facets in results (default: false)
 
+### Executive Orders Search Tool
+
 ### 10. `pia_search_content_executive_orders`
 
 **Purpose:** Search for Executive Orders document content from the Federal Register.
 
-**Description:** This tool automatically filters results to only include Executive Orders from the Federal Register (https://www.federalregister.gov/). Returns comprehensive results with full citation information and clickable links for proper attribution.
+**Description:** This tool automatically filters results to only include Executive Orders from the Federal Register (https://www.federalregister.gov/). Returns comprehensive results with full citation information and clickable links for proper attribution. Each result includes corresponding citations with data source attribution. Supports complex OData filtering with boolean logic, operators, and grouping.
 
 **Parameters:**
 - `query` (required): Search query text
@@ -294,6 +296,17 @@ The server provides 12 tools for searching the Program Integrity Alliance (PIA) 
 - `search_mode` (optional): Search mode (default: content)
 - `limit` (optional): Maximum results limit
 - `include_facets` (optional): Include facets in results (default: false)
+
+**Executive Orders Coverage:**
+- **Time Period:** Last 7 presidencies
+- **Source:** Federal Register (https://www.federalregister.gov/presidential-documents/executive-orders)
+- **Volume:** 1k+ executive orders
+- **Update Frequency:** Weekly updates
+
+**Example Searches:**
+- Search for cybersecurity executive orders: `{"query": "cybersecurity"}`
+- Search for recent executive orders: `{"query": "artificial intelligence", "filter": "SourceDocumentPublishDate ge '2023-01-01'"}`
+- Search by specific topics: `{"query": "climate change OR environmental"}`
 
 ### ChatGPT Connector Tools
 

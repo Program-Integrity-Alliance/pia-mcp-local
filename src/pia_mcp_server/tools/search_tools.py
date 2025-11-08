@@ -13,7 +13,7 @@ settings = Settings()
 # Tool definitions - EXACT copies from remote server
 pia_search_content_tool = types.Tool(
     name="pia_search_content",
-    description="Search the Program Integrity Alliance (PIA) database for document content and recommendations. Returns comprehensive results with full citation information and clickable links for proper attribution. Each result includes corresponding citations with data source attribution. Major data sources include: Department of Justice (198k+ docs), Congress.gov (29k+ docs), Oversight.gov (22k+ docs), CRS (22k+ docs), GAO (10k+ docs). Supports complex OData filtering with boolean logic, operators, and grouping.",
+    description="Search the Program Integrity Alliance (PIA) database for document content and recommendations. Returns comprehensive results with full citation information and clickable links for proper attribution. Each result includes corresponding citations with data source attribution. Major data sources include: Department of Justice (198k+ docs), Congress.gov (29k+ docs), Oversight.gov (22k+ docs), CRS (22k+ docs), GAO (10k+ docs), Federal Register (1k+ executive orders). Use pia_search_content_executive_orders to search only executive orders. Supports complex OData filtering with boolean logic, operators, and grouping.",
     inputSchema={
         "type": "object",
         "properties": {
@@ -108,7 +108,7 @@ pia_search_content_tool = types.Tool(
 
 pia_search_content_facets_tool = types.Tool(
     name="pia_search_content_facets",
-    description="Get available facets (filter values) for the PIA database content search. This can help understand what filter values are available before performing content searches. Major data sources include: Department of Justice (198k+ docs), Congress.gov (29k+ docs), Oversight.gov (22k+ docs), CRS (22k+ docs), GAO (10k+ docs).",
+    description="Get available facets (filter values) for the PIA database content search. This can help understand what filter values are available before performing content searches. Major data sources include: Department of Justice (198k+ docs), Congress.gov (29k+ docs), Oversight.gov (22k+ docs), CRS (22k+ docs), GAO (10k+ docs), Federal Register (1k+ executive orders). Use pia_search_content_executive_orders to search only executive orders.",
     inputSchema={
         "type": "object",
         "properties": {
@@ -127,7 +127,7 @@ pia_search_content_facets_tool = types.Tool(
 
 pia_search_titles_tool = types.Tool(
     name="pia_search_titles",
-    description="Search the Program Integrity Alliance (PIA) database for document titles only. Returns document titles and metadata without searching the full content. Useful for finding specific documents by title or discovering available documents. Major data sources include: Department of Justice (198k+ docs), Congress.gov (29k+ docs), Oversight.gov (22k+ docs), CRS (22k+ docs), GAO (10k+ docs).",
+    description="Search the Program Integrity Alliance (PIA) database for document titles only. Returns document titles and metadata without searching the full content. Useful for finding specific documents by title or discovering available documents. Major data sources include: Department of Justice (198k+ docs), Congress.gov (29k+ docs), Oversight.gov (22k+ docs), CRS (22k+ docs), GAO (10k+ docs), Federal Register (1k+ executive orders). Use pia_search_content_executive_orders to search only executive orders.",
     inputSchema={
         "type": "object",
         "properties": {
@@ -162,7 +162,7 @@ pia_search_titles_tool = types.Tool(
 
 pia_search_titles_facets_tool = types.Tool(
     name="pia_search_titles_facets",
-    description="Get available facets (filter values) for the PIA database title search. This can help understand what filter values are available before performing title searches. Major data sources include: Department of Justice (198k+ docs), Congress.gov (29k+ docs), Oversight.gov (22k+ docs), CRS (22k+ docs), GAO (10k+ docs).",
+    description="Get available facets (filter values) for the PIA database title search. This can help understand what filter values are available before performing title searches. Major data sources include: Department of Justice (198k+ docs), Congress.gov (29k+ docs), Oversight.gov (22k+ docs), CRS (22k+ docs), GAO (10k+ docs), Federal Register (1k+ executive orders). Use pia_search_content_executive_orders to search only executive orders.",
     inputSchema={
         "type": "object",
         "properties": {
