@@ -20,7 +20,7 @@ pia_search_content_tool = types.Tool(
             "query": {"type": "string", "description": "Search query text"},
             "filter": {
                 "type": "string",
-                "description": "Optional OData filter expression supporting complex boolean logic.\n\nAVAILABLE FIELDS:\n• SourceDocumentDataSource: Data source/agency that published the document. Major sources (>1k documents): 'Department of Justice', 'Congress.gov', 'Oversight.gov', 'CRS', 'GAO', 'Federal Register'\n• SourceDocumentDataSet: Dataset or collection the document belongs to. Values: 'press-releases', 'reports', 'bills-and-laws', 'federal-reports', 'executive orders', 'state-and-local-reports', 'federal reports'\n• SourceDocumentOrg: Organization associated with the document. There are many values, use pia_search_content_facets tool to see available options\n• SourceDocumentTitle: Document title - use contains, eq for text matching\n• SourceDocumentPublishDate: Publication date - ISO 8601 format YYYY-MM-DD (e.g., '2023-01-01'). Use ge/le for ranges\n• RecStatus: Recommendation status\n• RecPriorityFlag: Priority flag for recommendations\n• IsIntegrityRelated: Whether the content is integrity-related\n• SourceDocumentIsRecDoc: Whether the document contains recommendations. Values: 'No', 'Yes'\n• RecFraudRiskManagementThemePIA: Fraud risk management theme classification\n• RecMatterForCongressPIA: Whether the matter is for Congressional attention\n• RecRecommendation: Recommendation text - use contains, eq for text matching\n• RecAgencyComments: Agency comments on recommendations - use contains, eq for text matching\n\nOPERATORS:\n• Text: contains, eq, ne, startswith, endswith\n• Exact: eq (equals), ne (not equals), in (in list)\n• Date: ge (greater/equal), le (less/equal), eq (equals)\n• Logic: and, or, not, parentheses for grouping\n\nEXAMPLES:\n• \"SourceDocumentDataSource eq 'GAO'\"\n• \"SourceDocumentDataSource eq 'GAO' and RecStatus ne 'Closed'\"\n• \"IsIntegrityRelated eq 'True' and RecPriorityFlag eq 'Yes'\"\n• \"(SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'OIG') and RecStatus eq 'Open'\"\n• \"SourceDocumentPublishDate ge '2020-01-01' and SourceDocumentPublishDate le '2024-12-31'\"\n\nTIP: Use pia_search_content_facets tool to get the most current available values.",
+                "description": "Optional OData filter expression supporting complex boolean logic.\n\n    AVAILABLE FIELDS:\n    • SourceDocumentDataSource: Data source/agency that published the document. Major sources (>1k documents): 'Department of Justice', 'Congress.gov', 'Oversight.gov', 'CRS', 'GAO', 'Federal Register'\n• SourceDocumentDataSet: Dataset or collection the document belongs to. Values: 'press-releases', 'reports', 'bills-and-laws', 'federal-reports', 'executive orders', 'state-and-local-reports', 'federal reports'\n• SourceDocumentTitle: Document title - use contains, eq for text matching\n• SourceDocumentPublishDate: Publication date - ISO 8601 format YYYY-MM-DD (e.g., '2023-01-01'). Use ge/le for ranges\n• RecStatus: Recommendation status\n• RecPriorityFlag: Priority flag for recommendations\n• SourceDocumentIsRecDoc: Whether the document contains recommendations. Values: 'No', 'Yes'\n• RecFraudRiskManagementThemePIA: Fraud risk management theme classification\n• RecMatterForCongressPIA: Whether the matter is for Congressional attention\n• RecRecommendation: Recommendation text - use contains, eq for text matching\n• RecAgencyComments: Agency comments on recommendations - use contains, eq for text matching\n• referenced_agencies: Agencies referenced by documents (collection field). Example: (referenced_agencies/any(a: a eq 'Department of Defense (DOD)') or referenced_agencies/any(a: a eq 'Department of Justice (DOJ)')) - for single agency omit outer parentheses and 'or'. Get all values via pia_search_content_facets. Note: Many data sources such as CRS and Congress do not tag documents with agency. In these cases PIA infers agencies through AI tagging and in some cases the agency may be incorrect. This tagging only tags documents where the agency is explicitly mentioned.\n\n    OPERATORS:\n    • Text: contains, eq, ne, startswith, endswith\n    • Exact: eq (equals), ne (not equals), in (in list)\n    • Date: ge (greater/equal), le (less/equal), eq (equals)\n    • Logic: and, or, not, parentheses for grouping\n\n    EXAMPLES:\n    • \"SourceDocumentDataSource eq 'GAO'\"\n    • \"SourceDocumentDataSource eq 'GAO' and RecStatus ne 'Closed'\"\n    • \"(SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'OIG') and RecStatus eq 'Open'\"\n    • \"SourceDocumentPublishDate ge '2020-01-01' and SourceDocumentPublishDate le '2024-12-31'\"\n\n    TIP: Use pia_search_content_facets tool to get the most current available values.",
             },
             "page": {
                 "type": "integer",
@@ -45,6 +45,64 @@ pia_search_content_tool = types.Tool(
             },
         },
         "required": ["query"],
+    },
+    outputSchema={
+        "type": "object",
+        "properties": {
+            "output": {
+                "type": "object",
+                "properties": {
+                    "total_count": {"type": "integer"},
+                    "query": {"type": "string"},
+                    "summary": {"type": "string"},
+                    "results": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {"type": "string"},
+                                "title": {"type": "string"},
+                                "snippet": {"type": "string"},
+                                "score": {"type": "number"},
+                                "data_source": {"type": "string"},
+                                "url": {"type": "string", "format": "uri"},
+                                "publication_date": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                },
+                            },
+                            "required": ["id", "title", "data_source", "url"],
+                            "additionalProperties": False,
+                        },
+                    },
+                    "citations": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {"type": "string"},
+                                "label": {"type": "string"},
+                                "url": {"type": "string", "format": "uri"},
+                                "title": {"type": "string"},
+                                "data_source": {"type": "string"},
+                                "publication_date": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                },
+                            },
+                            "required": ["id", "label", "url"],
+                            "additionalProperties": False,
+                        },
+                    },
+                    "references": {"type": "array", "items": {"type": "string"}},
+                    "citation_guidance": {"type": "string"},
+                },
+                "required": ["total_count", "results"],
+                "additionalProperties": False,
+            }
+        },
+        "required": ["output"],
+        "additionalProperties": False,
     },
 )
 
