@@ -23,6 +23,7 @@ from .tools import (
     handle_pia_search_content_crs,
     handle_pia_search_content_doj,
     handle_pia_search_content_congress,
+    handle_pia_search_content_executive_orders,
     handle_search,
     handle_fetch,
 )
@@ -36,6 +37,7 @@ from .tools import (
     pia_search_content_crs_tool,
     pia_search_content_doj_tool,
     pia_search_content_congress_tool,
+    pia_search_content_executive_orders_tool,
     search_tool,
     fetch_tool,
 )
@@ -75,6 +77,7 @@ async def list_tools() -> List[types.Tool]:
         pia_search_content_crs_tool,
         pia_search_content_doj_tool,
         pia_search_content_congress_tool,
+        pia_search_content_executive_orders_tool,
         search_tool,
         fetch_tool,
     ]
@@ -103,6 +106,8 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[types.TextCont
             return await handle_pia_search_content_doj(arguments)
         elif name == "pia_search_content_congress":
             return await handle_pia_search_content_congress(arguments)
+        elif name == "pia_search_content_executive_orders":
+            return await handle_pia_search_content_executive_orders(arguments)
         elif name == "search":
             return await handle_search(arguments)
         elif name == "fetch":
