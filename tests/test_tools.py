@@ -139,7 +139,7 @@ async def test_pia_search_content_with_complex_odata_filter():
             mock_client.return_value.__aenter__.return_value = mock_client_instance
 
             # Test complex boolean logic filter
-            complex_filter = "(SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'OIG') and RecPriorityFlag in ('High', 'Critical')"
+            complex_filter = "(SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'Oversight.gov') and RecPriorityFlag in ('High', 'Critical')"
             result = await handle_pia_search_content(
                 {"query": "integrity violations", "filter": complex_filter}
             )
@@ -221,7 +221,7 @@ async def test_pia_search_content_facets_success():
         "id": 1,
         "result": {
             "facets": {
-                "SourceDocumentDataSource": ["OIG", "GAO", "CMS"],
+                "SourceDocumentDataSource": ["Oversight.gov", "GAO", "CMS"],
                 "RecStatus": ["Open", "Closed", "In Progress"],
                 "RecPriorityFlag": ["High", "Medium", "Low", "Critical"],
                 "IsIntegrityRelated": ["Yes", "No"],
@@ -243,7 +243,7 @@ async def test_pia_search_content_facets_success():
 
             assert len(result) == 1
             assert "SourceDocumentDataSource" in result[0].text
-            assert "OIG" in result[0].text
+            assert "Oversight.gov" in result[0].text
             assert "RecStatus" in result[0].text
 
 
@@ -441,7 +441,7 @@ async def test_pia_search_content_facets_empty_filter():
         "id": 1,
         "result": {
             "facets": {
-                "SourceDocumentDataSource": ["OIG", "GAO", "CMS"],
+                "SourceDocumentDataSource": ["Oversight.gov", "GAO", "CMS"],
                 "RecStatus": ["Open", "Closed"],
             }
         },
@@ -505,7 +505,11 @@ async def test_pia_search_content_oig_success():
         "id": 1,
         "result": {
             "documents": [
-                {"title": "OIG Investigation", "id": "oig-123", "data_source": "OIG"}
+                {
+                    "title": "OIG Investigation",
+                    "id": "oig-123",
+                    "data_source": "Oversight.gov",
+                }
             ],
             "total": 1,
         },

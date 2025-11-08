@@ -228,7 +228,7 @@ The server provides 12 tools for searching the Program Integrity Alliance (PIA) 
 
 **Parameters:**
 - `query` (required): Search query text
-- `filter` (optional): OData filter expression (SourceDocumentDataSource is automatically set to 'OIG')
+- `filter` (optional): OData filter expression (SourceDocumentDataSource is automatically set to 'Oversight.gov')
 - `page` (optional): Page number (default: 1)
 - `page_size` (optional): Results per page (default: 10)
 - `search_mode` (optional): Search mode (default: content)
@@ -324,12 +324,12 @@ Comprehensive search with OData filtering and faceting. The `filter` parameter u
 
 **Example Filter Expressions:**
 - Basic filter: `"SourceDocumentDataSource eq 'GAO'"`
-- Multiple conditions: `"SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'OIG'"`
+- Multiple conditions: `"SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'Oversight.gov'"`
 - Complex grouping: `"SourceDocumentDataSource eq 'GAO' and RecStatus ne 'Closed'"`
 - Negation: `"SourceDocumentDataSource ne 'Department of Justice' and not (RecStatus eq 'Closed')"`
 - List membership: `"IsIntegrityRelated eq 'Yes' and RecPriorityFlag in ('High', 'Critical')"`
 - Date ranges: `"SourceDocumentPublishDate ge '2020-01-01' and SourceDocumentPublishDate le '2024-12-31'"`
-- Boolean grouping: `"(SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'OIG') and RecStatus eq 'Open'"`
+- Boolean grouping: `"(SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'Oversight.gov') and RecStatus eq 'Open'"`
 
 **OData Filter Operators:**
 - `eq` - equals: `field eq 'value'`
@@ -379,7 +379,7 @@ Use the `pia_search_facets` tool to explore what fields are available for filter
 The facets response will show available fields and their possible values:
 ```json
 {
-  "SourceDocumentDataSource": ["OIG", "GAO", "CMS", "FBI"],
+  "SourceDocumentDataSource": ["Oversight.gov", "GAO", "CMS", "FBI"],
   "RecStatus": ["Open", "Closed", "In Progress"],
   "RecPriorityFlag": ["High", "Medium", "Low", "Critical"],
   "IsIntegrityRelated": ["Yes", "No"],
@@ -399,7 +399,7 @@ Filter: "SourceDocumentDataSource eq 'GAO' and SourceDocumentPublishDate ge '202
 **Complex Example:**
 ```
 Query: "healthcare violations"
-Filter: "(SourceDocumentDataSource eq 'OIG' or SourceDocumentDataSource eq 'CMS') and RecPriorityFlag in ('High', 'Critical') and SourceDocumentPublishDate ge '2023-01-01'"
+Filter: "(SourceDocumentDataSource eq 'Oversight.gov' or SourceDocumentDataSource eq 'CMS') and RecPriorityFlag in ('High', 'Critical') and SourceDocumentPublishDate ge '2023-01-01'"
 ```
 
 ## 📝 AI Instruction Prompts
