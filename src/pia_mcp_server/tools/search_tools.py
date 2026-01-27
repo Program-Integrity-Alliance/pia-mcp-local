@@ -192,7 +192,9 @@ async def _forward_to_remote(
             if "result" in result:
                 tool_result = result["result"]
                 if not isinstance(tool_result, dict):
-                    raise ValueError("Remote tool call returned unexpected result type.")
+                    raise ValueError(
+                        "Remote tool call returned unexpected result type."
+                    )
                 return types.CallToolResult.model_validate(tool_result)
             raise ValueError("No results returned from API")
 
