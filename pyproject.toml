@@ -47,6 +47,10 @@ pia-mcp-server = "pia_mcp_server:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/pia_mcp_server"]
+include = ["src/pia_mcp_server/tools/tool_specs.json"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/pia_mcp_server/tools/tool_specs.json"]
 
 [tool.hatch.metadata]
 allow-direct-references = true

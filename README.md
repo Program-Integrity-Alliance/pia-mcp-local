@@ -152,7 +152,7 @@ Then add this to your Client, eg Claude ...
 
 ## 💡 Available Tools
 
-The server provides 12 tools for searching the Program Integrity Alliance (PIA) database:
+The server provides 14 tools for searching the Program Integrity Alliance (PIA) database:
 
 ### Core Search Tools
 
@@ -160,32 +160,65 @@ The server provides 12 tools for searching the Program Integrity Alliance (PIA) 
 
 **Purpose:** Comprehensive search tool for querying document content and recommendations in the PIA database.
 
-**Description:** Returns comprehensive results with full citation information and clickable links for proper attribution. Each result includes corresponding citations with data source attribution. Major data sources include: Department of Justice (198k+ docs), Congress.gov (29k+ docs), Oversight.gov (22k+ docs), CRS (22k+ docs), GAO (10k+ docs), Federal Register (1k+ executive orders). Use pia_search_content_executive_orders to search only executive orders. Supports complex OData filtering with boolean logic, operators, and grouping.
+**Description:** Returns comprehensive results with full citation information and clickable links for proper attribution. Each result includes corresponding citations with data source attribution. Major data sources include: Department of Justice (202k+ docs), Congress.gov (31k+ docs), Oversight.gov (24k+ docs), CRS (22k+ docs), GAO (10k+ docs), Federal Register (1k+ executive orders). Use pia_search_content_executive_orders to search only executive orders. Supports complex OData filtering with boolean logic, operators, and grouping.
 
 **Parameters:**
 - `query` (required): Search query text
 - `filter` (optional): OData filter expression supporting complex boolean logic
 - `page` (optional): Page number (default: 1)
-- `page_size` (optional): Results per page (default: 10)
+- `page_size` (optional): Results per page (default: 5)
 - `search_mode` (optional): Search mode (default: content)
 - `limit` (optional): Maximum results limit
 - `include_facets` (optional): Include facets in results (default: false)
 
-### 2. `pia_search_content_facets`
+### 2. `pia_oversight_recommendations`
+
+**Purpose:** Search oversight recommendations (Open Recommendations dataset) with facets enabled by default.
+
+**Description:** Returns comprehensive recommendation results with full citation information and clickable links for proper attribution. Use this when the user asks specifically about oversight recommendations or open recommendations.
+
+**Parameters:**
+- `query` (required): Search query text
+- `filter` (optional): OData filter expression supporting complex boolean logic
+- `page` (optional): Page number (default: 1)
+- `page_size` (optional): Results per page (default: 100)
+- `search_mode` (optional): Search mode (default: content)
+- `limit` (optional): Maximum results limit
+- `include_facets` (optional): Include facets in results (default: true)
+
+### 3. `pia_search_content_wide`
+
+**Purpose:** Search across multiple datasets and data sources with result deduplication by document ID.
+
+**Description:** Combines results across datasets and sources with a default small page size because the results are broader. Supports optional dataset and data source filters for targeted wide searches.
+
+**Parameters:**
+- `query` (required): Search query text
+- `filter` (optional): OData filter expression supporting complex boolean logic
+- `page` (optional): Page number (default: 1)
+- `page_size` (optional): Results per page (default: 5)
+- `search_mode` (optional): Search mode (default: content)
+- `limit` (optional): Maximum results limit
+- `include_facets` (optional): Include facets in results (default: false)
+- `data_sets` (optional): List of `SourceDocumentDataSet` values to search
+- `data_sources` (optional): List of `SourceDocumentDataSource` values to search
+- `data_sets_by_source` (optional): Mapping of data source to dataset list
+
+### 4. `pia_search_content_facets`
 
 **Purpose:** Get available facets (filter values) for the PIA database content search.
 
-**Description:** This can help understand what filter values are available before performing content searches. Major data sources include: Department of Justice (198k+ docs), Congress.gov (29k+ docs), Oversight.gov (22k+ docs), CRS (22k+ docs), GAO (10k+ docs), Federal Register (1k+ executive orders). Use pia_search_content_executive_orders to search only executive orders.
+**Description:** This can help understand what filter values are available before performing content searches. Major data sources include: Department of Justice (202k+ docs), Congress.gov (31k+ docs), Oversight.gov (24k+ docs), CRS (22k+ docs), GAO (10k+ docs), Federal Register (1k+ executive orders). Use pia_search_content_executive_orders to search only executive orders.
 
 **Parameters:**
 - `query` (optional): Optional query to get facets for (default: "")
 - `filter` (optional): Optional OData filter expression
 
-### 3. `pia_search_titles`
+### 5. `pia_search_titles`
 
 **Purpose:** Search the Program Integrity Alliance (PIA) database for document titles only.
 
-**Description:** Returns document titles and metadata without searching the full content. Useful for finding specific documents by title or discovering available documents. Major data sources include: Department of Justice (198k+ docs), Congress.gov (29k+ docs), Oversight.gov (22k+ docs), CRS (22k+ docs), GAO (10k+ docs), Federal Register (1k+ executive orders). Use pia_search_content_executive_orders to search only executive orders.
+**Description:** Returns document titles and metadata without searching the full content. Useful for finding specific documents by title or discovering available documents. Major data sources include: Department of Justice (202k+ docs), Congress.gov (31k+ docs), Oversight.gov (24k+ docs), CRS (22k+ docs), GAO (10k+ docs), Federal Register (1k+ executive orders). Use pia_search_content_executive_orders to search only executive orders.
 
 **Parameters:**
 - `query` (required): Search query text (searches document titles only)
@@ -195,11 +228,11 @@ The server provides 12 tools for searching the Program Integrity Alliance (PIA) 
 - `limit` (optional): Maximum results limit
 - `include_facets` (optional): Include facets in results (default: false)
 
-### 4. `pia_search_titles_facets`
+### 6. `pia_search_titles_facets`
 
 **Purpose:** Get available facets (filter values) for the PIA database title search.
 
-**Description:** This can help understand what filter values are available before performing title searches. Major data sources include: Department of Justice (198k+ docs), Congress.gov (29k+ docs), Oversight.gov (22k+ docs), CRS (22k+ docs), GAO (10k+ docs), Federal Register (1k+ executive orders). Use pia_search_content_executive_orders to search only executive orders.
+**Description:** This can help understand what filter values are available before performing title searches. Major data sources include: Department of Justice (202k+ docs), Congress.gov (31k+ docs), Oversight.gov (24k+ docs), CRS (22k+ docs), GAO (10k+ docs), Federal Register (1k+ executive orders). Use pia_search_content_executive_orders to search only executive orders.
 
 **Parameters:**
 - `query` (optional): Optional query to get facets for (default: "")
@@ -207,7 +240,7 @@ The server provides 12 tools for searching the Program Integrity Alliance (PIA) 
 
 ### Agency-Specific Search Tools
 
-### 5. `pia_search_content_gao`
+### 7. `pia_search_content_gao`
 
 **Purpose:** Search for GAO document content and recommendations.
 
@@ -222,7 +255,7 @@ The server provides 12 tools for searching the Program Integrity Alliance (PIA) 
 - `limit` (optional): Maximum results limit
 - `include_facets` (optional): Include facets in results (default: false)
 
-### 6. `pia_search_content_oig`
+### 8. `pia_search_content_oig`
 
 **Purpose:** Search for OIG document content and recommendations.
 
@@ -237,7 +270,7 @@ The server provides 12 tools for searching the Program Integrity Alliance (PIA) 
 - `limit` (optional): Maximum results limit
 - `include_facets` (optional): Include facets in results (default: false)
 
-### 7. `pia_search_content_crs`
+### 9. `pia_search_content_crs`
 
 **Purpose:** Search for CRS document content and recommendations.
 
@@ -252,7 +285,7 @@ The server provides 12 tools for searching the Program Integrity Alliance (PIA) 
 - `limit` (optional): Maximum results limit
 - `include_facets` (optional): Include facets in results (default: false)
 
-### 8. `pia_search_content_doj`
+### 10. `pia_search_content_doj`
 
 **Purpose:** Search for Department of Justice document content and recommendations.
 
@@ -267,7 +300,7 @@ The server provides 12 tools for searching the Program Integrity Alliance (PIA) 
 - `limit` (optional): Maximum results limit
 - `include_facets` (optional): Include facets in results (default: false)
 
-### 9. `pia_search_content_congress`
+### 11. `pia_search_content_congress`
 
 **Purpose:** Search for Congress.gov document content and recommendations.
 
@@ -284,7 +317,7 @@ The server provides 12 tools for searching the Program Integrity Alliance (PIA) 
 
 ### Executive Orders Search Tool
 
-### 10. `pia_search_content_executive_orders`
+### 12. `pia_search_content_executive_orders`
 
 **Purpose:** Search for Executive Orders document content from the Federal Register.
 
@@ -312,7 +345,7 @@ The server provides 12 tools for searching the Program Integrity Alliance (PIA) 
 
 ### ChatGPT Connector Tools
 
-### 11. `search`
+### 13. `search`
 
 **Purpose:** Simple search interface for ChatGPT Connectors.
 
@@ -321,7 +354,7 @@ The server provides 12 tools for searching the Program Integrity Alliance (PIA) 
 **Parameters:**
 - `query` (required): A search query string to find relevant documents in the PIA database
 
-### 12. `fetch`
+### 14. `fetch`
 
 **Purpose:** Document retrieval by ID for ChatGPT Connectors.
 
@@ -335,6 +368,7 @@ The server provides 12 tools for searching the Program Integrity Alliance (PIA) 
 Comprehensive search with OData filtering and faceting. The `filter` parameter uses standard [OData query syntax](https://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part2-url-conventions.html).
 
 - **Content Search** (`pia_search_content`): Searches within document content and recommendations for comprehensive results
+- **Wide Content Search** (`pia_search_content_wide`): Searches across datasets and sources with deduped results
 - **Title Search** (`pia_search_titles`): Searches document titles only - faster and useful for document discovery
 
 **Example Filter Expressions:**
