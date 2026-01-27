@@ -33,7 +33,7 @@ test = [
     "aioresponses>=0.7.6"
 ]
 dev = [
-    "black>=23.3.0"
+    "black==23.3.0"
 ]
 
 [tool.pytest.ini_options]
