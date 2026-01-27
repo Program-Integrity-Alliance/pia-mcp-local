@@ -1,5 +1,6 @@
 """Tests for tools module."""
 
+import json
 import os
 import pytest
 from unittest.mock import AsyncMock, patch, Mock
@@ -23,15 +24,67 @@ from pia_mcp_server.config import Settings
 settings = Settings()
 
 
+def build_search_structured_result(
+    title: str,
+    data_source: str = "GAO",
+    url: str = "https://example.com/doc-123",
+    doc_id: str = "doc-123",
+) -> dict:
+    return {
+        "output": {
+            "total_count": 1,
+            "results": [
+                {
+                    "id": doc_id,
+                    "title": title,
+                    "data_source": data_source,
+                    "url": url,
+                }
+            ],
+        }
+    }
+
+
+def build_facets_structured_result(facets: dict[str, list[str]]) -> dict:
+    return {
+        "output": {
+            "facets": {
+                key: [{"value": value, "count": 1} for value in values]
+                for key, values in facets.items()
+            }
+        }
+    }
+
+
+def build_fetch_structured_result(
+    doc_id: str = "doc-123",
+    title: str = "Test Document",
+    text: str = "Full document content here",
+    url: str = "https://example.com/doc-123",
+) -> dict:
+    return {"id": doc_id, "title": title, "text": text, "url": url}
+
+
+def build_tool_result(structured: dict) -> dict:
+    return {
+        "content": [
+            {
+                "type": "text",
+                "text": json.dumps(structured),
+            }
+        ],
+        "structuredContent": structured,
+        "isError": False,
+    }
+
+
 @pytest.mark.asyncio
 async def test_pia_search_content_no_api_key():
     """Test PIA content search without API key."""
     with patch.object(Settings, "_get_api_key_from_args", return_value=None):
         with patch.dict(os.environ, {}, clear=True):  # Clear all environment variables
-            result = await handle_pia_search_content({"query": "test"})
-
-            assert len(result) == 1
-            assert "PIA API key is required" in result[0].text
+            with pytest.raises(ValueError, match="PIA API key is required"):
+                await handle_pia_search_content({"query": "test"})
 
 
 @pytest.mark.asyncio
@@ -40,12 +93,7 @@ async def test_pia_search_content_success():
     mock_response = {
         "jsonrpc": "2.0",
         "id": 1,
-        "result": {
-            "documents": [
-                {"title": "Test Document", "id": "123", "summary": "Test summary"}
-            ],
-            "total": 1,
-        },
+        "result": build_tool_result(build_search_structured_result("Test Document")),
     }
 
     with patch.object(Settings, "_get_api_key_from_args", return_value="test_key"):
@@ -60,8 +108,10 @@ async def test_pia_search_content_success():
 
             result = await handle_pia_search_content({"query": "test fraud"})
 
-            assert len(result) == 1
-            assert "Test Document" in result[0].text
+            assert (
+                result.structuredContent["output"]["results"][0]["title"]
+                == "Test Document"
+            )
 
 
 @pytest.mark.asyncio
@@ -70,16 +120,7 @@ async def test_pia_search_content_with_odata_filter():
     mock_response = {
         "jsonrpc": "2.0",
         "id": 1,
-        "result": {
-            "documents": [
-                {
-                    "title": "GAO Fraud Report",
-                    "id": "gao_123",
-                    "summary": "GAO fraud investigation",
-                }
-            ],
-            "total": 1,
-        },
+        "result": build_tool_result(build_search_structured_result("GAO Fraud Report")),
     }
 
     with patch.object(Settings, "_get_api_key_from_args", return_value="test_key"):
@@ -106,8 +147,10 @@ async def test_pia_search_content_with_odata_filter():
                 == "SourceDocumentDataSource eq 'GAO'"
             )
 
-            assert len(result) == 1
-            assert "GAO Fraud Report" in result[0].text
+            assert (
+                result.structuredContent["output"]["results"][0]["title"]
+                == "GAO Fraud Report"
+            )
 
 
 @pytest.mark.asyncio
@@ -116,16 +159,9 @@ async def test_pia_search_content_with_complex_odata_filter():
     mock_response = {
         "jsonrpc": "2.0",
         "id": 1,
-        "result": {
-            "documents": [
-                {
-                    "title": "High Priority GAO Report",
-                    "id": "gao_456",
-                    "summary": "High priority integrity violation",
-                }
-            ],
-            "total": 1,
-        },
+        "result": build_tool_result(
+            build_search_structured_result("High Priority GAO Report")
+        ),
     }
 
     with patch.object(Settings, "_get_api_key_from_args", return_value="test_key"):
@@ -150,8 +186,10 @@ async def test_pia_search_content_with_complex_odata_filter():
             request_data = call_args[1]["json"]
             assert request_data["params"]["arguments"]["filter"] == complex_filter
 
-            assert len(result) == 1
-            assert "High Priority GAO Report" in result[0].text
+            assert (
+                result.structuredContent["output"]["results"][0]["title"]
+                == "High Priority GAO Report"
+            )
 
 
 @pytest.mark.asyncio
@@ -173,10 +211,8 @@ async def test_pia_search_content_api_error():
             mock_client_instance.post.return_value = mock_response_obj
             mock_client.return_value.__aenter__.return_value = mock_client_instance
 
-            result = await handle_pia_search_content({"query": "test"})
-
-            assert len(result) == 1
-            assert "API Error: Invalid API key" in result[0].text
+            with pytest.raises(ValueError, match="API Error: Invalid API key"):
+                await handle_pia_search_content({"query": "test"})
 
 
 @pytest.mark.asyncio
@@ -196,10 +232,8 @@ async def test_pia_search_content_http_error():
             mock_client_instance.post.side_effect = http_error
             mock_client.return_value.__aenter__.return_value = mock_client_instance
 
-            result = await handle_pia_search_content({"query": "test"})
-
-            assert len(result) == 1
-            assert "HTTP Error 500" in result[0].text
+            with pytest.raises(ValueError, match="HTTP Error 500"):
+                await handle_pia_search_content({"query": "test"})
 
 
 @pytest.mark.asyncio
@@ -207,10 +241,8 @@ async def test_pia_search_content_facets_no_api_key():
     """Test PIA search facets without API key."""
     with patch.object(Settings, "_get_api_key_from_args", return_value=None):
         with patch.dict(os.environ, {}, clear=True):  # Clear all environment variables
-            result = await handle_pia_search_content_facets({"query": "test"})
-
-            assert len(result) == 1
-            assert "PIA API key is required" in result[0].text
+            with pytest.raises(ValueError, match="PIA API key is required"):
+                await handle_pia_search_content_facets({"query": "test"})
 
 
 @pytest.mark.asyncio
@@ -219,14 +251,16 @@ async def test_pia_search_content_facets_success():
     mock_response = {
         "jsonrpc": "2.0",
         "id": 1,
-        "result": {
-            "facets": {
-                "SourceDocumentDataSource": ["Oversight.gov", "GAO", "CMS"],
-                "RecStatus": ["Open", "Closed", "In Progress"],
-                "RecPriorityFlag": ["High", "Medium", "Low", "Critical"],
-                "IsIntegrityRelated": ["Yes", "No"],
-            }
-        },
+        "result": build_tool_result(
+            build_facets_structured_result(
+                {
+                    "SourceDocumentDataSource": ["Oversight.gov", "GAO", "CMS"],
+                    "RecStatus": ["Open", "Closed", "In Progress"],
+                    "RecPriorityFlag": ["High", "Medium", "Low", "Critical"],
+                    "IsIntegrityRelated": ["Yes", "No"],
+                }
+            )
+        ),
     }
 
     with patch.object(Settings, "_get_api_key_from_args", return_value="test_key"):
@@ -241,10 +275,16 @@ async def test_pia_search_content_facets_success():
 
             result = await handle_pia_search_content_facets({"query": "healthcare"})
 
-            assert len(result) == 1
-            assert "SourceDocumentDataSource" in result[0].text
-            assert "Oversight.gov" in result[0].text
-            assert "RecStatus" in result[0].text
+            assert (
+                result.structuredContent["output"]["facets"][
+                    "SourceDocumentDataSource"
+                ][0]["value"]
+                == "Oversight.gov"
+            )
+            assert (
+                result.structuredContent["output"]["facets"]["RecStatus"][0]["value"]
+                == "Open"
+            )
 
 
 @pytest.mark.asyncio
@@ -253,13 +293,15 @@ async def test_pia_search_content_facets_with_filter():
     mock_response = {
         "jsonrpc": "2.0",
         "id": 1,
-        "result": {
-            "facets": {
-                "SourceDocumentDataSource": ["GAO"],
-                "RecStatus": ["Open", "In Progress"],
-                "RecPriorityFlag": ["High", "Critical"],
-            }
-        },
+        "result": build_tool_result(
+            build_facets_structured_result(
+                {
+                    "SourceDocumentDataSource": ["GAO"],
+                    "RecStatus": ["Open", "In Progress"],
+                    "RecPriorityFlag": ["High", "Critical"],
+                }
+            )
+        ),
     }
 
     with patch.object(Settings, "_get_api_key_from_args", return_value="test_key"):
@@ -289,9 +331,12 @@ async def test_pia_search_content_facets_with_filter():
                 == "SourceDocumentDataSource eq 'GAO' and RecStatus ne 'Closed'"
             )
 
-            assert len(result) == 1
-            assert "SourceDocumentDataSource" in result[0].text
-            assert "GAO" in result[0].text
+            assert (
+                result.structuredContent["output"]["facets"][
+                    "SourceDocumentDataSource"
+                ][0]["value"]
+                == "GAO"
+            )
 
 
 @pytest.mark.asyncio
@@ -313,10 +358,8 @@ async def test_pia_search_content_facets_api_error():
             mock_client_instance.post.return_value = mock_response_obj
             mock_client.return_value.__aenter__.return_value = mock_client_instance
 
-            result = await handle_pia_search_content_facets({"query": "test"})
-
-            assert len(result) == 1
-            assert "API Error: Invalid query format" in result[0].text
+            with pytest.raises(ValueError, match="API Error: Invalid query format"):
+                await handle_pia_search_content_facets({"query": "test"})
 
 
 @pytest.mark.asyncio
@@ -336,10 +379,8 @@ async def test_pia_search_content_facets_http_error():
             mock_client_instance.post.side_effect = http_error
             mock_client.return_value.__aenter__.return_value = mock_client_instance
 
-            result = await handle_pia_search_content_facets({"query": "test"})
-
-            assert len(result) == 1
-            assert "HTTP Error 403" in result[0].text
+            with pytest.raises(ValueError, match="HTTP Error 403"):
+                await handle_pia_search_content_facets({"query": "test"})
 
 
 @pytest.mark.asyncio
@@ -348,12 +389,7 @@ async def test_pia_search_content_empty_filter():
     mock_response = {
         "jsonrpc": "2.0",
         "id": 1,
-        "result": {
-            "documents": [
-                {"title": "Test Document", "id": "123", "summary": "Test summary"}
-            ],
-            "total": 1,
-        },
+        "result": build_tool_result(build_search_structured_result("Test Document")),
     }
 
     with patch.object(Settings, "_get_api_key_from_args", return_value="test_key"):
@@ -371,8 +407,10 @@ async def test_pia_search_content_empty_filter():
                 {"query": "test query", "filter": ""}
             )
 
-            assert len(result) == 1
-            assert "Test Document" in result[0].text
+            assert (
+                result.structuredContent["output"]["results"][0]["title"]
+                == "Test Document"
+            )
 
 
 @pytest.mark.asyncio
@@ -381,12 +419,7 @@ async def test_pia_search_content_with_all_parameters():
     mock_response = {
         "jsonrpc": "2.0",
         "id": 1,
-        "result": {
-            "documents": [
-                {"title": "Complete Test", "id": "456", "summary": "Full test"}
-            ],
-            "total": 1,
-        },
+        "result": build_tool_result(build_search_structured_result("Complete Test")),
     }
 
     with patch.object(Settings, "_get_api_key_from_args", return_value="test_key"):
@@ -429,8 +462,10 @@ async def test_pia_search_content_with_all_parameters():
             assert arguments["limit"] == 10
             assert arguments["include_facets"] is True
 
-            assert len(result) == 1
-            assert "Complete Test" in result[0].text
+            assert (
+                result.structuredContent["output"]["results"][0]["title"]
+                == "Complete Test"
+            )
 
 
 @pytest.mark.asyncio
@@ -439,12 +474,14 @@ async def test_pia_search_content_facets_empty_filter():
     mock_response = {
         "jsonrpc": "2.0",
         "id": 1,
-        "result": {
-            "facets": {
-                "SourceDocumentDataSource": ["Oversight.gov", "GAO", "CMS"],
-                "RecStatus": ["Open", "Closed"],
-            }
-        },
+        "result": build_tool_result(
+            build_facets_structured_result(
+                {
+                    "SourceDocumentDataSource": ["Oversight.gov", "GAO", "CMS"],
+                    "RecStatus": ["Open", "Closed"],
+                }
+            )
+        ),
     }
 
     with patch.object(Settings, "_get_api_key_from_args", return_value="test_key"):
@@ -462,8 +499,12 @@ async def test_pia_search_content_facets_empty_filter():
                 {"query": "test", "filter": ""}
             )
 
-            assert len(result) == 1
-            assert "SourceDocumentDataSource" in result[0].text
+            assert (
+                result.structuredContent["output"]["facets"][
+                    "SourceDocumentDataSource"
+                ][0]["value"]
+                == "Oversight.gov"
+            )
 
 
 # Agency-specific search tool tests
@@ -473,12 +514,11 @@ async def test_pia_search_content_gao_success():
     mock_response = {
         "jsonrpc": "2.0",
         "id": 1,
-        "result": {
-            "documents": [
-                {"title": "GAO Report", "id": "gao-123", "data_source": "GAO"}
-            ],
-            "total": 1,
-        },
+        "result": build_tool_result(
+            build_search_structured_result(
+                "GAO Report", data_source="GAO", doc_id="gao-123"
+            )
+        ),
     }
 
     with patch.object(Settings, "_get_api_key_from_args", return_value="test_key"):
@@ -493,8 +533,10 @@ async def test_pia_search_content_gao_success():
 
             result = await handle_pia_search_content_gao({"query": "audit"})
 
-            assert len(result) == 1
-            assert "GAO Report" in result[0].text
+            assert (
+                result.structuredContent["output"]["results"][0]["title"]
+                == "GAO Report"
+            )
 
 
 @pytest.mark.asyncio
@@ -503,16 +545,13 @@ async def test_pia_search_content_oig_success():
     mock_response = {
         "jsonrpc": "2.0",
         "id": 1,
-        "result": {
-            "documents": [
-                {
-                    "title": "OIG Investigation",
-                    "id": "oig-123",
-                    "data_source": "Oversight.gov",
-                }
-            ],
-            "total": 1,
-        },
+        "result": build_tool_result(
+            build_search_structured_result(
+                "OIG Investigation",
+                data_source="Oversight.gov",
+                doc_id="oig-123",
+            )
+        ),
     }
 
     with patch.object(Settings, "_get_api_key_from_args", return_value="test_key"):
@@ -527,8 +566,10 @@ async def test_pia_search_content_oig_success():
 
             result = await handle_pia_search_content_oig({"query": "oversight"})
 
-            assert len(result) == 1
-            assert "OIG Investigation" in result[0].text
+            assert (
+                result.structuredContent["output"]["results"][0]["title"]
+                == "OIG Investigation"
+            )
 
 
 @pytest.mark.asyncio
@@ -537,12 +578,11 @@ async def test_pia_search_content_crs_success():
     mock_response = {
         "jsonrpc": "2.0",
         "id": 1,
-        "result": {
-            "documents": [
-                {"title": "CRS Report", "id": "crs-123", "data_source": "CRS"}
-            ],
-            "total": 1,
-        },
+        "result": build_tool_result(
+            build_search_structured_result(
+                "CRS Report", data_source="CRS", doc_id="crs-123"
+            )
+        ),
     }
 
     with patch.object(Settings, "_get_api_key_from_args", return_value="test_key"):
@@ -557,8 +597,10 @@ async def test_pia_search_content_crs_success():
 
             result = await handle_pia_search_content_crs({"query": "research"})
 
-            assert len(result) == 1
-            assert "CRS Report" in result[0].text
+            assert (
+                result.structuredContent["output"]["results"][0]["title"]
+                == "CRS Report"
+            )
 
 
 @pytest.mark.asyncio
@@ -567,16 +609,13 @@ async def test_pia_search_content_doj_success():
     mock_response = {
         "jsonrpc": "2.0",
         "id": 1,
-        "result": {
-            "documents": [
-                {
-                    "title": "DOJ Press Release",
-                    "id": "doj-123",
-                    "data_source": "Department of Justice",
-                }
-            ],
-            "total": 1,
-        },
+        "result": build_tool_result(
+            build_search_structured_result(
+                "DOJ Press Release",
+                data_source="Department of Justice",
+                doc_id="doj-123",
+            )
+        ),
     }
 
     with patch.object(Settings, "_get_api_key_from_args", return_value="test_key"):
@@ -591,8 +630,10 @@ async def test_pia_search_content_doj_success():
 
             result = await handle_pia_search_content_doj({"query": "enforcement"})
 
-            assert len(result) == 1
-            assert "DOJ Press Release" in result[0].text
+            assert (
+                result.structuredContent["output"]["results"][0]["title"]
+                == "DOJ Press Release"
+            )
 
 
 @pytest.mark.asyncio
@@ -601,16 +642,13 @@ async def test_pia_search_content_congress_success():
     mock_response = {
         "jsonrpc": "2.0",
         "id": 1,
-        "result": {
-            "documents": [
-                {
-                    "title": "Congressional Bill",
-                    "id": "congress-123",
-                    "data_source": "Congress.gov",
-                }
-            ],
-            "total": 1,
-        },
+        "result": build_tool_result(
+            build_search_structured_result(
+                "Congressional Bill",
+                data_source="Congress.gov",
+                doc_id="congress-123",
+            )
+        ),
     }
 
     with patch.object(Settings, "_get_api_key_from_args", return_value="test_key"):
@@ -625,8 +663,10 @@ async def test_pia_search_content_congress_success():
 
             result = await handle_pia_search_content_congress({"query": "legislation"})
 
-            assert len(result) == 1
-            assert "Congressional Bill" in result[0].text
+            assert (
+                result.structuredContent["output"]["results"][0]["title"]
+                == "Congressional Bill"
+            )
 
 
 @pytest.mark.asyncio
@@ -635,16 +675,13 @@ async def test_pia_search_content_executive_orders_success():
     mock_response = {
         "jsonrpc": "2.0",
         "id": 1,
-        "result": {
-            "documents": [
-                {
-                    "title": "Executive Order 12345",
-                    "id": "eo-123",
-                    "data_source": "Federal Register",
-                }
-            ],
-            "total": 1,
-        },
+        "result": build_tool_result(
+            build_search_structured_result(
+                "Executive Order 12345",
+                data_source="Federal Register",
+                doc_id="eo-123",
+            )
+        ),
     }
 
     with patch.object(Settings, "_get_api_key_from_args", return_value="test_key"):
@@ -661,8 +698,10 @@ async def test_pia_search_content_executive_orders_success():
                 {"query": "cybersecurity"}
             )
 
-            assert len(result) == 1
-            assert "Executive Order 12345" in result[0].text
+            assert (
+                result.structuredContent["output"]["results"][0]["title"]
+                == "Executive Order 12345"
+            )
 
 
 @pytest.mark.asyncio
@@ -671,12 +710,7 @@ async def test_fetch_success():
     mock_response = {
         "jsonrpc": "2.0",
         "id": 1,
-        "result": {
-            "id": "doc-123",
-            "title": "Test Document",
-            "content": "Full document content here",
-            "url": "https://example.com/doc-123",
-        },
+        "result": build_tool_result(build_fetch_structured_result()),
     }
 
     with patch.object(Settings, "_get_api_key_from_args", return_value="test_key"):
@@ -691,9 +725,8 @@ async def test_fetch_success():
 
             result = await handle_fetch({"id": "doc-123"})
 
-            assert len(result) == 1
-            assert "Test Document" in result[0].text
-            assert "Full document content here" in result[0].text
+            assert result.structuredContent["title"] == "Test Document"
+            assert result.structuredContent["text"] == "Full document content here"
 
 
 @pytest.mark.asyncio
@@ -714,9 +747,8 @@ async def test_agency_tools_no_api_key():
             with patch.dict(
                 os.environ, {}, clear=True
             ):  # Clear all environment variables
-                result = await tool_handler(args)
-                assert len(result) == 1
-                assert "PIA API key is required" in result[0].text
+                with pytest.raises(ValueError, match="PIA API key is required"):
+                    await tool_handler(args)
 
 
 @pytest.mark.asyncio
@@ -743,7 +775,5 @@ async def test_agency_tools_http_error():
                 )
                 mock_client.return_value.__aenter__.return_value = mock_client_instance
 
-                result = await tool_handler(args)
-
-                assert len(result) == 1
-                assert "HTTP Error 500" in result[0].text
+                with pytest.raises(ValueError, match="HTTP Error 500"):
+                    await tool_handler(args)

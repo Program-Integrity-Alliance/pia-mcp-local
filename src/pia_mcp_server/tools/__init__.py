@@ -8,6 +8,10 @@ This module provides tools for interacting with the Program Integrity Alliance A
 from .search_tools import (
     handle_pia_search_content,
     pia_search_content_tool,
+    handle_pia_oversight_recommendations,
+    pia_oversight_recommendations_tool,
+    handle_pia_search_content_wide,
+    pia_search_content_wide_tool,
     handle_pia_search_content_facets,
     pia_search_content_facets_tool,
     handle_pia_search_titles,
@@ -35,6 +39,10 @@ from .search_tools import (
 __all__ = [
     "handle_pia_search_content",
     "pia_search_content_tool",
+    "handle_pia_oversight_recommendations",
+    "pia_oversight_recommendations_tool",
+    "handle_pia_search_content_wide",
+    "pia_search_content_wide_tool",
     "handle_pia_search_content_facets",
     "pia_search_content_facets_tool",
     "handle_pia_search_titles",

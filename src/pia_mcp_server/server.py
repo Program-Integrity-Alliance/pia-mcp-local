@@ -15,6 +15,8 @@ from mcp.server.stdio import stdio_server
 from .config import Settings
 from .tools import (
     handle_pia_search_content,
+    handle_pia_oversight_recommendations,
+    handle_pia_search_content_wide,
     handle_pia_search_content_facets,
     handle_pia_search_titles,
     handle_pia_search_titles_facets,
@@ -29,6 +31,8 @@ from .tools import (
 )
 from .tools import (
     pia_search_content_tool,
+    pia_oversight_recommendations_tool,
+    pia_search_content_wide_tool,
     pia_search_content_facets_tool,
     pia_search_titles_tool,
     pia_search_titles_facets_tool,
@@ -69,6 +73,8 @@ async def list_tools() -> List[types.Tool]:
     """List available PIA research tools."""
     return [
         pia_search_content_tool,
+        pia_oversight_recommendations_tool,
+        pia_search_content_wide_tool,
         pia_search_content_facets_tool,
         pia_search_titles_tool,
         pia_search_titles_facets_tool,
@@ -87,36 +93,36 @@ async def list_tools() -> List[types.Tool]:
 async def call_tool(name: str, arguments: Dict[str, Any]) -> List[types.TextContent]:
     """Handle tool calls for PIA research functionality."""
     logger.debug("Calling tool %s with arguments %s", name, arguments)
-    try:
-        if name == "pia_search_content":
-            return await handle_pia_search_content(arguments)
-        elif name == "pia_search_content_facets":
-            return await handle_pia_search_content_facets(arguments)
-        elif name == "pia_search_titles":
-            return await handle_pia_search_titles(arguments)
-        elif name == "pia_search_titles_facets":
-            return await handle_pia_search_titles_facets(arguments)
-        elif name == "pia_search_content_gao":
-            return await handle_pia_search_content_gao(arguments)
-        elif name == "pia_search_content_oig":
-            return await handle_pia_search_content_oig(arguments)
-        elif name == "pia_search_content_crs":
-            return await handle_pia_search_content_crs(arguments)
-        elif name == "pia_search_content_doj":
-            return await handle_pia_search_content_doj(arguments)
-        elif name == "pia_search_content_congress":
-            return await handle_pia_search_content_congress(arguments)
-        elif name == "pia_search_content_executive_orders":
-            return await handle_pia_search_content_executive_orders(arguments)
-        elif name == "search":
-            return await handle_search(arguments)
-        elif name == "fetch":
-            return await handle_fetch(arguments)
-        else:
-            return [types.TextContent(type="text", text=f"Error: Unknown tool {name}")]
-    except Exception as e:
-        logger.error("Tool error: %s", str(e))
-        return [types.TextContent(type="text", text=f"Error: {str(e)}")]
+    if name == "pia_search_content":
+        return await handle_pia_search_content(arguments)
+    elif name == "pia_oversight_recommendations":
+        return await handle_pia_oversight_recommendations(arguments)
+    elif name == "pia_search_content_wide":
+        return await handle_pia_search_content_wide(arguments)
+    elif name == "pia_search_content_facets":
+        return await handle_pia_search_content_facets(arguments)
+    elif name == "pia_search_titles":
+        return await handle_pia_search_titles(arguments)
+    elif name == "pia_search_titles_facets":
+        return await handle_pia_search_titles_facets(arguments)
+    elif name == "pia_search_content_gao":
+        return await handle_pia_search_content_gao(arguments)
+    elif name == "pia_search_content_oig":
+        return await handle_pia_search_content_oig(arguments)
+    elif name == "pia_search_content_crs":
+        return await handle_pia_search_content_crs(arguments)
+    elif name == "pia_search_content_doj":
+        return await handle_pia_search_content_doj(arguments)
+    elif name == "pia_search_content_congress":
+        return await handle_pia_search_content_congress(arguments)
+    elif name == "pia_search_content_executive_orders":
+        return await handle_pia_search_content_executive_orders(arguments)
+    elif name == "search":
+        return await handle_search(arguments)
+    elif name == "fetch":
+        return await handle_fetch(arguments)
+    else:
+        return [types.TextContent(type="text", text=f"Error: Unknown tool {name}")]
 
 
 async def main():
