@@ -80,6 +80,16 @@ Install using uv:
 uv tool install pia-mcp-server
 ```
 
+### Refreshing Tool Specs (No API Key Needed for Listing)
+
+Tool listing in this local server is served from a local snapshot, so tools are
+discoverable even without an API key. To refresh the snapshot from the remote
+server, run:
+
+```bash
+PIA_API_KEY=your_key python utils/refresh_tools.py
+```
+
 For development:
 
 ```bash
