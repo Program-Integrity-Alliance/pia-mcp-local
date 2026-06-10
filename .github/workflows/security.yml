@@ -31,3 +31,64 @@ jobs:
     - name: Scan git history for secrets
       run: |
         gitleaks detect --source . --redact --verbose --exit-code 1
+
+  dependency-audit:
+    name: Dependency audit (pip-audit)
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v3
+      with:
+        version: "latest"
+
+    - name: Create virtual environment
+      run: uv venv
+
+    - name: Install dependencies
+      run: |
+        source .venv/bin/activate
+        uv pip install -e ".[security]"
+
+    - name: Audit runtime dependencies for known vulnerabilities
+      run: |
+        source .venv/bin/activate
+        uv export --no-dev --no-emit-project --no-hashes -o runtime-requirements.txt
+        pip-audit --no-deps -r runtime-requirements.txt
+
+  sast:
+    name: SAST (bandit)
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v3
+      with:
+        version: "latest"
+
+    - name: Create virtual environment
+      run: uv venv
+
+    - name: Install dependencies
+      run: |
+        source .venv/bin/activate
+        uv pip install -e ".[security]"
+
+    - name: Scan source for insecure code patterns
+      run: |
+        source .venv/bin/activate
+        bandit -r src/

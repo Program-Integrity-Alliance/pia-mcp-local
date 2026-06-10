@@ -1,0 +1,20 @@
+version: 2
+updates:
+  # Python dependencies (pyproject.toml / uv.lock). Covers runtime, test, dev,
+  # and security extras so dev-tooling advisories also get update PRs.
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    groups:
+      python-dependencies:
+        patterns:
+          - "*"
+
+  # Keep the GitHub Actions used by CI workflows up to date.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
