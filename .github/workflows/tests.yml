@@ -34,10 +34,10 @@ jobs:
         source .venv/bin/activate
         uv pip install -e ".[test]"
 
-    - name: Run tests with coverage
+    - name: Run unit tests with coverage
       run: |
         source .venv/bin/activate
-        python -m pytest --cov=pia_mcp_server --cov-report=term-missing --cov-report=xml
+        python -m pytest -m "not integration" --cov=pia_mcp_server --cov-report=term-missing --cov-report=xml
 
     - name: Upload coverage to codecov
       if: matrix.python-version == '3.11'
@@ -45,3 +45,35 @@ jobs:
       with:
         file: ./coverage.xml
         fail_ci_if_error: false
+
+  integration:
+    name: Integration (live remote server)
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v3
+      with:
+        version: "latest"
+
+    - name: Create virtual environment
+      run: uv venv
+
+    - name: Install dependencies
+      run: |
+        source .venv/bin/activate
+        uv pip install -e ".[test]"
+
+    - name: Run integration tests against the remote server
+      env:
+        PIA_API_KEY: ${{ secrets.PIA_API_KEY }}
+      run: |
+        source .venv/bin/activate
+        python -m pytest -m integration -p no:cacheprovider --no-cov
