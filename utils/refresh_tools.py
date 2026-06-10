@@ -14,22 +14,25 @@ import json
 import os
 from pathlib import Path
 
-import urllib.request
+import httpx
 
 
-REMOTE_URL = "https://mcp.programintegrity.org/"
+REMOTE_URL = "https://programintegrity.org/mcp"
 
 
 def fetch_tools(api_key: str) -> dict:
     payload = {"jsonrpc": "2.0", "id": 1, "method": "tools/list", "params": {}}
-    data = json.dumps(payload).encode("utf-8")
     headers = {"Content-Type": "application/json", "x-api-key": api_key}
 
-    request = urllib.request.Request(
-        REMOTE_URL, data=data, headers=headers, method="POST"
+    response = httpx.post(
+        REMOTE_URL,
+        json=payload,
+        headers=headers,
+        timeout=60,
+        follow_redirects=True,
     )
-    with urllib.request.urlopen(request, timeout=60) as response:
-        result = json.load(response)
+    response.raise_for_status()
+    result = response.json()
 
     if "error" in result:
         message = result["error"].get("message", "Unknown error")

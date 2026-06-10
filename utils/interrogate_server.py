@@ -39,10 +39,10 @@ async def list_remote_tools(api_key: str):
 
     headers = {"Content-Type": "application/json", "x-api-key": api_key}
 
-    url = "https://mcp.programintegrity.org/"
+    url = "https://programintegrity.org/mcp"
 
     try:
-        async with httpx.AsyncClient(timeout=60) as client:
+        async with httpx.AsyncClient(timeout=60, follow_redirects=True) as client:
             print(f"Making request to {url}")
             response = await client.post(url, json=payload, headers=headers)
             response.raise_for_status()
@@ -74,10 +74,10 @@ async def list_remote_prompts(api_key: str):
 
     headers = {"Content-Type": "application/json", "x-api-key": api_key}
 
-    url = "https://mcp.programintegrity.org/"
+    url = "https://programintegrity.org/mcp"
 
     try:
-        async with httpx.AsyncClient(timeout=60) as client:
+        async with httpx.AsyncClient(timeout=60, follow_redirects=True) as client:
             response = await client.post(url, json=payload, headers=headers)
             response.raise_for_status()
 
@@ -113,10 +113,10 @@ async def get_prompt_content(api_key: str, prompt_name: str):
 
     headers = {"Content-Type": "application/json", "x-api-key": api_key}
 
-    url = "https://mcp.programintegrity.org/"
+    url = "https://programintegrity.org/mcp"
 
     try:
-        async with httpx.AsyncClient(timeout=60) as client:
+        async with httpx.AsyncClient(timeout=60, follow_redirects=True) as client:
             response = await client.post(url, json=payload, headers=headers)
             response.raise_for_status()
 
