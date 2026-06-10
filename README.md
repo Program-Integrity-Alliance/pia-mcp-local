@@ -50,8 +50,8 @@ For more information on how to use PIA's MCP resources in platforms like Claude 
 ### Getting a PIA API Key
 
 1. Go to [https://programintegrity.org/](https://programintegrity.org/) and register for a **free** PIA account (or log in if you already have one)
-2. Once logged in, open the user menu and create an API key
-3. Copy the generated key — you'll provide it to the MCP server via the `X-API-KEY` header / `--api-key` argument
+2. Once logged in, click the user icon (top right) and choose **API/MCP key** (this opens the **API / MCP Keys** page at `/account/api-keys`)
+3. Generate a new key, then copy it — you'll provide it to the MCP server via the `X-API-KEY` header / `--api-key` argument
 
 ### Installing using Docker MCP Toolkit (Recommended)
 
