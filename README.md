@@ -506,7 +506,7 @@ The API key is always provided via the MCP server configuration. Additional sett
 
 | Variable | Purpose | Default |
 |----------|---------|---------|
-| `PIA_API_URL` | PIA API endpoint | https://programintegrity.org/mcp |
+| `PIA_API_URL` | PIA API endpoint | https://www.programintegrity.org/mcp |
 | `REQUEST_TIMEOUT` | API request timeout (seconds) | 60 |
 | `MAX_RESULTS` | Maximum results per query | 50 |
 

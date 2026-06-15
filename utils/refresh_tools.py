@@ -17,7 +17,7 @@ from pathlib import Path
 import httpx
 
 
-REMOTE_URL = "https://programintegrity.org/mcp"
+REMOTE_URL = "https://www.programintegrity.org/mcp"
 
 
 def fetch_tools(api_key: str) -> dict:

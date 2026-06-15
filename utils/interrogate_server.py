@@ -39,7 +39,7 @@ async def list_remote_tools(api_key: str):
 
     headers = {"Content-Type": "application/json", "x-api-key": api_key}
 
-    url = "https://programintegrity.org/mcp"
+    url = "https://www.programintegrity.org/mcp"
 
     try:
         async with httpx.AsyncClient(timeout=60, follow_redirects=True) as client:
@@ -74,7 +74,7 @@ async def list_remote_prompts(api_key: str):
 
     headers = {"Content-Type": "application/json", "x-api-key": api_key}
 
-    url = "https://programintegrity.org/mcp"
+    url = "https://www.programintegrity.org/mcp"
 
     try:
         async with httpx.AsyncClient(timeout=60, follow_redirects=True) as client:
@@ -113,7 +113,7 @@ async def get_prompt_content(api_key: str, prompt_name: str):
 
     headers = {"Content-Type": "application/json", "x-api-key": api_key}
 
-    url = "https://programintegrity.org/mcp"
+    url = "https://www.programintegrity.org/mcp"
 
     try:
         async with httpx.AsyncClient(timeout=60, follow_redirects=True) as client:

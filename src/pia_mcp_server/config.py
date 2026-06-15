@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     REQUEST_TIMEOUT: int = 60
 
     # PIA Server Configuration
-    PIA_API_URL: str = "https://programintegrity.org/mcp"
+    PIA_API_URL: str = "https://www.programintegrity.org/mcp"
 
     model_config = SettingsConfigDict(extra="allow")
 

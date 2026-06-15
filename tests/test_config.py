@@ -10,7 +10,7 @@ def test_default_settings():
 
     assert settings.APP_NAME == "pia-mcp-server"
     assert settings.APP_VERSION == "0.1.0"
-    assert settings.PIA_API_URL == "https://programintegrity.org/mcp"
+    assert settings.PIA_API_URL == "https://www.programintegrity.org/mcp"
     assert settings.MAX_RESULTS == 50
     assert settings.REQUEST_TIMEOUT == 60
 

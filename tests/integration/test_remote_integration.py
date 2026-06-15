@@ -1,8 +1,8 @@
 """Live integration tests against the remote PIA MCP server.
 
 These tests make real network calls through the same forwarding code path the
-server uses in production, exercising the configured ``PIA_API_URL`` (including
-its 308 redirect to the www host) and ``X-API-KEY`` authentication.
+server uses in production, exercising the configured ``PIA_API_URL`` and
+``X-API-KEY`` authentication.
 
 They require a valid key in the ``PIA_API_KEY`` environment variable (supplied
 in CI via the ``PIA_API_KEY`` GitHub Actions secret) and are skipped
