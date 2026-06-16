@@ -83,6 +83,9 @@
                     "data_source": {
                       "type": "string"
                     },
+                    "data_set": {
+                      "type": "string"
+                    },
                     "url": {
                       "type": "string",
                       "format": "uri"
@@ -198,7 +201,7 @@
         "destructiveHint": false,
         "openWorldHint": true
       },
-      "description": "Search oversight recommendations (Open Recommendations dataset) with facets enabled by default. Today's date is 2026-06-10. This dataset contains recommendations from GAO and Oversight.gov only \u2014 SourceDocumentDataSource filters for any other source will be ignored. Do NOT filter by SourceDocumentDataSet \u2014 this tool already targets the 'Open Recommendations' dataset automatically. IMPORTANT: When a text query is provided, do NOT add a referenced_agencies filter \u2014 the query handles relevance matching. Only use referenced_agencies when the query is empty (pure filter/facet lookups). IMPORTANT \u2014 your response MUST include: 1) Every factual claim MUST have at least one clickable inline citation [[1]](url) \u2014 renumber sequentially from 1. 2) A References section (each ref on its OWN line) for every item you cited \u2014 omit ONLY for rec count/summary questions. 3) A Find Out More section with the `govquery_url` so the user can view results directly. 4) Caveat any totals from text queries: semantic search matches variations, so counts are approximate. Do NOT omit the Find Out More link. Do NOT put multiple references on one line.",
+      "description": "Search oversight recommendations (Open Recommendations dataset) with facets enabled by default. Today's date is 2026-06-16. This dataset contains recommendations from GAO and Oversight.gov only \u2014 SourceDocumentDataSource filters for any other source will be ignored. Do NOT filter by SourceDocumentDataSet \u2014 this tool already targets the 'Open Recommendations' dataset automatically. IMPORTANT: When a text query is provided, do NOT add a referenced_agencies filter \u2014 the query handles relevance matching. Only use referenced_agencies when the query is empty (pure filter/facet lookups). IMPORTANT \u2014 your response MUST include: 1) Every factual claim MUST have at least one clickable inline citation [[1]](url) \u2014 renumber sequentially from 1. 2) A References section (each ref on its OWN line) for every item you cited \u2014 omit ONLY for rec count/summary questions. 3) A Find Out More section with the `govquery_url` so the user can view results directly. 4) Caveat any totals from text queries: semantic search matches variations, so counts are approximate. Do NOT omit the Find Out More link. Do NOT put multiple references on one line.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -275,13 +278,32 @@
                     "data_source": {
                       "type": "string"
                     },
+                    "data_set": {
+                      "type": "string"
+                    },
                     "url": {
-                      "type": "string",
-                      "format": "uri"
+                      "type": "string"
                     },
                     "publication_date": {
-                      "type": "string",
-                      "format": "date-time"
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "index": {
+                      "type": "integer"
+                    },
+                    "content": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "agency": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
                     },
                     "rec_recommendation": {
                       "type": [
@@ -357,7 +379,6 @@
                     }
                   },
                   "required": [
-                    "id",
                     "title",
                     "data_source",
                     "url"
@@ -373,12 +394,14 @@
                     "id": {
                       "type": "string"
                     },
+                    "ref_num": {
+                      "type": "integer"
+                    },
                     "label": {
                       "type": "string"
                     },
                     "url": {
-                      "type": "string",
-                      "format": "uri"
+                      "type": "string"
                     },
                     "title": {
                       "type": "string"
@@ -387,12 +410,13 @@
                       "type": "string"
                     },
                     "publication_date": {
-                      "type": "string",
-                      "format": "date-time"
+                      "type": [
+                        "string",
+                        "null"
+                      ]
                     }
                   },
                   "required": [
-                    "id",
                     "label",
                     "url"
                   ],
@@ -559,12 +583,18 @@
                     "data_source": {
                       "type": "string"
                     },
+                    "data_set": {
+                      "type": "string"
+                    },
                     "url": {
                       "type": "string",
                       "format": "uri"
                     },
                     "publication_date": {
-                      "type": "string",
+                      "type": [
+                        "string",
+                        "null"
+                      ],
                       "format": "date-time"
                     }
                   },
@@ -599,7 +629,10 @@
                       "type": "string"
                     },
                     "publication_date": {
-                      "type": "string",
+                      "type": [
+                        "string",
+                        "null"
+                      ],
                       "format": "date-time"
                     }
                   },
@@ -819,12 +852,18 @@
                     "data_source": {
                       "type": "string"
                     },
+                    "data_set": {
+                      "type": "string"
+                    },
                     "url": {
                       "type": "string",
                       "format": "uri"
                     },
                     "publication_date": {
-                      "type": "string",
+                      "type": [
+                        "string",
+                        "null"
+                      ],
                       "format": "date-time"
                     }
                   },
@@ -859,7 +898,10 @@
                       "type": "string"
                     },
                     "publication_date": {
-                      "type": "string",
+                      "type": [
+                        "string",
+                        "null"
+                      ],
                       "format": "date-time"
                     }
                   },
@@ -1051,11 +1093,17 @@
                     "data_source": {
                       "type": "string"
                     },
+                    "data_set": {
+                      "type": "string"
+                    },
                     "url": {
                       "type": "string"
                     },
                     "publication_date": {
-                      "type": "string"
+                      "type": [
+                        "string",
+                        "null"
+                      ]
                     }
                   },
                   "required": [
@@ -1088,7 +1136,10 @@
                       "type": "string"
                     },
                     "publication_date": {
-                      "type": "string"
+                      "type": [
+                        "string",
+                        "null"
+                      ]
                     }
                   },
                   "required": [
@@ -1211,11 +1262,17 @@
                     "data_source": {
                       "type": "string"
                     },
+                    "data_set": {
+                      "type": "string"
+                    },
                     "url": {
                       "type": "string"
                     },
                     "publication_date": {
-                      "type": "string"
+                      "type": [
+                        "string",
+                        "null"
+                      ]
                     }
                   },
                   "required": [
@@ -1248,7 +1305,10 @@
                       "type": "string"
                     },
                     "publication_date": {
-                      "type": "string"
+                      "type": [
+                        "string",
+                        "null"
+                      ]
                     }
                   },
                   "required": [
@@ -1371,11 +1431,17 @@
                     "data_source": {
                       "type": "string"
                     },
+                    "data_set": {
+                      "type": "string"
+                    },
                     "url": {
                       "type": "string"
                     },
                     "publication_date": {
-                      "type": "string"
+                      "type": [
+                        "string",
+                        "null"
+                      ]
                     }
                   },
                   "required": [
@@ -1408,7 +1474,10 @@
                       "type": "string"
                     },
                     "publication_date": {
-                      "type": "string"
+                      "type": [
+                        "string",
+                        "null"
+                      ]
                     }
                   },
                   "required": [
@@ -1531,11 +1600,17 @@
                     "data_source": {
                       "type": "string"
                     },
+                    "data_set": {
+                      "type": "string"
+                    },
                     "url": {
                       "type": "string"
                     },
                     "publication_date": {
-                      "type": "string"
+                      "type": [
+                        "string",
+                        "null"
+                      ]
                     }
                   },
                   "required": [
@@ -1568,7 +1643,10 @@
                       "type": "string"
                     },
                     "publication_date": {
-                      "type": "string"
+                      "type": [
+                        "string",
+                        "null"
+                      ]
                     }
                   },
                   "required": [
@@ -1691,11 +1769,17 @@
                     "data_source": {
                       "type": "string"
                     },
+                    "data_set": {
+                      "type": "string"
+                    },
                     "url": {
                       "type": "string"
                     },
                     "publication_date": {
-                      "type": "string"
+                      "type": [
+                        "string",
+                        "null"
+                      ]
                     }
                   },
                   "required": [
@@ -1728,7 +1812,10 @@
                       "type": "string"
                     },
                     "publication_date": {
-                      "type": "string"
+                      "type": [
+                        "string",
+                        "null"
+                      ]
                     }
                   },
                   "required": [
@@ -1851,11 +1938,17 @@
                     "data_source": {
                       "type": "string"
                     },
+                    "data_set": {
+                      "type": "string"
+                    },
                     "url": {
                       "type": "string"
                     },
                     "publication_date": {
-                      "type": "string"
+                      "type": [
+                        "string",
+                        "null"
+                      ]
                     }
                   },
                   "required": [
@@ -1888,7 +1981,10 @@
                       "type": "string"
                     },
                     "publication_date": {
-                      "type": "string"
+                      "type": [
+                        "string",
+                        "null"
+                      ]
                     }
                   },
                   "required": [
@@ -2027,7 +2123,10 @@
                 "type": "string"
               },
               "publication_date": {
-                "type": "string"
+                "type": [
+                  "string",
+                  "null"
+                ]
               },
               "author": {
                 "type": "string"
