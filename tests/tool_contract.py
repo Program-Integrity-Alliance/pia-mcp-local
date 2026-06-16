@@ -21,13 +21,12 @@ EXPECTED_TOOL_NAMES = {
     "pia_search_content_executive_orders",
     "search",
     "fetch",
-    "pia_filter_snippets",
 }
 
-# Tools that intentionally do NOT declare an outputSchema. pia_filter_snippets
-# returns plain text content (it has no structured output), so it is the only
-# tool exempt from the outputSchema contract.
-TOOLS_WITHOUT_OUTPUT_SCHEMA = {"pia_filter_snippets"}
+# Tools that intentionally do NOT declare an outputSchema. Every current tool
+# declares one, so this set is empty; it stays here so the schema tests keep
+# tolerating a future schema-less tool without code changes.
+TOOLS_WITHOUT_OUTPUT_SCHEMA: set[str] = set()
 
 # Content/search tools whose structuredContent is {"output": {"results": [...]}}.
 # Mapped to a broad query that reliably returns results from the live index.

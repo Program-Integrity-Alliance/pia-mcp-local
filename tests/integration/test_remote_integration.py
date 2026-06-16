@@ -13,12 +13,10 @@ What they assert:
     tool advertises an outputSchema;
   * each search/content tool returns real, non-empty results;
   * the facet tools return facets;
-  * ``fetch`` returns document text for a real result id;
-  * ``pia_filter_snippets`` filters snippets for a real search_id.
+  * ``fetch`` returns document text for a real result id.
 """
 
 import os
-from urllib.parse import parse_qs, urlparse
 
 import httpx
 import pytest
@@ -129,26 +127,3 @@ async def test_fetch_returns_document_text():
     document = fetched.structuredContent
     assert document.get("id")
     assert document.get("text"), "fetch returned no document text"
-
-
-async def test_filter_snippets_filters_live_snippets():
-    """``pia_filter_snippets`` filters snippets for a real search_id.
-
-    The search_id is published in the ``govquery_url`` of a prior search.
-    This tool returns plain text content (no structuredContent).
-    """
-    search = await st.handle_pia_search_content({"query": "improper payments"})
-    govquery_url = search.structuredContent["output"]["govquery_url"]
-    search_id = parse_qs(urlparse(govquery_url).query)["search_id"][0]
-
-    filtered = await st.handle_pia_filter_snippets(
-        {
-            "search_id": search_id,
-            "summary_text": "Improper payments are widespread across agencies [1].",
-        }
-    )
-
-    assert filtered.isError is not True
-    assert filtered.content, "pia_filter_snippets returned no content"
-    assert filtered.content[0].type == "text"
-    assert '"results"' in filtered.content[0].text

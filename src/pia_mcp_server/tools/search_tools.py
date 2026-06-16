@@ -44,7 +44,6 @@ pia_search_content_executive_orders_tool = _build_tool(
 )
 search_tool = _build_tool("search")
 fetch_tool = _build_tool("fetch")
-pia_filter_snippets_tool = _build_tool("pia_filter_snippets")
 
 
 # Handler functions - using generic handler that forwards to remote server
@@ -144,13 +143,6 @@ async def handle_fetch(
 ) -> types.CallToolResult:
     """Handle fetch document requests."""
     return await _forward_to_remote("fetch", arguments)
-
-
-async def handle_pia_filter_snippets(
-    arguments: Dict[str, Any],
-) -> types.CallToolResult:
-    """Handle snippet filtering requests."""
-    return await _forward_to_remote("pia_filter_snippets", arguments)
 
 
 async def _forward_to_remote(

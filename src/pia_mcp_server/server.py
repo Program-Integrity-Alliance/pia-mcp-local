@@ -28,7 +28,6 @@ from .tools import (
     handle_pia_search_content_executive_orders,
     handle_search,
     handle_fetch,
-    handle_pia_filter_snippets,
 )
 from .tools import (
     pia_search_content_tool,
@@ -45,7 +44,6 @@ from .tools import (
     pia_search_content_executive_orders_tool,
     search_tool,
     fetch_tool,
-    pia_filter_snippets_tool,
 )
 from .prompts.handlers import list_prompts as handler_list_prompts
 from .prompts.handlers import get_prompt as handler_get_prompt
@@ -88,7 +86,6 @@ async def list_tools() -> List[types.Tool]:
         pia_search_content_executive_orders_tool,
         search_tool,
         fetch_tool,
-        pia_filter_snippets_tool,
     ]
 
 
@@ -124,8 +121,6 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[types.TextCont
         return await handle_search(arguments)
     elif name == "fetch":
         return await handle_fetch(arguments)
-    elif name == "pia_filter_snippets":
-        return await handle_pia_filter_snippets(arguments)
     else:
         return [types.TextContent(type="text", text=f"Error: Unknown tool {name}")]
 

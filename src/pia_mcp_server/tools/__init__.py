@@ -34,8 +34,6 @@ from .search_tools import (
     search_tool,
     handle_fetch,
     fetch_tool,
-    handle_pia_filter_snippets,
-    pia_filter_snippets_tool,
 )
 
 __all__ = [
@@ -67,6 +65,4 @@ __all__ = [
     "search_tool",
     "handle_fetch",
     "fetch_tool",
-    "handle_pia_filter_snippets",
-    "pia_filter_snippets_tool",
 ]

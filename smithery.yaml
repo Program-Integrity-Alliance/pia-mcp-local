@@ -21,7 +21,6 @@ mcp:
     - pia_search_content_executive_orders
     - search
     - fetch
-    - pia_filter_snippets
   prompts:
     - summarization_guidance
     - content_search_guidance

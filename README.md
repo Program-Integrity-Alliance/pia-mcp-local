@@ -162,7 +162,7 @@ Then add this to your Client, eg Claude ...
 
 ## 💡 Available Tools
 
-The server provides 15 tools for searching the Program Integrity Alliance (PIA) database:
+The server provides 14 tools for searching the Program Integrity Alliance (PIA) database:
 
 ### Core Search Tools
 
@@ -372,17 +372,6 @@ The server provides 15 tools for searching the Program Integrity Alliance (PIA) 
 
 **Parameters:**
 - `id` (required): A unique identifier for the document to retrieve
-
-### 15. `pia_filter_snippets`
-
-**Purpose:** Refine a previous search's snippets to match an AI-generated summary.
-
-**Description:** After generating a summary that cites search results with bracket references like `[1]`, `[2]`, etc., call this tool to filter each cited document's snippet down to the chunks most similar to the citing sentences. This produces longer, more relevant excerpts that closely match the information used in the summary. Unlike the other tools it returns plain text content rather than structured output.
-
-**Parameters:**
-- `search_id` (required): The `search_id` from a previous `pia_search_content` call
-- `summary_text` (required): The AI-generated summary containing `[N]` bracket citations
-- `similarity_threshold` (optional): Minimum similarity score for a chunk to be kept
 
 ## Search Modes
 
