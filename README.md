@@ -49,9 +49,9 @@ For more information on how to use PIA's MCP resources in platforms like Claude 
 
 ### Getting a PIA API Key
 
-1. Go to [https://mcp.programintegrity.org/get-api-key](https://mcp.programintegrity.org/get-api-key)
-2. If you don't have a **free** PIA account, click the 'No account? Create one' link, otherwise log in
-3. Once logged in, you should automatically receive your key
+1. Go to [https://programintegrity.org/](https://programintegrity.org/) and register for a **free** PIA account (or log in if you already have one)
+2. Once logged in, click the user icon (top right) and choose **API/MCP key** (this opens the **API / MCP Keys** page at `/account/api-keys`)
+3. Generate a new key, then copy it — you'll provide it to the MCP server via the `X-API-KEY` header / `--api-key` argument
 
 ### Installing using Docker MCP Toolkit (Recommended)
 
@@ -162,7 +162,7 @@ Then add this to your Client, eg Claude ...
 
 ## 💡 Available Tools
 
-The server provides 14 tools for searching the Program Integrity Alliance (PIA) database:
+The server provides 15 tools for searching the Program Integrity Alliance (PIA) database:
 
 ### Core Search Tools
 
@@ -373,6 +373,17 @@ The server provides 14 tools for searching the Program Integrity Alliance (PIA) 
 **Parameters:**
 - `id` (required): A unique identifier for the document to retrieve
 
+### 15. `pia_filter_snippets`
+
+**Purpose:** Refine a previous search's snippets to match an AI-generated summary.
+
+**Description:** After generating a summary that cites search results with bracket references like `[1]`, `[2]`, etc., call this tool to filter each cited document's snippet down to the chunks most similar to the citing sentences. This produces longer, more relevant excerpts that closely match the information used in the summary. Unlike the other tools it returns plain text content rather than structured output.
+
+**Parameters:**
+- `search_id` (required): The `search_id` from a previous `pia_search_content` call
+- `summary_text` (required): The AI-generated summary containing `[N]` bracket citations
+- `similarity_threshold` (optional): Minimum similarity score for a chunk to be kept
+
 ## Search Modes
 
 Comprehensive search with OData filtering and faceting. The `filter` parameter uses standard [OData query syntax](https://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part2-url-conventions.html).
@@ -506,13 +517,13 @@ The API key is always provided via the MCP server configuration. Additional sett
 
 | Variable | Purpose | Default |
 |----------|---------|---------|
-| `PIA_API_URL` | PIA API endpoint | https://mcp.programintegrity.org/ |
+| `PIA_API_URL` | PIA API endpoint | https://www.programintegrity.org/mcp |
 | `REQUEST_TIMEOUT` | API request timeout (seconds) | 60 |
 | `MAX_RESULTS` | Maximum results per query | 50 |
 
 ### MCP Configuration
 
-The API key must be provided in your MCP client configuration using the `--api-key` argument. Contact the Program Integrity Alliance to obtain your API key.
+The API key must be provided in your MCP client configuration using the `--api-key` argument. See [Getting a PIA API Key](#getting-a-pia-api-key) above to create one.
 
 ```json
 {

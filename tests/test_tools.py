@@ -18,6 +18,7 @@ from pia_mcp_server.tools.search_tools import (
     handle_pia_search_content_executive_orders,
     handle_search,
     handle_fetch,
+    handle_pia_filter_snippets,
 )
 from pia_mcp_server.config import Settings
 
@@ -730,6 +731,45 @@ async def test_fetch_success():
 
 
 @pytest.mark.asyncio
+async def test_pia_filter_snippets_success():
+    """Test successful snippet filtering."""
+    structured = {
+        "search_id": "search-123",
+        "filtered_results": [{"id": "doc-1", "snippet": "Most relevant excerpt"}],
+    }
+    mock_response = {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": build_tool_result(structured),
+    }
+
+    with patch.object(Settings, "_get_api_key_from_args", return_value="test_key"):
+        with patch("httpx.AsyncClient") as mock_client:
+            mock_response_obj = Mock()
+            mock_response_obj.json.return_value = mock_response
+            mock_response_obj.raise_for_status.return_value = None
+
+            mock_client_instance = AsyncMock()
+            mock_client_instance.post.return_value = mock_response_obj
+            mock_client.return_value.__aenter__.return_value = mock_client_instance
+
+            result = await handle_pia_filter_snippets(
+                {"search_id": "search-123", "summary_text": "A summary [1]."}
+            )
+
+            # Verify the tool name was forwarded correctly
+            call_args = mock_client_instance.post.call_args
+            request_data = call_args[1]["json"]
+            assert request_data["params"]["name"] == "pia_filter_snippets"
+            assert request_data["params"]["arguments"]["search_id"] == "search-123"
+
+            assert (
+                result.structuredContent["filtered_results"][0]["snippet"]
+                == "Most relevant excerpt"
+            )
+
+
+@pytest.mark.asyncio
 async def test_agency_tools_no_api_key():
     """Test agency-specific tools without API key."""
     tools_to_test = [
@@ -740,6 +780,10 @@ async def test_agency_tools_no_api_key():
         (handle_pia_search_content_congress, {"query": "test"}),
         (handle_pia_search_content_executive_orders, {"query": "test"}),
         (handle_fetch, {"id": "test-123"}),
+        (
+            handle_pia_filter_snippets,
+            {"search_id": "test-123", "summary_text": "summary"},
+        ),
     ]
 
     for tool_handler, args in tools_to_test:
@@ -762,6 +806,10 @@ async def test_agency_tools_http_error():
         (handle_pia_search_content_congress, {"query": "test"}),
         (handle_pia_search_content_executive_orders, {"query": "test"}),
         (handle_fetch, {"id": "test-123"}),
+        (
+            handle_pia_filter_snippets,
+            {"search_id": "test-123", "summary_text": "summary"},
+        ),
     ]
 
     for tool_handler, args in tools_to_test:

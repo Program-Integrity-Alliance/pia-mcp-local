@@ -1,0 +1,36 @@
+name: Dependabot auto-merge
+
+# Auto-approve and enable auto-merge for Dependabot PRs. GitHub then merges
+# them only once all required status checks pass (branch protection on main
+# requires: lint, test (3.11/3.12), gitleaks, pip-audit, bandit, integration).
+# Major version bumps are intentionally NOT auto-merged — they are left open
+# for manual review.
+
+on: pull_request
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]'
+
+    steps:
+    - name: Fetch Dependabot metadata
+      id: metadata
+      uses: dependabot/fetch-metadata@v2
+      with:
+        github-token: "${{ secrets.GITHUB_TOKEN }}"
+
+    - name: Approve and enable auto-merge (patch & minor only)
+      if: >-
+        steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
+        steps.metadata.outputs.update-type == 'version-update:semver-minor'
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PR_URL: ${{ github.event.pull_request.html_url }}
+      run: |
+        gh pr review --approve "$PR_URL"
+        gh pr merge --auto --squash "$PR_URL"

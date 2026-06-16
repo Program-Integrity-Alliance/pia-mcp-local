@@ -15,9 +15,8 @@ authors = [
 dependencies = [
     "httpx>=0.24.0",
     "pydantic>=2.8.0",
-    "mcp>=1.2.0",
-    "aiohttp>=3.9.1",
-    "python-dotenv>=1.0.0",
+    "mcp>=1.23.0",
+    "python-dotenv>=1.2.2",
     "pydantic-settings>=2.1.0",
     "uvicorn>=0.30.0",
     "sse-starlette>=1.8.2",
@@ -30,10 +29,24 @@ test = [
     "pytest-asyncio>=0.23.5",
     "pytest-cov>=4.1.0",
     "pytest-mock>=3.10.0",
-    "aioresponses>=0.7.6"
+    "jsonschema>=4.20.0"
 ]
 dev = [
     "black==23.3.0"
+]
+security = [
+    "pip-audit>=2.7.0",
+    "bandit>=1.7.0"
+]
+
+[tool.uv]
+# Floor transitive dependencies onto patched releases to clear known CVEs
+# (these are pulled in transitively, chiefly via mcp). Constraints only apply
+# when the package is already in the resolution; they do not add new deps.
+constraint-dependencies = [
+    "starlette>=1.3.1",
+    "python-multipart>=0.0.27",
+    "idna>=3.15",
 ]
 
 [tool.pytest.ini_options]
@@ -41,6 +54,9 @@ asyncio_mode = "auto"
 asyncio_fixture_loop_scope = "function"
 testpaths = ["tests"]
 addopts = "-v --cov=pia_mcp_server"
+markers = [
+    "integration: tests that make real network calls to the remote PIA MCP server (require PIA_API_KEY)"
+]
 
 [project.scripts]
 pia-mcp-server = "pia_mcp_server:main"
