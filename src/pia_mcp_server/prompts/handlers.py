@@ -97,8 +97,7 @@ async def get_prompt(
 
 def _generate_summarization_guidance() -> str:
     """Generate summarization guidance prompt - EXACT content from remote server."""
-    return textwrap.dedent(
-        """\
+    return textwrap.dedent("""\
         You are an assistant that summarizes information **only** from the provided search results.
 
             Your task:
@@ -148,14 +147,12 @@ def _generate_summarization_guidance() -> str:
             - Do not invent URLs — copy exactly from the provided search results.
             - Do not merge facts without maintaining accurate citations.
             - If you can't find enough information for a point, omit it entirely.
-        """
-    )
+        """)
 
 
 def _generate_content_search_guidance() -> str:
     """Generate content search guidance prompt - EXACT content from remote server."""
-    return textwrap.dedent(
-        """\
+    return textwrap.dedent("""\
         You can perform searches using the PIA Search tools with or without filters.
 
             **Search Tool Selection**:
@@ -213,14 +210,12 @@ def _generate_content_search_guidance() -> str:
             - Default to unfiltered search unless filter criteria are clearly present in the query.
             - Always validate filter fields/values before applying them.
             - Fall back to unfiltered if filtering produces zero results and it hasn't already been run.
-        """
-    )
+        """)
 
 
 def _generate_titles_search_guidance() -> str:
     """Generate titles search guidance prompt - EXACT content from remote server."""
-    return textwrap.dedent(
-        """\
+    return textwrap.dedent("""\
         You can search document titles using the PIA title search tools to discover what documents are available.
 
             **Title Search Tool Selection**:
@@ -284,14 +279,12 @@ def _generate_titles_search_guidance() -> str:
             - Use title search to discover what documents are available
             - Help users find specific documents by title or browse available documents
             - Always validate filter fields/values before applying them
-        """
-    )
+        """)
 
 
 def _generate_recommendations_guidance() -> str:
     """Generate recommendations guidance prompt - EXACT content from remote server."""
-    return textwrap.dedent(
-        """\
+    return textwrap.dedent("""\
         You can search and analyze oversight recommendations data using the PIA Search tools.
 
             **Understanding Recommendations Data**:
@@ -328,5 +321,4 @@ def _generate_recommendations_guidance() -> str:
             4. Consider whether to include/exclude closed recommendations based on the question
             5. Provide links from search results when available
             6. Direct users to additional resources when appropriate
-        """
-    )
+        """)

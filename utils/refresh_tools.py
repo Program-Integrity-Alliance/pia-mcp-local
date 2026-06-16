@@ -16,7 +16,6 @@ from pathlib import Path
 
 import httpx
 
-
 REMOTE_URL = "https://www.programintegrity.org/mcp"
 
 

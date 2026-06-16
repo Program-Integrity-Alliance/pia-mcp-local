@@ -25,14 +25,14 @@ dependencies = [
 
 [project.optional-dependencies]
 test = [
-    "pytest>=8.0.0",
+    "pytest>=9.0.3",
     "pytest-asyncio>=0.23.5",
     "pytest-cov>=4.1.0",
     "pytest-mock>=3.10.0",
     "jsonschema>=4.20.0"
 ]
 dev = [
-    "black==23.3.0"
+    "black==26.5.1"
 ]
 security = [
     "pip-audit>=2.7.0",
