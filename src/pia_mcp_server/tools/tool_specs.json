@@ -83,9 +83,6 @@
                     "data_source": {
                       "type": "string"
                     },
-                    "data_set": {
-                      "type": "string"
-                    },
                     "url": {
                       "type": "string",
                       "format": "uri"
@@ -104,7 +101,7 @@
                     "data_source",
                     "url"
                   ],
-                  "additionalProperties": false
+                  "additionalProperties": true
                 }
               },
               "citations": {
@@ -141,7 +138,7 @@
                     "label",
                     "url"
                   ],
-                  "additionalProperties": false
+                  "additionalProperties": true
                 }
               },
               "references": {
@@ -160,224 +157,38 @@
               },
               "facets": {
                 "type": "object",
-                "properties": {
-                  "SourceDocumentDataSource": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
+                "additionalProperties": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "type": "string"
                       },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentDataSet": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentOrg": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecStatus": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecPriorityFlag": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "IsIntegrityRelated": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentIsRecDoc": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecFraudRiskManagementThemePIA": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecMatterForCongressPIA": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "referenced_agencies": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
+                      "count": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "value",
+                      "count"
+                    ],
+                    "additionalProperties": true
                   }
-                },
-                "required": [
-                  "SourceDocumentDataSource",
-                  "SourceDocumentDataSet",
-                  "SourceDocumentOrg",
-                  "RecStatus",
-                  "RecPriorityFlag",
-                  "IsIntegrityRelated",
-                  "SourceDocumentIsRecDoc",
-                  "RecFraudRiskManagementThemePIA",
-                  "RecMatterForCongressPIA",
-                  "referenced_agencies"
-                ],
-                "additionalProperties": false
+                }
               }
             },
             "required": [
               "total_count",
               "results"
             ],
-            "additionalProperties": false
+            "additionalProperties": true
           }
         },
         "required": [
           "output"
         ],
-        "additionalProperties": false
+        "additionalProperties": true
       }
     },
     {
@@ -387,7 +198,7 @@
         "destructiveHint": false,
         "openWorldHint": true
       },
-      "description": "Search oversight recommendations (Open Recommendations dataset) with facets enabled by default. Today's date is 2026-06-16. This dataset contains recommendations from GAO and Oversight.gov only \u2014 SourceDocumentDataSource filters for any other source will be ignored. Do NOT filter by SourceDocumentDataSet \u2014 this tool already targets the 'Open Recommendations' dataset automatically. IMPORTANT: When a text query is provided, do NOT add a referenced_agencies filter \u2014 the query handles relevance matching. Only use referenced_agencies when the query is empty (pure filter/facet lookups). IMPORTANT \u2014 your response MUST include: 1) Every factual claim MUST have at least one clickable inline citation [[1]](url) \u2014 renumber sequentially from 1. 2) A References section (each ref on its OWN line) for every item you cited \u2014 omit ONLY for rec count/summary questions. 3) A Find Out More section with the `govquery_url` so the user can view results directly. 4) Caveat any totals from text queries: semantic search matches variations, so counts are approximate. Do NOT omit the Find Out More link. Do NOT put multiple references on one line.",
+      "description": "Search oversight recommendations (Open Recommendations dataset) with facets enabled by default. Today's date is 2026-06-18. This dataset contains recommendations from GAO and Oversight.gov only \u2014 SourceDocumentDataSource filters for any other source will be ignored. Do NOT filter by SourceDocumentDataSet \u2014 this tool already targets the 'Open Recommendations' dataset automatically. IMPORTANT: When a text query is provided, do NOT add a referenced_agencies filter \u2014 the query handles relevance matching. Only use referenced_agencies when the query is empty (pure filter/facet lookups). IMPORTANT \u2014 your response MUST: 1) Cite `total_count` as the number of OPEN recommendations matching the query AND every filter clause. 2) Summarize the recommendations in `results`; you MAY break the set down using `facets` (status, priority, agency, theme, \u2026). 3) Caveat totals from TEXT queries: semantic matching is approximate; pure filter/agency lookups are exact. 4) ALWAYS include a Find Out More section linking the `govquery_url` so the user can open the full set in Rec Spotlight. Recommendations have NO per-document citations \u2014 do NOT fabricate [[N]](url) citations or a References section; direct users to Rec Spotlight via `govquery_url`.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -449,35 +260,21 @@
                 "items": {
                   "type": "object",
                   "properties": {
-                    "id": {
-                      "type": "string"
+                    "index": {
+                      "type": "integer"
                     },
                     "title": {
-                      "type": "string"
-                    },
-                    "snippet": {
-                      "type": "string"
-                    },
-                    "score": {
-                      "type": "number"
-                    },
-                    "data_source": {
-                      "type": "string"
-                    },
-                    "data_set": {
                       "type": "string"
                     },
                     "url": {
                       "type": "string"
                     },
-                    "publication_date": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
+                    "data_source": {
+                      "type": "string"
                     },
-                    "index": {
-                      "type": "integer"
+                    "publication_date": {
+                      "type": "string",
+                      "format": "date"
                     },
                     "content": {
                       "type": [
@@ -503,31 +300,13 @@
                         "null"
                       ]
                     },
-                    "rec_integrity_related_pia": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
-                    },
                     "rec_priority_flag": {
                       "type": [
                         "string",
                         "null"
                       ]
                     },
-                    "rec_audit_topics": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
-                    },
                     "rec_fraud_risk_management_theme_pia": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
-                    },
-                    "rec_matter_for_congress_pia": {
                       "type": [
                         "string",
                         "null"
@@ -544,305 +323,54 @@
                         "number",
                         "null"
                       ]
-                    },
-                    "rec_ref_pages": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
-                    },
-                    "rec_agency_comment_pages": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
-                    },
-                    "rec_quality": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
                     }
                   },
                   "required": [
-                    "title",
-                    "data_source",
-                    "url"
+                    "index",
+                    "data_source"
                   ],
-                  "additionalProperties": false
-                }
-              },
-              "citations": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "ref_num": {
-                      "type": "integer"
-                    },
-                    "label": {
-                      "type": "string"
-                    },
-                    "url": {
-                      "type": "string"
-                    },
-                    "title": {
-                      "type": "string"
-                    },
-                    "data_source": {
-                      "type": "string"
-                    },
-                    "publication_date": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
-                    }
-                  },
-                  "required": [
-                    "label",
-                    "url"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "references": {
-                "type": "array",
-                "items": {
-                  "type": "string"
+                  "additionalProperties": true
                 }
               },
               "govquery_url": {
                 "type": "string",
                 "format": "uri",
-                "description": "GovQuery URL for equivalent results; source data can be found with these links."
-              },
-              "citation_guidance": {
-                "type": "string"
+                "description": "Rec Spotlight deep link reproducing this query's full open-recommendation population (same filters + search_id). ALWAYS present this to the user."
               },
               "facets": {
                 "type": "object",
-                "properties": {
-                  "SourceDocumentDataSource": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
+                "additionalProperties": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "type": "string"
                       },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentDataSet": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentOrg": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecStatus": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecPriorityFlag": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "IsIntegrityRelated": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentIsRecDoc": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecFraudRiskManagementThemePIA": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecMatterForCongressPIA": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "referenced_agencies": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
+                      "count": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "value",
+                      "count"
+                    ],
+                    "additionalProperties": true
                   }
-                },
-                "required": [
-                  "SourceDocumentDataSource",
-                  "SourceDocumentDataSet",
-                  "SourceDocumentOrg",
-                  "RecStatus",
-                  "RecPriorityFlag",
-                  "IsIntegrityRelated",
-                  "SourceDocumentIsRecDoc",
-                  "RecFraudRiskManagementThemePIA",
-                  "RecMatterForCongressPIA",
-                  "referenced_agencies"
-                ],
-                "additionalProperties": false
+                }
               }
             },
             "required": [
               "total_count",
               "results"
             ],
-            "additionalProperties": false
+            "additionalProperties": true
           }
         },
         "required": [
           "output"
         ],
-        "additionalProperties": false
+        "additionalProperties": true
       }
     },
     {
@@ -955,18 +483,12 @@
                     "data_source": {
                       "type": "string"
                     },
-                    "data_set": {
-                      "type": "string"
-                    },
                     "url": {
                       "type": "string",
                       "format": "uri"
                     },
                     "publication_date": {
-                      "type": [
-                        "string",
-                        "null"
-                      ],
+                      "type": "string",
                       "format": "date-time"
                     }
                   },
@@ -976,7 +498,7 @@
                     "data_source",
                     "url"
                   ],
-                  "additionalProperties": false
+                  "additionalProperties": true
                 }
               },
               "citations": {
@@ -1001,10 +523,7 @@
                       "type": "string"
                     },
                     "publication_date": {
-                      "type": [
-                        "string",
-                        "null"
-                      ],
+                      "type": "string",
                       "format": "date-time"
                     }
                   },
@@ -1013,7 +532,7 @@
                     "label",
                     "url"
                   ],
-                  "additionalProperties": false
+                  "additionalProperties": true
                 }
               },
               "references": {
@@ -1062,227 +581,19 @@
               },
               "citation_guidance": {
                 "type": "string"
-              },
-              "facets": {
-                "type": "object",
-                "properties": {
-                  "SourceDocumentDataSource": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentDataSet": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentOrg": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecStatus": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecPriorityFlag": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "IsIntegrityRelated": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentIsRecDoc": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecFraudRiskManagementThemePIA": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecMatterForCongressPIA": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "referenced_agencies": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  }
-                },
-                "required": [
-                  "SourceDocumentDataSource",
-                  "SourceDocumentDataSet",
-                  "SourceDocumentOrg",
-                  "RecStatus",
-                  "RecPriorityFlag",
-                  "IsIntegrityRelated",
-                  "SourceDocumentIsRecDoc",
-                  "RecFraudRiskManagementThemePIA",
-                  "RecMatterForCongressPIA",
-                  "referenced_agencies"
-                ],
-                "additionalProperties": false
               }
             },
             "required": [
               "total_count",
               "results"
             ],
-            "additionalProperties": false
+            "additionalProperties": true
           }
         },
         "required": [
           "output"
         ],
-        "additionalProperties": false
+        "additionalProperties": true
       }
     },
     {
@@ -1321,223 +632,37 @@
               },
               "facets": {
                 "type": "object",
-                "properties": {
-                  "SourceDocumentDataSource": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
+                "additionalProperties": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "type": "string"
                       },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentDataSet": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentOrg": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecStatus": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecPriorityFlag": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "IsIntegrityRelated": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentIsRecDoc": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecFraudRiskManagementThemePIA": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecMatterForCongressPIA": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "referenced_agencies": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
+                      "count": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "value",
+                      "count"
+                    ],
+                    "additionalProperties": true
                   }
-                },
-                "required": [
-                  "SourceDocumentDataSource",
-                  "SourceDocumentDataSet",
-                  "SourceDocumentOrg",
-                  "RecStatus",
-                  "RecPriorityFlag",
-                  "IsIntegrityRelated",
-                  "SourceDocumentIsRecDoc",
-                  "RecFraudRiskManagementThemePIA",
-                  "RecMatterForCongressPIA",
-                  "referenced_agencies"
-                ],
-                "additionalProperties": false
+                }
               }
             },
             "required": [
               "facets"
             ],
-            "additionalProperties": false
+            "additionalProperties": true
           }
         },
         "required": [
           "output"
         ],
-        "additionalProperties": false
+        "additionalProperties": true
       }
     },
     {
@@ -1618,18 +743,12 @@
                     "data_source": {
                       "type": "string"
                     },
-                    "data_set": {
-                      "type": "string"
-                    },
                     "url": {
                       "type": "string",
                       "format": "uri"
                     },
                     "publication_date": {
-                      "type": [
-                        "string",
-                        "null"
-                      ],
+                      "type": "string",
                       "format": "date-time"
                     }
                   },
@@ -1639,7 +758,7 @@
                     "data_source",
                     "url"
                   ],
-                  "additionalProperties": false
+                  "additionalProperties": true
                 }
               },
               "citations": {
@@ -1664,10 +783,7 @@
                       "type": "string"
                     },
                     "publication_date": {
-                      "type": [
-                        "string",
-                        "null"
-                      ],
+                      "type": "string",
                       "format": "date-time"
                     }
                   },
@@ -1676,7 +792,7 @@
                     "label",
                     "url"
                   ],
-                  "additionalProperties": false
+                  "additionalProperties": true
                 }
               },
               "references": {
@@ -1692,147 +808,19 @@
               },
               "citation_guidance": {
                 "type": "string"
-              },
-              "facets": {
-                "type": "object",
-                "properties": {
-                  "SourceDocumentDataSource": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentDataSet": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentOrg": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "IsIntegrityRelated": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentIsRecDoc": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "referenced_agencies": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  }
-                },
-                "required": [
-                  "SourceDocumentDataSource",
-                  "SourceDocumentDataSet",
-                  "SourceDocumentOrg",
-                  "IsIntegrityRelated",
-                  "SourceDocumentIsRecDoc",
-                  "referenced_agencies"
-                ],
-                "additionalProperties": false
               }
             },
             "required": [
               "total_count",
               "results"
             ],
-            "additionalProperties": false
+            "additionalProperties": true
           }
         },
         "required": [
           "output"
         ],
-        "additionalProperties": false
+        "additionalProperties": true
       }
     },
     {
@@ -1871,143 +859,37 @@
               },
               "facets": {
                 "type": "object",
-                "properties": {
-                  "SourceDocumentDataSource": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
+                "additionalProperties": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "type": "string"
                       },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentDataSet": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentOrg": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "IsIntegrityRelated": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentIsRecDoc": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "referenced_agencies": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
+                      "count": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "value",
+                      "count"
+                    ],
+                    "additionalProperties": true
                   }
-                },
-                "required": [
-                  "SourceDocumentDataSource",
-                  "SourceDocumentDataSet",
-                  "SourceDocumentOrg",
-                  "IsIntegrityRelated",
-                  "SourceDocumentIsRecDoc",
-                  "referenced_agencies"
-                ],
-                "additionalProperties": false
+                }
               }
             },
             "required": [
               "facets"
             ],
-            "additionalProperties": false
+            "additionalProperties": true
           }
         },
         "required": [
           "output"
         ],
-        "additionalProperties": false
+        "additionalProperties": true
       }
     },
     {
@@ -2093,17 +975,11 @@
                     "data_source": {
                       "type": "string"
                     },
-                    "data_set": {
-                      "type": "string"
-                    },
                     "url": {
                       "type": "string"
                     },
                     "publication_date": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
+                      "type": "string"
                     }
                   },
                   "required": [
@@ -2112,7 +988,7 @@
                     "data_source",
                     "url"
                   ],
-                  "additionalProperties": false
+                  "additionalProperties": true
                 }
               },
               "citations": {
@@ -2136,10 +1012,7 @@
                       "type": "string"
                     },
                     "publication_date": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
+                      "type": "string"
                     }
                   },
                   "required": [
@@ -2148,7 +1021,7 @@
                     "data_source",
                     "url"
                   ],
-                  "additionalProperties": false
+                  "additionalProperties": true
                 }
               },
               "references": {
@@ -2164,227 +1037,19 @@
               },
               "citation_guidance": {
                 "type": "string"
-              },
-              "facets": {
-                "type": "object",
-                "properties": {
-                  "SourceDocumentDataSource": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentDataSet": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentOrg": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecStatus": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecPriorityFlag": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "IsIntegrityRelated": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentIsRecDoc": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecFraudRiskManagementThemePIA": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecMatterForCongressPIA": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "referenced_agencies": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  }
-                },
-                "required": [
-                  "SourceDocumentDataSource",
-                  "SourceDocumentDataSet",
-                  "SourceDocumentOrg",
-                  "RecStatus",
-                  "RecPriorityFlag",
-                  "IsIntegrityRelated",
-                  "SourceDocumentIsRecDoc",
-                  "RecFraudRiskManagementThemePIA",
-                  "RecMatterForCongressPIA",
-                  "referenced_agencies"
-                ],
-                "additionalProperties": false
               }
             },
             "required": [
               "total_count",
               "results"
             ],
-            "additionalProperties": false
+            "additionalProperties": true
           }
         },
         "required": [
           "output"
         ],
-        "additionalProperties": false
+        "additionalProperties": true
       }
     },
     {
@@ -2470,17 +1135,11 @@
                     "data_source": {
                       "type": "string"
                     },
-                    "data_set": {
-                      "type": "string"
-                    },
                     "url": {
                       "type": "string"
                     },
                     "publication_date": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
+                      "type": "string"
                     }
                   },
                   "required": [
@@ -2489,7 +1148,7 @@
                     "data_source",
                     "url"
                   ],
-                  "additionalProperties": false
+                  "additionalProperties": true
                 }
               },
               "citations": {
@@ -2513,10 +1172,7 @@
                       "type": "string"
                     },
                     "publication_date": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
+                      "type": "string"
                     }
                   },
                   "required": [
@@ -2525,7 +1181,7 @@
                     "data_source",
                     "url"
                   ],
-                  "additionalProperties": false
+                  "additionalProperties": true
                 }
               },
               "references": {
@@ -2541,227 +1197,19 @@
               },
               "citation_guidance": {
                 "type": "string"
-              },
-              "facets": {
-                "type": "object",
-                "properties": {
-                  "SourceDocumentDataSource": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentDataSet": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentOrg": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecStatus": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecPriorityFlag": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "IsIntegrityRelated": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentIsRecDoc": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecFraudRiskManagementThemePIA": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecMatterForCongressPIA": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "referenced_agencies": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  }
-                },
-                "required": [
-                  "SourceDocumentDataSource",
-                  "SourceDocumentDataSet",
-                  "SourceDocumentOrg",
-                  "RecStatus",
-                  "RecPriorityFlag",
-                  "IsIntegrityRelated",
-                  "SourceDocumentIsRecDoc",
-                  "RecFraudRiskManagementThemePIA",
-                  "RecMatterForCongressPIA",
-                  "referenced_agencies"
-                ],
-                "additionalProperties": false
               }
             },
             "required": [
               "total_count",
               "results"
             ],
-            "additionalProperties": false
+            "additionalProperties": true
           }
         },
         "required": [
           "output"
         ],
-        "additionalProperties": false
+        "additionalProperties": true
       }
     },
     {
@@ -2847,17 +1295,11 @@
                     "data_source": {
                       "type": "string"
                     },
-                    "data_set": {
-                      "type": "string"
-                    },
                     "url": {
                       "type": "string"
                     },
                     "publication_date": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
+                      "type": "string"
                     }
                   },
                   "required": [
@@ -2866,7 +1308,7 @@
                     "data_source",
                     "url"
                   ],
-                  "additionalProperties": false
+                  "additionalProperties": true
                 }
               },
               "citations": {
@@ -2890,10 +1332,7 @@
                       "type": "string"
                     },
                     "publication_date": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
+                      "type": "string"
                     }
                   },
                   "required": [
@@ -2902,7 +1341,7 @@
                     "data_source",
                     "url"
                   ],
-                  "additionalProperties": false
+                  "additionalProperties": true
                 }
               },
               "references": {
@@ -2918,227 +1357,19 @@
               },
               "citation_guidance": {
                 "type": "string"
-              },
-              "facets": {
-                "type": "object",
-                "properties": {
-                  "SourceDocumentDataSource": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentDataSet": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentOrg": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecStatus": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecPriorityFlag": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "IsIntegrityRelated": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentIsRecDoc": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecFraudRiskManagementThemePIA": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecMatterForCongressPIA": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "referenced_agencies": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  }
-                },
-                "required": [
-                  "SourceDocumentDataSource",
-                  "SourceDocumentDataSet",
-                  "SourceDocumentOrg",
-                  "RecStatus",
-                  "RecPriorityFlag",
-                  "IsIntegrityRelated",
-                  "SourceDocumentIsRecDoc",
-                  "RecFraudRiskManagementThemePIA",
-                  "RecMatterForCongressPIA",
-                  "referenced_agencies"
-                ],
-                "additionalProperties": false
               }
             },
             "required": [
               "total_count",
               "results"
             ],
-            "additionalProperties": false
+            "additionalProperties": true
           }
         },
         "required": [
           "output"
         ],
-        "additionalProperties": false
+        "additionalProperties": true
       }
     },
     {
@@ -3224,17 +1455,11 @@
                     "data_source": {
                       "type": "string"
                     },
-                    "data_set": {
-                      "type": "string"
-                    },
                     "url": {
                       "type": "string"
                     },
                     "publication_date": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
+                      "type": "string"
                     }
                   },
                   "required": [
@@ -3243,7 +1468,7 @@
                     "data_source",
                     "url"
                   ],
-                  "additionalProperties": false
+                  "additionalProperties": true
                 }
               },
               "citations": {
@@ -3267,10 +1492,7 @@
                       "type": "string"
                     },
                     "publication_date": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
+                      "type": "string"
                     }
                   },
                   "required": [
@@ -3279,7 +1501,7 @@
                     "data_source",
                     "url"
                   ],
-                  "additionalProperties": false
+                  "additionalProperties": true
                 }
               },
               "references": {
@@ -3295,227 +1517,19 @@
               },
               "citation_guidance": {
                 "type": "string"
-              },
-              "facets": {
-                "type": "object",
-                "properties": {
-                  "SourceDocumentDataSource": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentDataSet": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentOrg": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecStatus": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecPriorityFlag": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "IsIntegrityRelated": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentIsRecDoc": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecFraudRiskManagementThemePIA": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecMatterForCongressPIA": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "referenced_agencies": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  }
-                },
-                "required": [
-                  "SourceDocumentDataSource",
-                  "SourceDocumentDataSet",
-                  "SourceDocumentOrg",
-                  "RecStatus",
-                  "RecPriorityFlag",
-                  "IsIntegrityRelated",
-                  "SourceDocumentIsRecDoc",
-                  "RecFraudRiskManagementThemePIA",
-                  "RecMatterForCongressPIA",
-                  "referenced_agencies"
-                ],
-                "additionalProperties": false
               }
             },
             "required": [
               "total_count",
               "results"
             ],
-            "additionalProperties": false
+            "additionalProperties": true
           }
         },
         "required": [
           "output"
         ],
-        "additionalProperties": false
+        "additionalProperties": true
       }
     },
     {
@@ -3601,17 +1615,11 @@
                     "data_source": {
                       "type": "string"
                     },
-                    "data_set": {
-                      "type": "string"
-                    },
                     "url": {
                       "type": "string"
                     },
                     "publication_date": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
+                      "type": "string"
                     }
                   },
                   "required": [
@@ -3620,7 +1628,7 @@
                     "data_source",
                     "url"
                   ],
-                  "additionalProperties": false
+                  "additionalProperties": true
                 }
               },
               "citations": {
@@ -3644,10 +1652,7 @@
                       "type": "string"
                     },
                     "publication_date": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
+                      "type": "string"
                     }
                   },
                   "required": [
@@ -3656,7 +1661,7 @@
                     "data_source",
                     "url"
                   ],
-                  "additionalProperties": false
+                  "additionalProperties": true
                 }
               },
               "references": {
@@ -3672,227 +1677,19 @@
               },
               "citation_guidance": {
                 "type": "string"
-              },
-              "facets": {
-                "type": "object",
-                "properties": {
-                  "SourceDocumentDataSource": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentDataSet": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentOrg": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecStatus": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecPriorityFlag": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "IsIntegrityRelated": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentIsRecDoc": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecFraudRiskManagementThemePIA": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecMatterForCongressPIA": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "referenced_agencies": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  }
-                },
-                "required": [
-                  "SourceDocumentDataSource",
-                  "SourceDocumentDataSet",
-                  "SourceDocumentOrg",
-                  "RecStatus",
-                  "RecPriorityFlag",
-                  "IsIntegrityRelated",
-                  "SourceDocumentIsRecDoc",
-                  "RecFraudRiskManagementThemePIA",
-                  "RecMatterForCongressPIA",
-                  "referenced_agencies"
-                ],
-                "additionalProperties": false
               }
             },
             "required": [
               "total_count",
               "results"
             ],
-            "additionalProperties": false
+            "additionalProperties": true
           }
         },
         "required": [
           "output"
         ],
-        "additionalProperties": false
+        "additionalProperties": true
       }
     },
     {
@@ -3978,17 +1775,11 @@
                     "data_source": {
                       "type": "string"
                     },
-                    "data_set": {
-                      "type": "string"
-                    },
                     "url": {
                       "type": "string"
                     },
                     "publication_date": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
+                      "type": "string"
                     }
                   },
                   "required": [
@@ -3997,7 +1788,7 @@
                     "data_source",
                     "url"
                   ],
-                  "additionalProperties": false
+                  "additionalProperties": true
                 }
               },
               "citations": {
@@ -4021,10 +1812,7 @@
                       "type": "string"
                     },
                     "publication_date": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
+                      "type": "string"
                     }
                   },
                   "required": [
@@ -4033,7 +1821,7 @@
                     "data_source",
                     "url"
                   ],
-                  "additionalProperties": false
+                  "additionalProperties": true
                 }
               },
               "references": {
@@ -4049,227 +1837,19 @@
               },
               "citation_guidance": {
                 "type": "string"
-              },
-              "facets": {
-                "type": "object",
-                "properties": {
-                  "SourceDocumentDataSource": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentDataSet": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentOrg": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecStatus": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecPriorityFlag": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "IsIntegrityRelated": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "SourceDocumentIsRecDoc": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecFraudRiskManagementThemePIA": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "RecMatterForCongressPIA": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "referenced_agencies": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "string"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "value",
-                        "count"
-                      ],
-                      "additionalProperties": false
-                    }
-                  }
-                },
-                "required": [
-                  "SourceDocumentDataSource",
-                  "SourceDocumentDataSet",
-                  "SourceDocumentOrg",
-                  "RecStatus",
-                  "RecPriorityFlag",
-                  "IsIntegrityRelated",
-                  "SourceDocumentIsRecDoc",
-                  "RecFraudRiskManagementThemePIA",
-                  "RecMatterForCongressPIA",
-                  "referenced_agencies"
-                ],
-                "additionalProperties": false
               }
             },
             "required": [
               "total_count",
               "results"
             ],
-            "additionalProperties": false
+            "additionalProperties": true
           }
         },
         "required": [
           "output"
         ],
-        "additionalProperties": false
+        "additionalProperties": true
       }
     },
     {
@@ -4314,14 +1894,14 @@
                 "title",
                 "url"
               ],
-              "additionalProperties": false
+              "additionalProperties": true
             }
           }
         },
         "required": [
           "results"
         ],
-        "additionalProperties": false
+        "additionalProperties": true
       }
     },
     {
@@ -4371,10 +1951,7 @@
                 "type": "string"
               },
               "publication_date": {
-                "type": [
-                  "string",
-                  "null"
-                ]
+                "type": "string"
               },
               "author": {
                 "type": "string"
@@ -4392,7 +1969,7 @@
                 "type": "string"
               }
             },
-            "additionalProperties": false
+            "additionalProperties": true
           }
         },
         "required": [
@@ -4401,7 +1978,7 @@
           "text",
           "url"
         ],
-        "additionalProperties": false
+        "additionalProperties": true
       }
     }
   ]
