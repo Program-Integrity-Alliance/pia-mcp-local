@@ -7,23 +7,9 @@ package:
 
 mcp:
   tools:
-    - pia_search_content
+    - pia_search
     - pia_oversight_recommendations
-    - pia_search_content_wide
-    - pia_search_content_facets
-    - pia_search_titles
-    - pia_search_titles_facets
-    - pia_search_content_gao
-    - pia_search_content_oig
-    - pia_search_content_crs
-    - pia_search_content_doj
-    - pia_search_content_congress
-    - pia_search_content_executive_orders
     - search
     - fetch
-    - pia_filter_snippets
   prompts:
-    - summarization_guidance
-    - content_search_guidance
-    - titles_search_guidance
-    - recommendations_guidance
+    - pia_assistant_guidance

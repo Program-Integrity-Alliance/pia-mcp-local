@@ -9,16 +9,13 @@ in CI via the ``PIA_API_KEY`` GitHub Actions secret) and are skipped
 automatically when no key is configured.
 
 What they assert:
-  * the remote ``tools/list`` matches the local snapshot and every structured
-    tool advertises an outputSchema;
+  * every tool the proxy advertises exists on the remote and advertises an
+    outputSchema;
   * each search/content tool returns real, non-empty results;
-  * the facet tools return facets;
-  * ``fetch`` returns document text for a real result id;
-  * ``pia_filter_snippets`` filters snippets for a real search_id.
+  * ``fetch`` returns document text for a real result id.
 """
 
 import os
-from urllib.parse import parse_qs, urlparse
 
 import httpx
 import pytest
@@ -29,7 +26,6 @@ from pia_mcp_server.tools import search_tools as st
 from tests.tool_contract import (
     CONTENT_RESULT_TOOLS,
     EXPECTED_TOOL_NAMES,
-    FACET_TOOLS,
     TOOLS_WITHOUT_OUTPUT_SCHEMA,
 )
 
@@ -58,19 +54,29 @@ async def _remote_tools_list() -> list[dict]:
         return response.json()["result"]["tools"]
 
 
-async def test_remote_tools_list_matches_local_snapshot():
-    """Remote tool list, local snapshot, and expected set all agree."""
-    remote = await _remote_tools_list()
-    remote_names = {tool["name"] for tool in remote}
+async def test_local_snapshot_matches_expected_and_exists_on_remote():
+    """The proxy advertises exactly EXPECTED_TOOL_NAMES, and every advertised
+    tool exists on the configured remote.
+
+    The snapshot intentionally tracks the upstream build being released next, so
+    it may *lead* the currently-deployed remote (which can still expose tools the
+    snapshot has dropped). The contract that matters is that everything the proxy
+    advertises is actually callable on the remote — i.e. advertised ⊆ remote.
+    """
+    remote_names = {tool["name"] for tool in await _remote_tools_list()}
     local_names = {tool.name for tool in await list_tools()}
 
-    assert remote_names == EXPECTED_TOOL_NAMES
     assert local_names == EXPECTED_TOOL_NAMES
+    missing = EXPECTED_TOOL_NAMES - remote_names
+    assert not missing, f"advertised tools not present on remote: {sorted(missing)}"
 
 
-async def test_remote_structured_tools_advertise_output_schema():
-    """Every structured tool on the remote advertises an object outputSchema."""
+async def test_advertised_structured_tools_advertise_output_schema():
+    """Every structured tool the proxy advertises has an object outputSchema on
+    the remote. Remote-only tools the proxy does not expose are ignored."""
     for tool in await _remote_tools_list():
+        if tool["name"] not in EXPECTED_TOOL_NAMES:
+            continue
         if tool["name"] in TOOLS_WITHOUT_OUTPUT_SCHEMA:
             continue
         output_schema = tool.get("outputSchema")
@@ -106,21 +112,9 @@ async def test_search_tool_returns_live_results():
     assert results[0].get("title")
 
 
-@pytest.mark.parametrize("tool_name,query", sorted(FACET_TOOLS.items()))
-async def test_facet_tool_returns_live_facets(tool_name, query):
-    """Each facet tool returns a non-empty facets mapping."""
-    handler = getattr(st, f"handle_{tool_name}")
-    result = await handler({"query": query})
-
-    assert result.isError is not True
-    facets = result.structuredContent["output"]["facets"]
-    assert isinstance(facets, dict)
-    assert len(facets) > 0, f"{tool_name} returned no facets"
-
-
 async def test_fetch_returns_document_text():
     """``fetch`` returns document content for a real result id."""
-    search = await st.handle_pia_search_content({"query": "improper payments"})
+    search = await st.handle_pia_search({"query": "improper payments"})
     doc_id = search.structuredContent["output"]["results"][0]["id"]
 
     fetched = await st.handle_fetch({"id": doc_id})
@@ -129,26 +123,3 @@ async def test_fetch_returns_document_text():
     document = fetched.structuredContent
     assert document.get("id")
     assert document.get("text"), "fetch returned no document text"
-
-
-async def test_filter_snippets_filters_live_snippets():
-    """``pia_filter_snippets`` filters snippets for a real search_id.
-
-    The search_id is published in the ``govquery_url`` of a prior search.
-    This tool returns plain text content (no structuredContent).
-    """
-    search = await st.handle_pia_search_content({"query": "improper payments"})
-    govquery_url = search.structuredContent["output"]["govquery_url"]
-    search_id = parse_qs(urlparse(govquery_url).query)["search_id"][0]
-
-    filtered = await st.handle_pia_filter_snippets(
-        {
-            "search_id": search_id,
-            "summary_text": "Improper payments are widespread across agencies [1].",
-        }
-    )
-
-    assert filtered.isError is not True
-    assert filtered.content, "pia_filter_snippets returned no content"
-    assert filtered.content[0].type == "text"
-    assert '"results"' in filtered.content[0].text

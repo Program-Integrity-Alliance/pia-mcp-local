@@ -1,47 +1,61 @@
 {
   "tools": [
     {
-      "name": "pia_search_content",
+      "name": "pia_search",
       "annotations": {
         "readOnlyHint": true,
         "destructiveHint": false,
         "openWorldHint": true
       },
-      "description": "Search the Program Integrity Alliance (PIA) database for document content and recommendations. Returns comprehensive results with full citation information and clickable links for proper attribution. Each result includes corresponding citations with data source attribution. Major data sources include: Department of Justice (210k+ docs), Congress.gov (35k+ docs), Oversight.gov (24k+ docs), CRS (22k+ docs), GAO (10k+ docs), Federal Register (1k+ executive orders). Use pia_search_content_executive_orders to search only executive orders. Supports complex OData filtering with boolean logic, operators, and grouping. IMPORTANT \u2014 your response MUST include: 1) Every factual claim MUST have at least one clickable inline citation [[1]](url) \u2014 renumber sequentially from 1. 2) A References section (each ref on its OWN line) for every item you cited \u2014 omit ONLY for rec count/summary questions. 3) A Find Out More section with the `govquery_url` so the user can view results directly. 4) Caveat any totals from text queries: semantic search matches variations, so counts are approximate. Do NOT omit the Find Out More link. Do NOT put multiple references on one line.",
+      "description": "Search the Program Integrity Alliance (PIA) database of government oversight reports, recommendations, executive orders, legislation, and integrity data (GAO, OIG/Oversight.gov, CRS, DOJ, Congress.gov, Federal Register). One tool for all document search: scope by source/dataset/agency/date via filter, choose content vs titles via search_mode, sweep every source with wide, or discover filter values with facets_only. IMPORTANT \u2014 your response MUST include: 1) Every factual claim MUST have at least one clickable inline citation [[1]](url) \u2014 renumber sequentially from 1. 2) A References section (each ref on its OWN line) for every item you cited \u2014 omit ONLY for rec count/summary questions. 3) A Find Out More section with the `govquery_url` so the user can view results directly. 4) Caveat any totals from text queries: semantic search matches variations, so counts are approximate. Do NOT omit the Find Out More link. Do NOT put multiple references on one line.",
       "inputSchema": {
         "type": "object",
         "properties": {
           "query": {
             "type": "string",
-            "description": "Search query text"
+            "description": "Search query \u2014 natural language or keywords. Use \"\" or \"*\" to match all documents (for pure filter/facet lookups)."
           },
           "filter": {
             "type": "string",
-            "description": "Optional OData filter expression supporting complex boolean logic.\n\nAVAILABLE FIELDS:\n\u2022 SourceDocumentDataSource: Data source/agency that published the document. Major sources (>1k documents): 'Department of Justice', 'Congress.gov', 'Oversight.gov', 'CRS', 'GAO', 'Federal Register'\n\u2022 SourceDocumentDataSet: Dataset or collection the document belongs to. Values include: 'reports', 'federal-reports', 'press-releases', 'executive orders', 'Open Recommendations'. Note: the value is 'Open Recommendations' (not 'recommendations'). Values: 'press-releases', 'bills-and-laws', 'reports', 'federal-reports', 'executive orders', 'state-and-local-reports', 'annual-financial-reports', 'congressional-justification-reports', 'performance-and-accountability-reports'\n\u2022 SourceDocumentTitle: Document title - use contains, eq for text matching\n\u2022 SourceDocumentPublishDate: Publication date - ISO 8601 format YYYY-MM-DD (e.g., '2023-01-01'). Use ge/le for ranges\n\u2022 RecStatus: Recommendation status\n\u2022 RecPriorityFlag: Priority flag for recommendations\n\u2022 SourceDocumentIsRecDoc: Whether the document contains recommendations. Values: 'No', 'Yes'\n\u2022 RecFraudRiskManagementThemePIA: Fraud risk management theme classification\n\u2022 RecMatterForCongressPIA: Whether the matter is for Congressional attention\n\u2022 RecRecommendation: Recommendation text - use contains, eq for text matching\n\u2022 RecAgencyComments: Agency comments on recommendations - use contains, eq for text matching\n\u2022 referenced_agencies: Agencies referenced by documents (collection field). IMPORTANT: Only use this filter when the query is empty (pure filter/facet lookups). Do NOT combine with a text query \u2014 the query already handles relevance matching. Example: (referenced_agencies/any(a: a eq 'Department of Defense (DOD)') or referenced_agencies/any(a: a eq 'Department of Justice (DOJ)')) - for single agency omit outer parentheses and 'or'. Get all values via pia_search_content_facets.\n\nOPERATORS:\n\u2022 Text: contains, eq, ne, startswith, endswith\n\u2022 Exact: eq (equals), ne (not equals), in (in list)\n\u2022 Date: ge (greater/equal), le (less/equal), eq (equals)\n\u2022 Logic: and, or, not, parentheses for grouping\n\nEXAMPLES:\n\u2022 \"SourceDocumentDataSource eq 'GAO'\"\n\u2022 \"SourceDocumentDataSource eq 'GAO' and RecStatus ne 'Closed'\"\n\u2022 \"(SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'OIG') and RecStatus eq 'Open'\"\n\u2022 \"SourceDocumentPublishDate ge '2020-01-01' and SourceDocumentPublishDate le '2024-12-31'\"\n\nTIP: Use pia_search_content_facets tool to get the most current available values.\n\nCOMMON AGENCY NAMES (use EXACT spelling for referenced_agencies):\nDepartment of Defense (DOD), Department of Health and Human Services (HHS),\nDepartment of Homeland Security (DHS), Department of Justice (DOJ),\nDepartment of Education (ED), Department of Veterans Affairs (VA),\nDepartment of the Treasury, Department of Agriculture (USDA),\nDepartment of the Interior (DOI), Department of Transportation (DOT),\nDepartment of Energy (DOE), Department of State, Department of Labor (DOL),\nDepartment of Commerce (DOC), Department of Housing and Urban Development (HUD),\nEnvironmental Protection Agency (EPA),\nNational Aeronautics and Space Administration (NASA),\nSocial Security Administration (SSA), Small Business Administration (SBA),\nOffice of Personnel Management (OPM), General Services Administration (GSA)"
+            "description": "OData filter to scope results (boolean logic + grouping). Source: SourceDocumentDataSource eq 'GAO' (valid: GAO, Oversight.gov, CRS, Department of Justice, Congress.gov, Federal Register). Agency: referenced_agencies/any(a: a eq 'Department of Defense (DOD)'). Dataset: SourceDocumentDataSet eq 'executive orders'. To restrict to one source, pass its SourceDocumentDataSource filter."
           },
           "page": {
             "type": "integer",
-            "description": "Page number (default: 1)",
-            "default": 1
+            "default": 1,
+            "description": "Page number (1-based). Ignored when wide=true."
           },
           "page_size": {
             "type": "integer",
-            "description": "Results per page (default: 5)",
-            "default": 5
+            "default": 10,
+            "description": "Results per page (max 50). Per-source before merge when wide=true."
           },
           "search_mode": {
             "type": "string",
-            "description": "Search mode (default: content)",
-            "default": "content"
+            "enum": [
+              "content",
+              "titles"
+            ],
+            "default": "content",
+            "description": "'content' searches full document text; 'titles' searches document titles only (faster, to locate a specific document)."
           },
-          "limit": {
-            "type": "integer",
-            "description": "Maximum results limit"
+          "wide": {
+            "type": "boolean",
+            "default": false,
+            "description": "When true, sweep ALL sources/datasets in parallel and merge into one de-duplicated, score-ranked list. Use for the most comprehensive cross-source view."
           },
           "include_facets": {
             "type": "boolean",
-            "description": "Include facets in results",
-            "default": false
+            "default": false,
+            "description": "Include per-dimension facet counts (source, status, priority, agency, theme, \u2026) alongside results."
+          },
+          "facets_only": {
+            "type": "boolean",
+            "default": false,
+            "description": "Return ONLY facet counts (available filter values), no document results \u2014 to discover filters before drilling in. Implies include_facets."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Optional hard cap on results (alias for page_size)."
           }
         },
         "required": [
@@ -101,7 +115,7 @@
                     "data_source",
                     "url"
                   ],
-                  "additionalProperties": false
+                  "additionalProperties": true
                 }
               },
               "citations": {
@@ -138,7 +152,7 @@
                     "label",
                     "url"
                   ],
-                  "additionalProperties": false
+                  "additionalProperties": true
                 }
               },
               "references": {
@@ -173,22 +187,41 @@
                       "value",
                       "count"
                     ],
-                    "additionalProperties": false
+                    "additionalProperties": true
                   }
                 }
+              },
+              "applied_filter": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "The OData filter actually applied, echoed back so you can broaden or tighten it deliberately."
+              },
+              "returned": {
+                "type": "integer",
+                "description": "Number of results in this response (may be < total_count due to paging)."
+              },
+              "has_more": {
+                "type": "boolean",
+                "description": "True if more results exist beyond this page \u2014 narrow the filter or request the next page."
+              },
+              "hint": {
+                "type": "string",
+                "description": "Present only when there are zero results: names the likely over-constraining filter and suggests facets_only=true to discover valid values."
               }
             },
             "required": [
               "total_count",
               "results"
             ],
-            "additionalProperties": false
+            "additionalProperties": true
           }
         },
         "required": [
           "output"
         ],
-        "additionalProperties": false
+        "additionalProperties": true
       }
     },
     {
@@ -198,7 +231,7 @@
         "destructiveHint": false,
         "openWorldHint": true
       },
-      "description": "Search oversight recommendations (Open Recommendations dataset) with facets enabled by default. Today's date is 2026-06-10. This dataset contains recommendations from GAO and Oversight.gov only \u2014 SourceDocumentDataSource filters for any other source will be ignored. Do NOT filter by SourceDocumentDataSet \u2014 this tool already targets the 'Open Recommendations' dataset automatically. IMPORTANT: When a text query is provided, do NOT add a referenced_agencies filter \u2014 the query handles relevance matching. Only use referenced_agencies when the query is empty (pure filter/facet lookups). IMPORTANT \u2014 your response MUST include: 1) Every factual claim MUST have at least one clickable inline citation [[1]](url) \u2014 renumber sequentially from 1. 2) A References section (each ref on its OWN line) for every item you cited \u2014 omit ONLY for rec count/summary questions. 3) A Find Out More section with the `govquery_url` so the user can view results directly. 4) Caveat any totals from text queries: semantic search matches variations, so counts are approximate. Do NOT omit the Find Out More link. Do NOT put multiple references on one line.",
+      "description": "Search oversight recommendations (Open Recommendations dataset) with facets enabled by default. Today's date is 2026-06-22. This dataset contains recommendations from GAO and Oversight.gov only \u2014 SourceDocumentDataSource filters for any other source will be ignored. Do NOT filter by SourceDocumentDataSet \u2014 this tool already targets the 'Open Recommendations' dataset automatically. IMPORTANT: When a text query is provided, do NOT add a referenced_agencies filter \u2014 the query handles relevance matching. Only use referenced_agencies when the query is empty (pure filter/facet lookups). IMPORTANT \u2014 your response MUST: 1) Cite `total_count` as the number of OPEN recommendations matching the query AND every filter clause. 2) Summarize the recommendations in `results`; you MAY break the set down using `facets` (status, priority, agency, theme, \u2026). 3) Caveat totals from TEXT queries: semantic matching is approximate; pure filter/agency lookups are exact. 4) ALWAYS include a Find Out More section linking the `govquery_url` so the user can open the full set in Rec Spotlight. Recommendations have NO per-document citations \u2014 do NOT fabricate [[N]](url) citations or a References section; direct users to Rec Spotlight via `govquery_url`.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -208,7 +241,7 @@
           },
           "filter": {
             "type": "string",
-            "description": "Optional OData filter expression supporting complex boolean logic.\n\nAVAILABLE FIELDS:\n\u2022 SourceDocumentDataSource: Data source/agency that published the document. Major sources (>1k documents): 'Department of Justice', 'Congress.gov', 'Oversight.gov', 'CRS', 'GAO', 'Federal Register'\n\u2022 SourceDocumentDataSet: Dataset or collection the document belongs to. Values include: 'reports', 'federal-reports', 'press-releases', 'executive orders', 'Open Recommendations'. Note: the value is 'Open Recommendations' (not 'recommendations'). Values: 'press-releases', 'bills-and-laws', 'reports', 'federal-reports', 'executive orders', 'state-and-local-reports', 'annual-financial-reports', 'congressional-justification-reports', 'performance-and-accountability-reports'\n\u2022 SourceDocumentTitle: Document title - use contains, eq for text matching\n\u2022 SourceDocumentPublishDate: Publication date - ISO 8601 format YYYY-MM-DD (e.g., '2023-01-01'). Use ge/le for ranges\n\u2022 RecStatus: Recommendation status\n\u2022 RecPriorityFlag: Priority flag for recommendations\n\u2022 SourceDocumentIsRecDoc: Whether the document contains recommendations. Values: 'No', 'Yes'\n\u2022 RecFraudRiskManagementThemePIA: Fraud risk management theme classification\n\u2022 RecMatterForCongressPIA: Whether the matter is for Congressional attention\n\u2022 RecRecommendation: Recommendation text - use contains, eq for text matching\n\u2022 RecAgencyComments: Agency comments on recommendations - use contains, eq for text matching\n\u2022 referenced_agencies: Agencies referenced by documents (collection field). IMPORTANT: Only use this filter when the query is empty (pure filter/facet lookups). Do NOT combine with a text query \u2014 the query already handles relevance matching. Example: (referenced_agencies/any(a: a eq 'Department of Defense (DOD)') or referenced_agencies/any(a: a eq 'Department of Justice (DOJ)')) - for single agency omit outer parentheses and 'or'. Get all values via pia_search_content_facets.\n\nOPERATORS:\n\u2022 Text: contains, eq, ne, startswith, endswith\n\u2022 Exact: eq (equals), ne (not equals), in (in list)\n\u2022 Date: ge (greater/equal), le (less/equal), eq (equals)\n\u2022 Logic: and, or, not, parentheses for grouping\n\nEXAMPLES:\n\u2022 \"SourceDocumentDataSource eq 'GAO'\"\n\u2022 \"SourceDocumentDataSource eq 'GAO' and RecStatus ne 'Closed'\"\n\u2022 \"(SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'OIG') and RecStatus eq 'Open'\"\n\u2022 \"SourceDocumentPublishDate ge '2020-01-01' and SourceDocumentPublishDate le '2024-12-31'\"\n\nTIP: Use pia_search_content_facets tool to get the most current available values.\n\nCOMMON AGENCY NAMES (use EXACT spelling for referenced_agencies):\nDepartment of Defense (DOD), Department of Health and Human Services (HHS),\nDepartment of Homeland Security (DHS), Department of Justice (DOJ),\nDepartment of Education (ED), Department of Veterans Affairs (VA),\nDepartment of the Treasury, Department of Agriculture (USDA),\nDepartment of the Interior (DOI), Department of Transportation (DOT),\nDepartment of Energy (DOE), Department of State, Department of Labor (DOL),\nDepartment of Commerce (DOC), Department of Housing and Urban Development (HUD),\nEnvironmental Protection Agency (EPA),\nNational Aeronautics and Space Administration (NASA),\nSocial Security Administration (SSA), Small Business Administration (SBA),\nOffice of Personnel Management (OPM), General Services Administration (GSA)"
+            "description": "Optional OData filter expression supporting complex boolean logic.\n\nAVAILABLE FIELDS:\n\u2022 SourceDocumentDataSource: Data source/agency that published the document. Major sources (>1k documents): 'Department of Justice', 'Congress.gov', 'Oversight.gov', 'CRS', 'GAO', 'Federal Register'\n\u2022 SourceDocumentDataSet: Dataset or collection the document belongs to. Values include: 'reports', 'federal-reports', 'press-releases', 'executive orders', 'Open Recommendations'. Note: the value is 'Open Recommendations' (not 'recommendations'). Values: 'press-releases', 'bills-and-laws', 'reports', 'federal-reports', 'executive orders', 'state-and-local-reports', 'annual-financial-reports', 'congressional-justification-reports', 'performance-and-accountability-reports'\n\u2022 SourceDocumentTitle: Document title - use contains, eq for text matching\n\u2022 SourceDocumentPublishDate: Publication date - ISO 8601 format YYYY-MM-DD (e.g., '2023-01-01'). Use ge/le for ranges\n\u2022 RecStatus: Recommendation status\n\u2022 RecPriorityFlag: Priority flag for recommendations\n\u2022 SourceDocumentIsRecDoc: Whether the document contains recommendations. Values: 'No', 'Yes'\n\u2022 RecFraudRiskManagementThemePIA: Fraud risk management theme classification\n\u2022 RecMatterForCongressPIA: Whether the matter is for Congressional attention\n\u2022 RecRecommendation: Recommendation text - use contains, eq for text matching\n\u2022 RecAgencyComments: Agency comments on recommendations - use contains, eq for text matching\n\u2022 referenced_agencies: Agencies referenced by documents (collection field). IMPORTANT: Only use this filter when the query is empty (pure filter/facet lookups). Do NOT combine with a text query \u2014 the query already handles relevance matching. Example: (referenced_agencies/any(a: a eq 'Department of Defense (DOD)') or referenced_agencies/any(a: a eq 'Department of Justice (DOJ)')) - for single agency omit outer parentheses and 'or'. Get all values via pia_search with facets_only=true.\n\nOPERATORS:\n\u2022 Text: contains, eq, ne, startswith, endswith\n\u2022 Exact: eq (equals), ne (not equals), in (in list)\n\u2022 Date: ge (greater/equal), le (less/equal), eq (equals)\n\u2022 Logic: and, or, not, parentheses for grouping\n\nEXAMPLES:\n\u2022 \"SourceDocumentDataSource eq 'GAO'\"\n\u2022 \"SourceDocumentDataSource eq 'GAO' and RecStatus ne 'Closed'\"\n\u2022 \"(SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'OIG') and RecStatus eq 'Open'\"\n\u2022 \"SourceDocumentPublishDate ge '2020-01-01' and SourceDocumentPublishDate le '2024-12-31'\"\n\nTIP: Use pia_search with facets_only=true to get the most current available values.\n\nCOMMON AGENCY NAMES (use EXACT spelling for referenced_agencies):\nDepartment of Defense (DOD), Department of Health and Human Services (HHS),\nDepartment of Homeland Security (DHS), Department of Justice (DOJ),\nDepartment of Education (ED), Department of Veterans Affairs (VA),\nDepartment of the Treasury, Department of Agriculture (USDA),\nDepartment of the Interior (DOI), Department of Transportation (DOT),\nDepartment of Energy (DOE), Department of State, Department of Labor (DOL),\nDepartment of Commerce (DOC), Department of Housing and Urban Development (HUD),\nEnvironmental Protection Agency (EPA),\nNational Aeronautics and Space Administration (NASA),\nSocial Security Administration (SSA), Small Business Administration (SBA),\nOffice of Personnel Management (OPM), General Services Administration (GSA)"
           },
           "page": {
             "type": "integer",
@@ -233,6 +266,11 @@
             "type": "boolean",
             "description": "Include facets in results (default: true)",
             "default": true
+          },
+          "facets_only": {
+            "type": "boolean",
+            "default": false,
+            "description": "Return ONLY the facet breakdown + total_count + Rec Spotlight govquery_url, omitting the individual recommendation rows \u2014 to see the open-rec population broken down by status/priority/agency/theme without pulling rows."
           }
         },
         "required": [
@@ -260,28 +298,33 @@
                 "items": {
                   "type": "object",
                   "properties": {
-                    "id": {
-                      "type": "string"
+                    "index": {
+                      "type": "integer"
                     },
                     "title": {
                       "type": "string"
                     },
-                    "snippet": {
+                    "url": {
                       "type": "string"
-                    },
-                    "score": {
-                      "type": "number"
                     },
                     "data_source": {
                       "type": "string"
                     },
-                    "url": {
-                      "type": "string",
-                      "format": "uri"
-                    },
                     "publication_date": {
                       "type": "string",
-                      "format": "date-time"
+                      "format": "date"
+                    },
+                    "content": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "agency": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
                     },
                     "rec_recommendation": {
                       "type": [
@@ -295,31 +338,13 @@
                         "null"
                       ]
                     },
-                    "rec_integrity_related_pia": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
-                    },
                     "rec_priority_flag": {
                       "type": [
                         "string",
                         "null"
                       ]
                     },
-                    "rec_audit_topics": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
-                    },
                     "rec_fraud_risk_management_theme_pia": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
-                    },
-                    "rec_matter_for_congress_pia": {
                       "type": [
                         "string",
                         "null"
@@ -336,82 +361,19 @@
                         "number",
                         "null"
                       ]
-                    },
-                    "rec_ref_pages": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
-                    },
-                    "rec_agency_comment_pages": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
-                    },
-                    "rec_quality": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
                     }
                   },
                   "required": [
-                    "id",
-                    "title",
-                    "data_source",
-                    "url"
+                    "index",
+                    "data_source"
                   ],
-                  "additionalProperties": false
-                }
-              },
-              "citations": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "label": {
-                      "type": "string"
-                    },
-                    "url": {
-                      "type": "string",
-                      "format": "uri"
-                    },
-                    "title": {
-                      "type": "string"
-                    },
-                    "data_source": {
-                      "type": "string"
-                    },
-                    "publication_date": {
-                      "type": "string",
-                      "format": "date-time"
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "label",
-                    "url"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "references": {
-                "type": "array",
-                "items": {
-                  "type": "string"
+                  "additionalProperties": true
                 }
               },
               "govquery_url": {
                 "type": "string",
                 "format": "uri",
-                "description": "GovQuery URL for equivalent results; source data can be found with these links."
-              },
-              "citation_guidance": {
-                "type": "string"
+                "description": "Rec Spotlight deep link reproducing this query's full open-recommendation population (same filters + search_id). ALWAYS present this to the user."
               },
               "facets": {
                 "type": "object",
@@ -431,1501 +393,41 @@
                       "value",
                       "count"
                     ],
-                    "additionalProperties": false
+                    "additionalProperties": true
                   }
                 }
-              }
-            },
-            "required": [
-              "total_count",
-              "results"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "output"
-        ],
-        "additionalProperties": false
-      }
-    },
-    {
-      "name": "pia_search_content_wide",
-      "annotations": {
-        "readOnlyHint": true,
-        "destructiveHint": false,
-        "openWorldHint": true
-      },
-      "description": "Search the Program Integrity Alliance (PIA) database across multiple datasets. Combines results across datasets with dedupe by document ID. Returns comprehensive results with full citation information and clickable links for proper attribution. Default page size is 5 due to the volume of data returned by wide searches. Major data sources include: Department of Justice (210k+ docs), Congress.gov (35k+ docs), Oversight.gov (24k+ docs), CRS (22k+ docs), GAO (10k+ docs), Federal Register (1k+ executive orders). Use pia_search_content_executive_orders to search only executive orders. Supports complex OData filtering with boolean logic, operators, and grouping. IMPORTANT \u2014 your response MUST include: 1) Every factual claim MUST have at least one clickable inline citation [[1]](url) \u2014 renumber sequentially from 1. 2) A References section (each ref on its OWN line) for every item you cited \u2014 omit ONLY for rec count/summary questions. 3) A Find Out More section with the `govquery_url` so the user can view results directly. 4) Caveat any totals from text queries: semantic search matches variations, so counts are approximate. Do NOT omit the Find Out More link. Do NOT put multiple references on one line.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "query": {
-            "type": "string",
-            "description": "Search query text"
-          },
-          "filter": {
-            "type": "string",
-            "description": "Optional OData filter expression supporting complex boolean logic.\n\nAVAILABLE FIELDS:\n\u2022 SourceDocumentDataSource: Data source/agency that published the document. Major sources (>1k documents): 'Department of Justice', 'Congress.gov', 'Oversight.gov', 'CRS', 'GAO', 'Federal Register'\n\u2022 SourceDocumentDataSet: Dataset or collection the document belongs to. Values include: 'reports', 'federal-reports', 'press-releases', 'executive orders', 'Open Recommendations'. Note: the value is 'Open Recommendations' (not 'recommendations'). Values: 'press-releases', 'bills-and-laws', 'reports', 'federal-reports', 'executive orders', 'state-and-local-reports', 'annual-financial-reports', 'congressional-justification-reports', 'performance-and-accountability-reports'\n\u2022 SourceDocumentTitle: Document title - use contains, eq for text matching\n\u2022 SourceDocumentPublishDate: Publication date - ISO 8601 format YYYY-MM-DD (e.g., '2023-01-01'). Use ge/le for ranges\n\u2022 RecStatus: Recommendation status\n\u2022 RecPriorityFlag: Priority flag for recommendations\n\u2022 SourceDocumentIsRecDoc: Whether the document contains recommendations. Values: 'No', 'Yes'\n\u2022 RecFraudRiskManagementThemePIA: Fraud risk management theme classification\n\u2022 RecMatterForCongressPIA: Whether the matter is for Congressional attention\n\u2022 RecRecommendation: Recommendation text - use contains, eq for text matching\n\u2022 RecAgencyComments: Agency comments on recommendations - use contains, eq for text matching\n\u2022 referenced_agencies: Agencies referenced by documents (collection field). IMPORTANT: Only use this filter when the query is empty (pure filter/facet lookups). Do NOT combine with a text query \u2014 the query already handles relevance matching. Example: (referenced_agencies/any(a: a eq 'Department of Defense (DOD)') or referenced_agencies/any(a: a eq 'Department of Justice (DOJ)')) - for single agency omit outer parentheses and 'or'. Get all values via pia_search_content_facets.\n\nOPERATORS:\n\u2022 Text: contains, eq, ne, startswith, endswith\n\u2022 Exact: eq (equals), ne (not equals), in (in list)\n\u2022 Date: ge (greater/equal), le (less/equal), eq (equals)\n\u2022 Logic: and, or, not, parentheses for grouping\n\nEXAMPLES:\n\u2022 \"SourceDocumentDataSource eq 'GAO'\"\n\u2022 \"SourceDocumentDataSource eq 'GAO' and RecStatus ne 'Closed'\"\n\u2022 \"(SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'OIG') and RecStatus eq 'Open'\"\n\u2022 \"SourceDocumentPublishDate ge '2020-01-01' and SourceDocumentPublishDate le '2024-12-31'\"\n\nTIP: Use pia_search_content_facets tool to get the most current available values.\n\nCOMMON AGENCY NAMES (use EXACT spelling for referenced_agencies):\nDepartment of Defense (DOD), Department of Health and Human Services (HHS),\nDepartment of Homeland Security (DHS), Department of Justice (DOJ),\nDepartment of Education (ED), Department of Veterans Affairs (VA),\nDepartment of the Treasury, Department of Agriculture (USDA),\nDepartment of the Interior (DOI), Department of Transportation (DOT),\nDepartment of Energy (DOE), Department of State, Department of Labor (DOL),\nDepartment of Commerce (DOC), Department of Housing and Urban Development (HUD),\nEnvironmental Protection Agency (EPA),\nNational Aeronautics and Space Administration (NASA),\nSocial Security Administration (SSA), Small Business Administration (SBA),\nOffice of Personnel Management (OPM), General Services Administration (GSA)"
-          },
-          "page": {
-            "type": "integer",
-            "description": "Page number (default: 1)",
-            "default": 1
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "Results per page (default: 5)",
-            "default": 5
-          },
-          "search_mode": {
-            "type": "string",
-            "description": "Search mode (default: content)",
-            "default": "content"
-          },
-          "limit": {
-            "type": "integer",
-            "description": "Maximum results limit"
-          },
-          "include_facets": {
-            "type": "boolean",
-            "description": "Include facets in results",
-            "default": false
-          },
-          "data_sets": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Optional list of SourceDocumentDataSet values to search"
-          },
-          "data_sources": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Optional list of SourceDocumentDataSource values to search"
-          },
-          "data_sets_by_source": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            },
-            "description": "Mapping of data source to dataset list"
-          }
-        },
-        "required": [
-          "query"
-        ]
-      },
-      "outputSchema": {
-        "type": "object",
-        "properties": {
-          "output": {
-            "type": "object",
-            "properties": {
-              "total_count": {
-                "type": "integer"
               },
-              "unique_result_count": {
-                "type": "integer"
-              },
-              "query": {
-                "type": "string"
-              },
-              "summary": {
-                "type": "string"
-              },
-              "results": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "title": {
-                      "type": "string"
-                    },
-                    "snippet": {
-                      "type": "string"
-                    },
-                    "score": {
-                      "type": "number"
-                    },
-                    "data_source": {
-                      "type": "string"
-                    },
-                    "url": {
-                      "type": "string",
-                      "format": "uri"
-                    },
-                    "publication_date": {
-                      "type": "string",
-                      "format": "date-time"
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "title",
-                    "data_source",
-                    "url"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "citations": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "label": {
-                      "type": "string"
-                    },
-                    "url": {
-                      "type": "string",
-                      "format": "uri"
-                    },
-                    "title": {
-                      "type": "string"
-                    },
-                    "data_source": {
-                      "type": "string"
-                    },
-                    "publication_date": {
-                      "type": "string",
-                      "format": "date-time"
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "label",
-                    "url"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "references": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "govquery_url": {
-                "type": "string",
-                "format": "uri",
-                "description": "GovQuery URL for equivalent results; source data can be found with these links."
-              },
-              "wide_search": {
-                "type": "boolean"
-              },
-              "data_sets": {
+              "applied_filter": {
                 "type": [
-                  "array",
+                  "string",
                   "null"
                 ],
-                "items": {
-                  "type": "string"
-                }
+                "description": "The OData filter actually applied, echoed back so you can broaden or tighten it deliberately."
               },
-              "data_sources": {
-                "type": [
-                  "array",
-                  "null"
-                ],
-                "items": {
-                  "type": "string"
-                }
+              "returned": {
+                "type": "integer",
+                "description": "Number of results in this response (may be < total_count due to paging)."
               },
-              "per_dataset_page_size": {
-                "type": "integer"
+              "has_more": {
+                "type": "boolean",
+                "description": "True if more results exist beyond this page \u2014 narrow the filter or request the next page."
               },
-              "dedupe_key": {
-                "type": "string"
-              },
-              "combined_sort": {
-                "type": "string"
-              },
-              "execution_time_ms": {
-                "type": "integer"
-              },
-              "citation_guidance": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "total_count",
-              "results"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "output"
-        ],
-        "additionalProperties": false
-      }
-    },
-    {
-      "name": "pia_search_content_facets",
-      "annotations": {
-        "readOnlyHint": true,
-        "destructiveHint": false,
-        "openWorldHint": true
-      },
-      "description": "Get available facets (filter values) for the PIA database content search. This can help understand what filter values are available before performing content searches. Major data sources include: Department of Justice (210k+ docs), Congress.gov (35k+ docs), Oversight.gov (24k+ docs), CRS (22k+ docs), GAO (10k+ docs), Federal Register (1k+ executive orders). Use pia_search_content_executive_orders to search only executive orders.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "query": {
-            "type": "string",
-            "description": "Optional query to get facets for",
-            "default": ""
-          },
-          "filter": {
-            "type": "string",
-            "description": "Optional OData filter expression supporting complex boolean logic.\n\nAVAILABLE FIELDS:\n\u2022 SourceDocumentDataSource: Data source/agency that published the document. Major sources (>1k documents): 'Department of Justice', 'Congress.gov', 'Oversight.gov', 'CRS', 'GAO', 'Federal Register'\n\u2022 SourceDocumentDataSet: Dataset or collection the document belongs to. Values include: 'reports', 'federal-reports', 'press-releases', 'executive orders', 'Open Recommendations'. Note: the value is 'Open Recommendations' (not 'recommendations'). Values: 'press-releases', 'bills-and-laws', 'reports', 'federal-reports', 'executive orders', 'state-and-local-reports', 'annual-financial-reports', 'congressional-justification-reports', 'performance-and-accountability-reports'\n\u2022 SourceDocumentTitle: Document title - use contains, eq for text matching\n\u2022 SourceDocumentPublishDate: Publication date - ISO 8601 format YYYY-MM-DD (e.g., '2023-01-01'). Use ge/le for ranges\n\u2022 RecStatus: Recommendation status\n\u2022 RecPriorityFlag: Priority flag for recommendations\n\u2022 SourceDocumentIsRecDoc: Whether the document contains recommendations. Values: 'No', 'Yes'\n\u2022 RecFraudRiskManagementThemePIA: Fraud risk management theme classification\n\u2022 RecMatterForCongressPIA: Whether the matter is for Congressional attention\n\u2022 RecRecommendation: Recommendation text - use contains, eq for text matching\n\u2022 RecAgencyComments: Agency comments on recommendations - use contains, eq for text matching\n\u2022 referenced_agencies: Agencies referenced by documents (collection field). IMPORTANT: Only use this filter when the query is empty (pure filter/facet lookups). Do NOT combine with a text query \u2014 the query already handles relevance matching. Example: (referenced_agencies/any(a: a eq 'Department of Defense (DOD)') or referenced_agencies/any(a: a eq 'Department of Justice (DOJ)')) - for single agency omit outer parentheses and 'or'. Get all values via pia_search_content_facets.\n\nOPERATORS:\n\u2022 Text: contains, eq, ne, startswith, endswith\n\u2022 Exact: eq (equals), ne (not equals), in (in list)\n\u2022 Date: ge (greater/equal), le (less/equal), eq (equals)\n\u2022 Logic: and, or, not, parentheses for grouping\n\nEXAMPLES:\n\u2022 \"SourceDocumentDataSource eq 'GAO'\"\n\u2022 \"SourceDocumentDataSource eq 'GAO' and RecStatus ne 'Closed'\"\n\u2022 \"(SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'OIG') and RecStatus eq 'Open'\"\n\u2022 \"SourceDocumentPublishDate ge '2020-01-01' and SourceDocumentPublishDate le '2024-12-31'\"\n\nTIP: Use pia_search_content_facets tool to get the most current available values.\n\nCOMMON AGENCY NAMES (use EXACT spelling for referenced_agencies):\nDepartment of Defense (DOD), Department of Health and Human Services (HHS),\nDepartment of Homeland Security (DHS), Department of Justice (DOJ),\nDepartment of Education (ED), Department of Veterans Affairs (VA),\nDepartment of the Treasury, Department of Agriculture (USDA),\nDepartment of the Interior (DOI), Department of Transportation (DOT),\nDepartment of Energy (DOE), Department of State, Department of Labor (DOL),\nDepartment of Commerce (DOC), Department of Housing and Urban Development (HUD),\nEnvironmental Protection Agency (EPA),\nNational Aeronautics and Space Administration (NASA),\nSocial Security Administration (SSA), Small Business Administration (SBA),\nOffice of Personnel Management (OPM), General Services Administration (GSA)"
-          }
-        }
-      },
-      "outputSchema": {
-        "type": "object",
-        "properties": {
-          "output": {
-            "type": "object",
-            "properties": {
-              "query": {
-                "type": "string"
-              },
-              "message": {
-                "type": "string"
-              },
-              "facets": {
-                "type": "object",
-                "additionalProperties": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "value": {
-                        "type": "string"
-                      },
-                      "count": {
-                        "type": "integer"
-                      }
-                    },
-                    "required": [
-                      "value",
-                      "count"
-                    ],
-                    "additionalProperties": false
-                  }
-                }
-              }
-            },
-            "required": [
-              "facets"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "output"
-        ],
-        "additionalProperties": false
-      }
-    },
-    {
-      "name": "pia_search_titles",
-      "annotations": {
-        "readOnlyHint": true,
-        "destructiveHint": false,
-        "openWorldHint": true
-      },
-      "description": "Search the Program Integrity Alliance (PIA) database for document titles only. Returns document titles and metadata without searching the full content. Useful for finding specific documents by title or discovering available documents. Major data sources include: Department of Justice (210k+ docs), Congress.gov (35k+ docs), Oversight.gov (24k+ docs), CRS (22k+ docs), GAO (10k+ docs), Federal Register (1k+ executive orders). Use pia_search_content_executive_orders to search only executive orders. IMPORTANT \u2014 your response MUST include: 1) Every factual claim MUST have at least one clickable inline citation [[1]](url) \u2014 renumber sequentially from 1. 2) A References section (each ref on its OWN line) for every item you cited \u2014 omit ONLY for rec count/summary questions. 3) A Find Out More section with the `govquery_url` so the user can view results directly. 4) Caveat any totals from text queries: semantic search matches variations, so counts are approximate. Do NOT omit the Find Out More link. Do NOT put multiple references on one line.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "query": {
-            "type": "string",
-            "description": "Search query text (searches document titles only)"
-          },
-          "filter": {
-            "type": "string",
-            "description": "Optional OData filter expression supporting complex boolean logic.\n\nAVAILABLE FIELDS:\n\u2022 SourceDocumentDataSource: Data source/agency that published the document. Major sources (>1k documents): 'Department of Justice', 'Congress.gov', 'Oversight.gov', 'CRS', 'GAO', 'Federal Register'\n\u2022 SourceDocumentDataSet: Dataset or collection the document belongs to. Values include: 'reports', 'federal-reports', 'press-releases', 'executive orders', 'Open Recommendations'. Note: the value is 'Open Recommendations' (not 'recommendations'). Values: 'press-releases', 'bills-and-laws', 'reports', 'federal-reports', 'executive orders', 'state-and-local-reports', 'annual-financial-reports', 'congressional-justification-reports', 'performance-and-accountability-reports'\n\u2022 SourceDocumentTitle: Document title - use contains, eq for text matching\n\u2022 SourceDocumentPublishDate: Publication date - ISO 8601 format YYYY-MM-DD (e.g., '2023-01-01'). Use ge/le for ranges\n\u2022 RecStatus: Recommendation status\n\u2022 RecPriorityFlag: Priority flag for recommendations\n\u2022 SourceDocumentIsRecDoc: Whether the document contains recommendations. Values: 'No', 'Yes'\n\u2022 RecFraudRiskManagementThemePIA: Fraud risk management theme classification\n\u2022 RecMatterForCongressPIA: Whether the matter is for Congressional attention\n\u2022 RecRecommendation: Recommendation text - use contains, eq for text matching\n\u2022 RecAgencyComments: Agency comments on recommendations - use contains, eq for text matching\n\u2022 referenced_agencies: Agencies referenced by documents (collection field). IMPORTANT: Only use this filter when the query is empty (pure filter/facet lookups). Do NOT combine with a text query \u2014 the query already handles relevance matching. Example: (referenced_agencies/any(a: a eq 'Department of Defense (DOD)') or referenced_agencies/any(a: a eq 'Department of Justice (DOJ)')) - for single agency omit outer parentheses and 'or'. Get all values via pia_search_content_facets.\n\nOPERATORS:\n\u2022 Text: contains, eq, ne, startswith, endswith\n\u2022 Exact: eq (equals), ne (not equals), in (in list)\n\u2022 Date: ge (greater/equal), le (less/equal), eq (equals)\n\u2022 Logic: and, or, not, parentheses for grouping\n\nEXAMPLES:\n\u2022 \"SourceDocumentDataSource eq 'GAO'\"\n\u2022 \"SourceDocumentDataSource eq 'GAO' and RecStatus ne 'Closed'\"\n\u2022 \"(SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'OIG') and RecStatus eq 'Open'\"\n\u2022 \"SourceDocumentPublishDate ge '2020-01-01' and SourceDocumentPublishDate le '2024-12-31'\"\n\nTIP: Use pia_search_content_facets tool to get the most current available values.\n\nCOMMON AGENCY NAMES (use EXACT spelling for referenced_agencies):\nDepartment of Defense (DOD), Department of Health and Human Services (HHS),\nDepartment of Homeland Security (DHS), Department of Justice (DOJ),\nDepartment of Education (ED), Department of Veterans Affairs (VA),\nDepartment of the Treasury, Department of Agriculture (USDA),\nDepartment of the Interior (DOI), Department of Transportation (DOT),\nDepartment of Energy (DOE), Department of State, Department of Labor (DOL),\nDepartment of Commerce (DOC), Department of Housing and Urban Development (HUD),\nEnvironmental Protection Agency (EPA),\nNational Aeronautics and Space Administration (NASA),\nSocial Security Administration (SSA), Small Business Administration (SBA),\nOffice of Personnel Management (OPM), General Services Administration (GSA)"
-          },
-          "page": {
-            "type": "integer",
-            "description": "Page number (default: 1)",
-            "default": 1
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "Results per page (default: 10)",
-            "default": 10
-          },
-          "limit": {
-            "type": "integer",
-            "description": "Maximum results limit"
-          },
-          "include_facets": {
-            "type": "boolean",
-            "description": "Include facets in results",
-            "default": false
-          }
-        },
-        "required": [
-          "query"
-        ]
-      },
-      "outputSchema": {
-        "type": "object",
-        "properties": {
-          "output": {
-            "type": "object",
-            "properties": {
-              "total_count": {
-                "type": "integer"
-              },
-              "query": {
-                "type": "string"
-              },
-              "summary": {
-                "type": "string"
-              },
-              "results": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "title": {
-                      "type": "string"
-                    },
-                    "snippet": {
-                      "type": "string"
-                    },
-                    "score": {
-                      "type": "number"
-                    },
-                    "data_source": {
-                      "type": "string"
-                    },
-                    "url": {
-                      "type": "string",
-                      "format": "uri"
-                    },
-                    "publication_date": {
-                      "type": "string",
-                      "format": "date-time"
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "title",
-                    "data_source",
-                    "url"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "citations": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "label": {
-                      "type": "string"
-                    },
-                    "url": {
-                      "type": "string",
-                      "format": "uri"
-                    },
-                    "title": {
-                      "type": "string"
-                    },
-                    "data_source": {
-                      "type": "string"
-                    },
-                    "publication_date": {
-                      "type": "string",
-                      "format": "date-time"
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "label",
-                    "url"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "references": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "govquery_url": {
+              "hint": {
                 "type": "string",
-                "format": "uri",
-                "description": "GovQuery URL for equivalent results; source data can be found with these links."
-              },
-              "citation_guidance": {
-                "type": "string"
+                "description": "Present only when there are zero results: names the likely over-constraining filter and suggests facets_only=true to discover valid values."
               }
             },
             "required": [
               "total_count",
               "results"
             ],
-            "additionalProperties": false
+            "additionalProperties": true
           }
         },
         "required": [
           "output"
         ],
-        "additionalProperties": false
-      }
-    },
-    {
-      "name": "pia_search_titles_facets",
-      "annotations": {
-        "readOnlyHint": true,
-        "destructiveHint": false,
-        "openWorldHint": true
-      },
-      "description": "Get available facets (filter values) for the PIA database title search. This can help understand what filter values are available before performing title searches. Major data sources include: Department of Justice (210k+ docs), Congress.gov (35k+ docs), Oversight.gov (24k+ docs), CRS (22k+ docs), GAO (10k+ docs), Federal Register (1k+ executive orders). Use pia_search_content_executive_orders to search only executive orders.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "query": {
-            "type": "string",
-            "description": "Optional query to get facets for",
-            "default": ""
-          },
-          "filter": {
-            "type": "string",
-            "description": "Optional OData filter expression supporting complex boolean logic.\n\nAVAILABLE FIELDS:\n\u2022 SourceDocumentDataSource: Data source/agency that published the document. Major sources (>1k documents): 'Department of Justice', 'Congress.gov', 'Oversight.gov', 'CRS', 'GAO', 'Federal Register'\n\u2022 SourceDocumentDataSet: Dataset or collection the document belongs to. Values include: 'reports', 'federal-reports', 'press-releases', 'executive orders', 'Open Recommendations'. Note: the value is 'Open Recommendations' (not 'recommendations'). Values: 'press-releases', 'bills-and-laws', 'reports', 'federal-reports', 'executive orders', 'state-and-local-reports', 'annual-financial-reports', 'congressional-justification-reports', 'performance-and-accountability-reports'\n\u2022 SourceDocumentTitle: Document title - use contains, eq for text matching\n\u2022 SourceDocumentPublishDate: Publication date - ISO 8601 format YYYY-MM-DD (e.g., '2023-01-01'). Use ge/le for ranges\n\u2022 RecStatus: Recommendation status\n\u2022 RecPriorityFlag: Priority flag for recommendations\n\u2022 SourceDocumentIsRecDoc: Whether the document contains recommendations. Values: 'No', 'Yes'\n\u2022 RecFraudRiskManagementThemePIA: Fraud risk management theme classification\n\u2022 RecMatterForCongressPIA: Whether the matter is for Congressional attention\n\u2022 RecRecommendation: Recommendation text - use contains, eq for text matching\n\u2022 RecAgencyComments: Agency comments on recommendations - use contains, eq for text matching\n\u2022 referenced_agencies: Agencies referenced by documents (collection field). IMPORTANT: Only use this filter when the query is empty (pure filter/facet lookups). Do NOT combine with a text query \u2014 the query already handles relevance matching. Example: (referenced_agencies/any(a: a eq 'Department of Defense (DOD)') or referenced_agencies/any(a: a eq 'Department of Justice (DOJ)')) - for single agency omit outer parentheses and 'or'. Get all values via pia_search_content_facets.\n\nOPERATORS:\n\u2022 Text: contains, eq, ne, startswith, endswith\n\u2022 Exact: eq (equals), ne (not equals), in (in list)\n\u2022 Date: ge (greater/equal), le (less/equal), eq (equals)\n\u2022 Logic: and, or, not, parentheses for grouping\n\nEXAMPLES:\n\u2022 \"SourceDocumentDataSource eq 'GAO'\"\n\u2022 \"SourceDocumentDataSource eq 'GAO' and RecStatus ne 'Closed'\"\n\u2022 \"(SourceDocumentDataSource eq 'GAO' or SourceDocumentDataSource eq 'OIG') and RecStatus eq 'Open'\"\n\u2022 \"SourceDocumentPublishDate ge '2020-01-01' and SourceDocumentPublishDate le '2024-12-31'\"\n\nTIP: Use pia_search_content_facets tool to get the most current available values.\n\nCOMMON AGENCY NAMES (use EXACT spelling for referenced_agencies):\nDepartment of Defense (DOD), Department of Health and Human Services (HHS),\nDepartment of Homeland Security (DHS), Department of Justice (DOJ),\nDepartment of Education (ED), Department of Veterans Affairs (VA),\nDepartment of the Treasury, Department of Agriculture (USDA),\nDepartment of the Interior (DOI), Department of Transportation (DOT),\nDepartment of Energy (DOE), Department of State, Department of Labor (DOL),\nDepartment of Commerce (DOC), Department of Housing and Urban Development (HUD),\nEnvironmental Protection Agency (EPA),\nNational Aeronautics and Space Administration (NASA),\nSocial Security Administration (SSA), Small Business Administration (SBA),\nOffice of Personnel Management (OPM), General Services Administration (GSA)"
-          }
-        }
-      },
-      "outputSchema": {
-        "type": "object",
-        "properties": {
-          "output": {
-            "type": "object",
-            "properties": {
-              "query": {
-                "type": "string"
-              },
-              "message": {
-                "type": "string"
-              },
-              "facets": {
-                "type": "object",
-                "additionalProperties": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "value": {
-                        "type": "string"
-                      },
-                      "count": {
-                        "type": "integer"
-                      }
-                    },
-                    "required": [
-                      "value",
-                      "count"
-                    ],
-                    "additionalProperties": false
-                  }
-                }
-              }
-            },
-            "required": [
-              "facets"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "output"
-        ],
-        "additionalProperties": false
-      }
-    },
-    {
-      "name": "pia_search_content_gao",
-      "annotations": {
-        "readOnlyHint": true,
-        "destructiveHint": false,
-        "openWorldHint": true
-      },
-      "description": "Search the Program Integrity Alliance (PIA) database for GAO document content and recommendations. This tool automatically filters results to only include documents from the Government Accountability Office (GAO). Returns comprehensive results with full citation information and clickable links for proper attribution. Each result includes corresponding citations with data source attribution. Supports complex OData filtering with boolean logic, operators, and grouping. Note: GAO data includes both oversight recommendations and full document content. To differentiate, use filter 'SourceDocumentDataSet eq \"recommendations\"' for GAO recommendations only or 'SourceDocumentDataSet eq \"reports\"' for document content only. IMPORTANT \u2014 your response MUST include: 1) Every factual claim MUST have at least one clickable inline citation [[1]](url) \u2014 renumber sequentially from 1. 2) A References section (each ref on its OWN line) for every item you cited \u2014 omit ONLY for rec count/summary questions. 3) A Find Out More section with the `govquery_url` so the user can view results directly. 4) Caveat any totals from text queries: semantic search matches variations, so counts are approximate. Do NOT omit the Find Out More link. Do NOT put multiple references on one line.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "query": {
-            "type": "string",
-            "description": "Search query text"
-          },
-          "filter": {
-            "type": "string",
-            "description": "Optional OData filter expression supporting complex boolean logic.\n\nAVAILABLE FIELDS:\n\u2022 Note: SourceDocumentDataSource is automatically set to 'GAO' for this tool. Major sources (>1k documents): 'Department of Justice', 'Congress.gov', 'Oversight.gov', 'CRS', 'GAO', 'Federal Register'\n\u2022 SourceDocumentDataSet: Dataset or collection the document belongs to. Values include: 'reports', 'federal-reports', 'press-releases', 'executive orders', 'Open Recommendations'. Note: the value is 'Open Recommendations' (not 'recommendations'). Values: 'press-releases', 'bills-and-laws', 'reports', 'federal-reports', 'executive orders', 'state-and-local-reports', 'annual-financial-reports', 'congressional-justification-reports', 'performance-and-accountability-reports'\n\u2022 SourceDocumentTitle: Document title - use contains, eq for text matching\n\u2022 SourceDocumentPublishDate: Publication date - ISO 8601 format YYYY-MM-DD (e.g., '2023-01-01'). Use ge/le for ranges\n\u2022 RecStatus: Recommendation status\n\u2022 RecPriorityFlag: Priority flag for recommendations\n\u2022 SourceDocumentIsRecDoc: Whether the document contains recommendations. Values: 'No', 'Yes'\n\u2022 RecFraudRiskManagementThemePIA: Fraud risk management theme classification\n\u2022 RecMatterForCongressPIA: Whether the matter is for Congressional attention\n\u2022 RecRecommendation: Recommendation text - use contains, eq for text matching\n\u2022 RecAgencyComments: Agency comments on recommendations - use contains, eq for text matching\n\u2022 referenced_agencies: Agencies referenced by documents (collection field). IMPORTANT: Only use this filter when the query is empty (pure filter/facet lookups). Do NOT combine with a text query \u2014 the query already handles relevance matching. Example: (referenced_agencies/any(a: a eq 'Department of Defense (DOD)') or referenced_agencies/any(a: a eq 'Department of Justice (DOJ)')) - for single agency omit outer parentheses and 'or'. Get all values via pia_search_content_facets.\n\nOPERATORS:\n\u2022 Text: contains, eq, ne, startswith, endswith\n\u2022 Exact: eq (equals), ne (not equals), in (in list)\n\u2022 Date: ge (greater/equal), le (less/equal), eq (equals)\n\u2022 Logic: and, or, not, parentheses for grouping\n\nEXAMPLES:\n\u2022 \"RecStatus eq 'Open'\"\n\u2022 \"RecStatus ne 'Closed' and RecPriorityFlag eq 'Yes'\"\n\u2022 \"(RecStatus eq 'Open' and RecPriorityFlag eq 'Yes')\"\n\u2022 \"SourceDocumentPublishDate ge '2020-01-01' and SourceDocumentPublishDate le '2024-12-31'\"\n\nTIP: Use pia_search_content_facets tool to get the most current available values.\n\nCOMMON AGENCY NAMES (use EXACT spelling for referenced_agencies):\nDepartment of Defense (DOD), Department of Health and Human Services (HHS),\nDepartment of Homeland Security (DHS), Department of Justice (DOJ),\nDepartment of Education (ED), Department of Veterans Affairs (VA),\nDepartment of the Treasury, Department of Agriculture (USDA),\nDepartment of the Interior (DOI), Department of Transportation (DOT),\nDepartment of Energy (DOE), Department of State, Department of Labor (DOL),\nDepartment of Commerce (DOC), Department of Housing and Urban Development (HUD),\nEnvironmental Protection Agency (EPA),\nNational Aeronautics and Space Administration (NASA),\nSocial Security Administration (SSA), Small Business Administration (SBA),\nOffice of Personnel Management (OPM), General Services Administration (GSA)"
-          },
-          "page": {
-            "type": "integer",
-            "description": "Page number (default: 1)",
-            "default": 1
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "Results per page (default: 10)",
-            "default": 10
-          },
-          "search_mode": {
-            "type": "string",
-            "description": "Search mode (default: content)",
-            "default": "content"
-          },
-          "limit": {
-            "type": "integer",
-            "description": "Maximum results limit"
-          },
-          "include_facets": {
-            "type": "boolean",
-            "description": "Include facets in results",
-            "default": false
-          }
-        },
-        "required": [
-          "query"
-        ]
-      },
-      "outputSchema": {
-        "type": "object",
-        "properties": {
-          "output": {
-            "type": "object",
-            "properties": {
-              "total_count": {
-                "type": "integer"
-              },
-              "query": {
-                "type": "string"
-              },
-              "summary": {
-                "type": "string"
-              },
-              "results": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "title": {
-                      "type": "string"
-                    },
-                    "snippet": {
-                      "type": "string"
-                    },
-                    "score": {
-                      "type": "number"
-                    },
-                    "data_source": {
-                      "type": "string"
-                    },
-                    "url": {
-                      "type": "string"
-                    },
-                    "publication_date": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "title",
-                    "data_source",
-                    "url"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "citations": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "label": {
-                      "type": "string"
-                    },
-                    "url": {
-                      "type": "string"
-                    },
-                    "title": {
-                      "type": "string"
-                    },
-                    "data_source": {
-                      "type": "string"
-                    },
-                    "publication_date": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "title",
-                    "data_source",
-                    "url"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "references": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "govquery_url": {
-                "type": "string",
-                "format": "uri",
-                "description": "GovQuery URL for equivalent results; source data can be found with these links."
-              },
-              "citation_guidance": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "total_count",
-              "results"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "output"
-        ],
-        "additionalProperties": false
-      }
-    },
-    {
-      "name": "pia_search_content_oig",
-      "annotations": {
-        "readOnlyHint": true,
-        "destructiveHint": false,
-        "openWorldHint": true
-      },
-      "description": "Search the Program Integrity Alliance (PIA) database for Oversight.gov document content and recommendations. This tool automatically filters results to only include documents from Oversight.gov (Office of Inspector General sources). Returns comprehensive results with full citation information and clickable links for proper attribution. Each result includes corresponding citations with data source attribution. Supports complex OData filtering with boolean logic, operators, and grouping. Note: Oversight.gov data includes both oversight recommendations and full document content. To differentiate, use filter 'SourceDocumentDataSet eq \"recommendations\"' for Oversight.gov recommendations only or 'SourceDocumentDataSet eq \"reports\"' for document content only. IMPORTANT \u2014 your response MUST include: 1) Every factual claim MUST have at least one clickable inline citation [[1]](url) \u2014 renumber sequentially from 1. 2) A References section (each ref on its OWN line) for every item you cited \u2014 omit ONLY for rec count/summary questions. 3) A Find Out More section with the `govquery_url` so the user can view results directly. 4) Caveat any totals from text queries: semantic search matches variations, so counts are approximate. Do NOT omit the Find Out More link. Do NOT put multiple references on one line.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "query": {
-            "type": "string",
-            "description": "Search query text"
-          },
-          "filter": {
-            "type": "string",
-            "description": "Optional OData filter expression supporting complex boolean logic.\n\nAVAILABLE FIELDS:\n\u2022 Note: SourceDocumentDataSource is automatically set to 'Oversight.gov' for this tool. Major sources (>1k documents): 'Department of Justice', 'Congress.gov', 'Oversight.gov', 'CRS', 'GAO', 'Federal Register'\n\u2022 SourceDocumentDataSet: Dataset or collection the document belongs to. Values include: 'reports', 'federal-reports', 'press-releases', 'executive orders', 'Open Recommendations'. Note: the value is 'Open Recommendations' (not 'recommendations'). Values: 'press-releases', 'bills-and-laws', 'reports', 'federal-reports', 'executive orders', 'state-and-local-reports', 'annual-financial-reports', 'congressional-justification-reports', 'performance-and-accountability-reports'\n\u2022 SourceDocumentTitle: Document title - use contains, eq for text matching\n\u2022 SourceDocumentPublishDate: Publication date - ISO 8601 format YYYY-MM-DD (e.g., '2023-01-01'). Use ge/le for ranges\n\u2022 RecStatus: Recommendation status\n\u2022 RecPriorityFlag: Priority flag for recommendations\n\u2022 SourceDocumentIsRecDoc: Whether the document contains recommendations. Values: 'No', 'Yes'\n\u2022 RecFraudRiskManagementThemePIA: Fraud risk management theme classification\n\u2022 RecMatterForCongressPIA: Whether the matter is for Congressional attention\n\u2022 RecRecommendation: Recommendation text - use contains, eq for text matching\n\u2022 RecAgencyComments: Agency comments on recommendations - use contains, eq for text matching\n\u2022 referenced_agencies: Agencies referenced by documents (collection field). IMPORTANT: Only use this filter when the query is empty (pure filter/facet lookups). Do NOT combine with a text query \u2014 the query already handles relevance matching. Example: (referenced_agencies/any(a: a eq 'Department of Defense (DOD)') or referenced_agencies/any(a: a eq 'Department of Justice (DOJ)')) - for single agency omit outer parentheses and 'or'. Get all values via pia_search_content_facets.\n\nOPERATORS:\n\u2022 Text: contains, eq, ne, startswith, endswith\n\u2022 Exact: eq (equals), ne (not equals), in (in list)\n\u2022 Date: ge (greater/equal), le (less/equal), eq (equals)\n\u2022 Logic: and, or, not, parentheses for grouping\n\nEXAMPLES:\n\u2022 \"RecStatus eq 'Open'\"\n\u2022 \"RecStatus ne 'Closed' and RecPriorityFlag eq 'Yes'\"\n\u2022 \"(RecStatus eq 'Open' and RecPriorityFlag eq 'Yes')\"\n\u2022 \"SourceDocumentPublishDate ge '2020-01-01' and SourceDocumentPublishDate le '2024-12-31'\"\n\nTIP: Use pia_search_content_facets tool to get the most current available values.\n\nCOMMON AGENCY NAMES (use EXACT spelling for referenced_agencies):\nDepartment of Defense (DOD), Department of Health and Human Services (HHS),\nDepartment of Homeland Security (DHS), Department of Justice (DOJ),\nDepartment of Education (ED), Department of Veterans Affairs (VA),\nDepartment of the Treasury, Department of Agriculture (USDA),\nDepartment of the Interior (DOI), Department of Transportation (DOT),\nDepartment of Energy (DOE), Department of State, Department of Labor (DOL),\nDepartment of Commerce (DOC), Department of Housing and Urban Development (HUD),\nEnvironmental Protection Agency (EPA),\nNational Aeronautics and Space Administration (NASA),\nSocial Security Administration (SSA), Small Business Administration (SBA),\nOffice of Personnel Management (OPM), General Services Administration (GSA)"
-          },
-          "page": {
-            "type": "integer",
-            "description": "Page number (default: 1)",
-            "default": 1
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "Results per page (default: 10)",
-            "default": 10
-          },
-          "search_mode": {
-            "type": "string",
-            "description": "Search mode (default: content)",
-            "default": "content"
-          },
-          "limit": {
-            "type": "integer",
-            "description": "Maximum results limit"
-          },
-          "include_facets": {
-            "type": "boolean",
-            "description": "Include facets in results",
-            "default": false
-          }
-        },
-        "required": [
-          "query"
-        ]
-      },
-      "outputSchema": {
-        "type": "object",
-        "properties": {
-          "output": {
-            "type": "object",
-            "properties": {
-              "total_count": {
-                "type": "integer"
-              },
-              "query": {
-                "type": "string"
-              },
-              "summary": {
-                "type": "string"
-              },
-              "results": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "title": {
-                      "type": "string"
-                    },
-                    "snippet": {
-                      "type": "string"
-                    },
-                    "score": {
-                      "type": "number"
-                    },
-                    "data_source": {
-                      "type": "string"
-                    },
-                    "url": {
-                      "type": "string"
-                    },
-                    "publication_date": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "title",
-                    "data_source",
-                    "url"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "citations": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "label": {
-                      "type": "string"
-                    },
-                    "url": {
-                      "type": "string"
-                    },
-                    "title": {
-                      "type": "string"
-                    },
-                    "data_source": {
-                      "type": "string"
-                    },
-                    "publication_date": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "title",
-                    "data_source",
-                    "url"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "references": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "govquery_url": {
-                "type": "string",
-                "format": "uri",
-                "description": "GovQuery URL for equivalent results; source data can be found with these links."
-              },
-              "citation_guidance": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "total_count",
-              "results"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "output"
-        ],
-        "additionalProperties": false
-      }
-    },
-    {
-      "name": "pia_search_content_crs",
-      "annotations": {
-        "readOnlyHint": true,
-        "destructiveHint": false,
-        "openWorldHint": true
-      },
-      "description": "Search the Program Integrity Alliance (PIA) database for CRS document content and recommendations. This tool automatically filters results to only include documents from Congressional Research Service (CRS). Returns comprehensive results with full citation information and clickable links for proper attribution. Each result includes corresponding citations with data source attribution. Supports complex OData filtering with boolean logic, operators, and grouping. IMPORTANT \u2014 your response MUST include: 1) Every factual claim MUST have at least one clickable inline citation [[1]](url) \u2014 renumber sequentially from 1. 2) A References section (each ref on its OWN line) for every item you cited \u2014 omit ONLY for rec count/summary questions. 3) A Find Out More section with the `govquery_url` so the user can view results directly. 4) Caveat any totals from text queries: semantic search matches variations, so counts are approximate. Do NOT omit the Find Out More link. Do NOT put multiple references on one line.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "query": {
-            "type": "string",
-            "description": "Search query text"
-          },
-          "filter": {
-            "type": "string",
-            "description": "Optional OData filter expression supporting complex boolean logic.\n\nAVAILABLE FIELDS:\n\u2022 Note: SourceDocumentDataSource is automatically set to 'CRS' for this tool. Major sources (>1k documents): 'Department of Justice', 'Congress.gov', 'Oversight.gov', 'CRS', 'GAO', 'Federal Register'\n\u2022 SourceDocumentDataSet: Dataset or collection the document belongs to. Values include: 'reports', 'federal-reports', 'press-releases', 'executive orders', 'Open Recommendations'. Note: the value is 'Open Recommendations' (not 'recommendations'). Values: 'press-releases', 'bills-and-laws', 'reports', 'federal-reports', 'executive orders', 'state-and-local-reports', 'annual-financial-reports', 'congressional-justification-reports', 'performance-and-accountability-reports'\n\u2022 SourceDocumentTitle: Document title - use contains, eq for text matching\n\u2022 SourceDocumentPublishDate: Publication date - ISO 8601 format YYYY-MM-DD (e.g., '2023-01-01'). Use ge/le for ranges\n\u2022 RecStatus: Recommendation status\n\u2022 RecPriorityFlag: Priority flag for recommendations\n\u2022 SourceDocumentIsRecDoc: Whether the document contains recommendations. Values: 'No', 'Yes'\n\u2022 RecFraudRiskManagementThemePIA: Fraud risk management theme classification\n\u2022 RecMatterForCongressPIA: Whether the matter is for Congressional attention\n\u2022 RecRecommendation: Recommendation text - use contains, eq for text matching\n\u2022 RecAgencyComments: Agency comments on recommendations - use contains, eq for text matching\n\u2022 referenced_agencies: Agencies referenced by documents (collection field). IMPORTANT: Only use this filter when the query is empty (pure filter/facet lookups). Do NOT combine with a text query \u2014 the query already handles relevance matching. Example: (referenced_agencies/any(a: a eq 'Department of Defense (DOD)') or referenced_agencies/any(a: a eq 'Department of Justice (DOJ)')) - for single agency omit outer parentheses and 'or'. Get all values via pia_search_content_facets.\n\nOPERATORS:\n\u2022 Text: contains, eq, ne, startswith, endswith\n\u2022 Exact: eq (equals), ne (not equals), in (in list)\n\u2022 Date: ge (greater/equal), le (less/equal), eq (equals)\n\u2022 Logic: and, or, not, parentheses for grouping\n\nEXAMPLES:\n\u2022 \"RecStatus eq 'Open'\"\n\u2022 \"RecStatus ne 'Closed' and RecPriorityFlag eq 'Yes'\"\n\u2022 \"(RecStatus eq 'Open' and RecPriorityFlag eq 'Yes')\"\n\u2022 \"SourceDocumentPublishDate ge '2020-01-01' and SourceDocumentPublishDate le '2024-12-31'\"\n\nTIP: Use pia_search_content_facets tool to get the most current available values.\n\nCOMMON AGENCY NAMES (use EXACT spelling for referenced_agencies):\nDepartment of Defense (DOD), Department of Health and Human Services (HHS),\nDepartment of Homeland Security (DHS), Department of Justice (DOJ),\nDepartment of Education (ED), Department of Veterans Affairs (VA),\nDepartment of the Treasury, Department of Agriculture (USDA),\nDepartment of the Interior (DOI), Department of Transportation (DOT),\nDepartment of Energy (DOE), Department of State, Department of Labor (DOL),\nDepartment of Commerce (DOC), Department of Housing and Urban Development (HUD),\nEnvironmental Protection Agency (EPA),\nNational Aeronautics and Space Administration (NASA),\nSocial Security Administration (SSA), Small Business Administration (SBA),\nOffice of Personnel Management (OPM), General Services Administration (GSA)"
-          },
-          "page": {
-            "type": "integer",
-            "description": "Page number (default: 1)",
-            "default": 1
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "Results per page (default: 10)",
-            "default": 10
-          },
-          "search_mode": {
-            "type": "string",
-            "description": "Search mode (default: content)",
-            "default": "content"
-          },
-          "limit": {
-            "type": "integer",
-            "description": "Maximum results limit"
-          },
-          "include_facets": {
-            "type": "boolean",
-            "description": "Include facets in results",
-            "default": false
-          }
-        },
-        "required": [
-          "query"
-        ]
-      },
-      "outputSchema": {
-        "type": "object",
-        "properties": {
-          "output": {
-            "type": "object",
-            "properties": {
-              "total_count": {
-                "type": "integer"
-              },
-              "query": {
-                "type": "string"
-              },
-              "summary": {
-                "type": "string"
-              },
-              "results": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "title": {
-                      "type": "string"
-                    },
-                    "snippet": {
-                      "type": "string"
-                    },
-                    "score": {
-                      "type": "number"
-                    },
-                    "data_source": {
-                      "type": "string"
-                    },
-                    "url": {
-                      "type": "string"
-                    },
-                    "publication_date": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "title",
-                    "data_source",
-                    "url"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "citations": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "label": {
-                      "type": "string"
-                    },
-                    "url": {
-                      "type": "string"
-                    },
-                    "title": {
-                      "type": "string"
-                    },
-                    "data_source": {
-                      "type": "string"
-                    },
-                    "publication_date": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "title",
-                    "data_source",
-                    "url"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "references": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "govquery_url": {
-                "type": "string",
-                "format": "uri",
-                "description": "GovQuery URL for equivalent results; source data can be found with these links."
-              },
-              "citation_guidance": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "total_count",
-              "results"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "output"
-        ],
-        "additionalProperties": false
-      }
-    },
-    {
-      "name": "pia_search_content_doj",
-      "annotations": {
-        "readOnlyHint": true,
-        "destructiveHint": false,
-        "openWorldHint": true
-      },
-      "description": "Search the Program Integrity Alliance (PIA) database for Department of Justice document content and recommendations. This tool automatically filters results to only include documents from the Department of Justice. Returns comprehensive results with full citation information and clickable links for proper attribution. Each result includes corresponding citations with data source attribution. Supports complex OData filtering with boolean logic, operators, and grouping. IMPORTANT \u2014 your response MUST include: 1) Every factual claim MUST have at least one clickable inline citation [[1]](url) \u2014 renumber sequentially from 1. 2) A References section (each ref on its OWN line) for every item you cited \u2014 omit ONLY for rec count/summary questions. 3) A Find Out More section with the `govquery_url` so the user can view results directly. 4) Caveat any totals from text queries: semantic search matches variations, so counts are approximate. Do NOT omit the Find Out More link. Do NOT put multiple references on one line.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "query": {
-            "type": "string",
-            "description": "Search query text"
-          },
-          "filter": {
-            "type": "string",
-            "description": "Optional OData filter expression supporting complex boolean logic.\n\nAVAILABLE FIELDS:\n\u2022 Note: SourceDocumentDataSource is automatically set to 'Department of Justice' for this tool. Major sources (>1k documents): 'Department of Justice', 'Congress.gov', 'Oversight.gov', 'CRS', 'GAO', 'Federal Register'\n\u2022 SourceDocumentDataSet: Dataset or collection the document belongs to. Values include: 'reports', 'federal-reports', 'press-releases', 'executive orders', 'Open Recommendations'. Note: the value is 'Open Recommendations' (not 'recommendations'). Values: 'press-releases', 'bills-and-laws', 'reports', 'federal-reports', 'executive orders', 'state-and-local-reports', 'annual-financial-reports', 'congressional-justification-reports', 'performance-and-accountability-reports'\n\u2022 SourceDocumentTitle: Document title - use contains, eq for text matching\n\u2022 SourceDocumentPublishDate: Publication date - ISO 8601 format YYYY-MM-DD (e.g., '2023-01-01'). Use ge/le for ranges\n\u2022 RecStatus: Recommendation status\n\u2022 RecPriorityFlag: Priority flag for recommendations\n\u2022 SourceDocumentIsRecDoc: Whether the document contains recommendations. Values: 'No', 'Yes'\n\u2022 RecFraudRiskManagementThemePIA: Fraud risk management theme classification\n\u2022 RecMatterForCongressPIA: Whether the matter is for Congressional attention\n\u2022 RecRecommendation: Recommendation text - use contains, eq for text matching\n\u2022 RecAgencyComments: Agency comments on recommendations - use contains, eq for text matching\n\u2022 referenced_agencies: Agencies referenced by documents (collection field). IMPORTANT: Only use this filter when the query is empty (pure filter/facet lookups). Do NOT combine with a text query \u2014 the query already handles relevance matching. Example: (referenced_agencies/any(a: a eq 'Department of Defense (DOD)') or referenced_agencies/any(a: a eq 'Department of Justice (DOJ)')) - for single agency omit outer parentheses and 'or'. Get all values via pia_search_content_facets.\n\nOPERATORS:\n\u2022 Text: contains, eq, ne, startswith, endswith\n\u2022 Exact: eq (equals), ne (not equals), in (in list)\n\u2022 Date: ge (greater/equal), le (less/equal), eq (equals)\n\u2022 Logic: and, or, not, parentheses for grouping\n\nEXAMPLES:\n\u2022 \"RecStatus eq 'Open'\"\n\u2022 \"RecStatus ne 'Closed' and RecPriorityFlag eq 'Yes'\"\n\u2022 \"(RecStatus eq 'Open' and RecPriorityFlag eq 'Yes')\"\n\u2022 \"SourceDocumentPublishDate ge '2020-01-01' and SourceDocumentPublishDate le '2024-12-31'\"\n\nTIP: Use pia_search_content_facets tool to get the most current available values.\n\nCOMMON AGENCY NAMES (use EXACT spelling for referenced_agencies):\nDepartment of Defense (DOD), Department of Health and Human Services (HHS),\nDepartment of Homeland Security (DHS), Department of Justice (DOJ),\nDepartment of Education (ED), Department of Veterans Affairs (VA),\nDepartment of the Treasury, Department of Agriculture (USDA),\nDepartment of the Interior (DOI), Department of Transportation (DOT),\nDepartment of Energy (DOE), Department of State, Department of Labor (DOL),\nDepartment of Commerce (DOC), Department of Housing and Urban Development (HUD),\nEnvironmental Protection Agency (EPA),\nNational Aeronautics and Space Administration (NASA),\nSocial Security Administration (SSA), Small Business Administration (SBA),\nOffice of Personnel Management (OPM), General Services Administration (GSA)"
-          },
-          "page": {
-            "type": "integer",
-            "description": "Page number (default: 1)",
-            "default": 1
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "Results per page (default: 10)",
-            "default": 10
-          },
-          "search_mode": {
-            "type": "string",
-            "description": "Search mode (default: content)",
-            "default": "content"
-          },
-          "limit": {
-            "type": "integer",
-            "description": "Maximum results limit"
-          },
-          "include_facets": {
-            "type": "boolean",
-            "description": "Include facets in results",
-            "default": false
-          }
-        },
-        "required": [
-          "query"
-        ]
-      },
-      "outputSchema": {
-        "type": "object",
-        "properties": {
-          "output": {
-            "type": "object",
-            "properties": {
-              "total_count": {
-                "type": "integer"
-              },
-              "query": {
-                "type": "string"
-              },
-              "summary": {
-                "type": "string"
-              },
-              "results": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "title": {
-                      "type": "string"
-                    },
-                    "snippet": {
-                      "type": "string"
-                    },
-                    "score": {
-                      "type": "number"
-                    },
-                    "data_source": {
-                      "type": "string"
-                    },
-                    "url": {
-                      "type": "string"
-                    },
-                    "publication_date": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "title",
-                    "data_source",
-                    "url"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "citations": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "label": {
-                      "type": "string"
-                    },
-                    "url": {
-                      "type": "string"
-                    },
-                    "title": {
-                      "type": "string"
-                    },
-                    "data_source": {
-                      "type": "string"
-                    },
-                    "publication_date": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "title",
-                    "data_source",
-                    "url"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "references": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "govquery_url": {
-                "type": "string",
-                "format": "uri",
-                "description": "GovQuery URL for equivalent results; source data can be found with these links."
-              },
-              "citation_guidance": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "total_count",
-              "results"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "output"
-        ],
-        "additionalProperties": false
-      }
-    },
-    {
-      "name": "pia_search_content_congress",
-      "annotations": {
-        "readOnlyHint": true,
-        "destructiveHint": false,
-        "openWorldHint": true
-      },
-      "description": "Search the Program Integrity Alliance (PIA) database for Congress.gov document content and recommendations. This tool automatically filters results to only include documents from Congress.gov. Returns comprehensive results with full citation information and clickable links for proper attribution. Each result includes corresponding citations with data source attribution. Supports complex OData filtering with boolean logic, operators, and grouping. IMPORTANT \u2014 your response MUST include: 1) Every factual claim MUST have at least one clickable inline citation [[1]](url) \u2014 renumber sequentially from 1. 2) A References section (each ref on its OWN line) for every item you cited \u2014 omit ONLY for rec count/summary questions. 3) A Find Out More section with the `govquery_url` so the user can view results directly. 4) Caveat any totals from text queries: semantic search matches variations, so counts are approximate. Do NOT omit the Find Out More link. Do NOT put multiple references on one line.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "query": {
-            "type": "string",
-            "description": "Search query text"
-          },
-          "filter": {
-            "type": "string",
-            "description": "Optional OData filter expression supporting complex boolean logic.\n\nAVAILABLE FIELDS:\n\u2022 Note: SourceDocumentDataSource is automatically set to 'Congress.gov' for this tool. Major sources (>1k documents): 'Department of Justice', 'Congress.gov', 'Oversight.gov', 'CRS', 'GAO', 'Federal Register'\n\u2022 SourceDocumentDataSet: Dataset or collection the document belongs to. Values include: 'reports', 'federal-reports', 'press-releases', 'executive orders', 'Open Recommendations'. Note: the value is 'Open Recommendations' (not 'recommendations'). Values: 'press-releases', 'bills-and-laws', 'reports', 'federal-reports', 'executive orders', 'state-and-local-reports', 'annual-financial-reports', 'congressional-justification-reports', 'performance-and-accountability-reports'\n\u2022 SourceDocumentTitle: Document title - use contains, eq for text matching\n\u2022 SourceDocumentPublishDate: Publication date - ISO 8601 format YYYY-MM-DD (e.g., '2023-01-01'). Use ge/le for ranges\n\u2022 RecStatus: Recommendation status\n\u2022 RecPriorityFlag: Priority flag for recommendations\n\u2022 SourceDocumentIsRecDoc: Whether the document contains recommendations. Values: 'No', 'Yes'\n\u2022 RecFraudRiskManagementThemePIA: Fraud risk management theme classification\n\u2022 RecMatterForCongressPIA: Whether the matter is for Congressional attention\n\u2022 RecRecommendation: Recommendation text - use contains, eq for text matching\n\u2022 RecAgencyComments: Agency comments on recommendations - use contains, eq for text matching\n\u2022 referenced_agencies: Agencies referenced by documents (collection field). IMPORTANT: Only use this filter when the query is empty (pure filter/facet lookups). Do NOT combine with a text query \u2014 the query already handles relevance matching. Example: (referenced_agencies/any(a: a eq 'Department of Defense (DOD)') or referenced_agencies/any(a: a eq 'Department of Justice (DOJ)')) - for single agency omit outer parentheses and 'or'. Get all values via pia_search_content_facets.\n\nOPERATORS:\n\u2022 Text: contains, eq, ne, startswith, endswith\n\u2022 Exact: eq (equals), ne (not equals), in (in list)\n\u2022 Date: ge (greater/equal), le (less/equal), eq (equals)\n\u2022 Logic: and, or, not, parentheses for grouping\n\nEXAMPLES:\n\u2022 \"RecStatus eq 'Open'\"\n\u2022 \"RecStatus ne 'Closed' and RecPriorityFlag eq 'Yes'\"\n\u2022 \"(RecStatus eq 'Open' and RecPriorityFlag eq 'Yes')\"\n\u2022 \"SourceDocumentPublishDate ge '2020-01-01' and SourceDocumentPublishDate le '2024-12-31'\"\n\nTIP: Use pia_search_content_facets tool to get the most current available values.\n\nCOMMON AGENCY NAMES (use EXACT spelling for referenced_agencies):\nDepartment of Defense (DOD), Department of Health and Human Services (HHS),\nDepartment of Homeland Security (DHS), Department of Justice (DOJ),\nDepartment of Education (ED), Department of Veterans Affairs (VA),\nDepartment of the Treasury, Department of Agriculture (USDA),\nDepartment of the Interior (DOI), Department of Transportation (DOT),\nDepartment of Energy (DOE), Department of State, Department of Labor (DOL),\nDepartment of Commerce (DOC), Department of Housing and Urban Development (HUD),\nEnvironmental Protection Agency (EPA),\nNational Aeronautics and Space Administration (NASA),\nSocial Security Administration (SSA), Small Business Administration (SBA),\nOffice of Personnel Management (OPM), General Services Administration (GSA)"
-          },
-          "page": {
-            "type": "integer",
-            "description": "Page number (default: 1)",
-            "default": 1
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "Results per page (default: 10)",
-            "default": 10
-          },
-          "search_mode": {
-            "type": "string",
-            "description": "Search mode (default: content)",
-            "default": "content"
-          },
-          "limit": {
-            "type": "integer",
-            "description": "Maximum results limit"
-          },
-          "include_facets": {
-            "type": "boolean",
-            "description": "Include facets in results",
-            "default": false
-          }
-        },
-        "required": [
-          "query"
-        ]
-      },
-      "outputSchema": {
-        "type": "object",
-        "properties": {
-          "output": {
-            "type": "object",
-            "properties": {
-              "total_count": {
-                "type": "integer"
-              },
-              "query": {
-                "type": "string"
-              },
-              "summary": {
-                "type": "string"
-              },
-              "results": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "title": {
-                      "type": "string"
-                    },
-                    "snippet": {
-                      "type": "string"
-                    },
-                    "score": {
-                      "type": "number"
-                    },
-                    "data_source": {
-                      "type": "string"
-                    },
-                    "url": {
-                      "type": "string"
-                    },
-                    "publication_date": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "title",
-                    "data_source",
-                    "url"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "citations": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "label": {
-                      "type": "string"
-                    },
-                    "url": {
-                      "type": "string"
-                    },
-                    "title": {
-                      "type": "string"
-                    },
-                    "data_source": {
-                      "type": "string"
-                    },
-                    "publication_date": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "title",
-                    "data_source",
-                    "url"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "references": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "govquery_url": {
-                "type": "string",
-                "format": "uri",
-                "description": "GovQuery URL for equivalent results; source data can be found with these links."
-              },
-              "citation_guidance": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "total_count",
-              "results"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "output"
-        ],
-        "additionalProperties": false
-      }
-    },
-    {
-      "name": "pia_search_content_executive_orders",
-      "annotations": {
-        "readOnlyHint": true,
-        "destructiveHint": false,
-        "openWorldHint": true
-      },
-      "description": "Search the Program Integrity Alliance (PIA) database for Executive Orders document content from the Federal Register. This tool automatically filters results to only include Executive Orders from the Federal Register (https://www.federalregister.gov/). Returns comprehensive results with full citation information and clickable links for proper attribution. Each result includes corresponding citations with data source attribution. Supports complex OData filtering with boolean logic, operators, and grouping. IMPORTANT \u2014 your response MUST include: 1) Every factual claim MUST have at least one clickable inline citation [[1]](url) \u2014 renumber sequentially from 1. 2) A References section (each ref on its OWN line) for every item you cited \u2014 omit ONLY for rec count/summary questions. 3) A Find Out More section with the `govquery_url` so the user can view results directly. 4) Caveat any totals from text queries: semantic search matches variations, so counts are approximate. Do NOT omit the Find Out More link. Do NOT put multiple references on one line.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "query": {
-            "type": "string",
-            "description": "Search query text"
-          },
-          "filter": {
-            "type": "string",
-            "description": "Optional OData filter expression supporting complex boolean logic.\n\nAVAILABLE FIELDS:\n\u2022 Note: SourceDocumentDataSource is automatically set to 'Federal Register' and SourceDocumentDataSet is set to 'executive orders' for this tool. Major sources (>1k documents): 'Department of Justice', 'Congress.gov', 'Oversight.gov', 'CRS', 'GAO', 'Federal Register'\n\u2022 SourceDocumentDataSet: Dataset or collection the document belongs to. Values include: 'reports', 'federal-reports', 'press-releases', 'executive orders', 'Open Recommendations'. Note: the value is 'Open Recommendations' (not 'recommendations'). Values: 'press-releases', 'bills-and-laws', 'reports', 'federal-reports', 'executive orders', 'state-and-local-reports', 'annual-financial-reports', 'congressional-justification-reports', 'performance-and-accountability-reports'\n\u2022 SourceDocumentTitle: Document title - use contains, eq for text matching\n\u2022 SourceDocumentPublishDate: Publication date - ISO 8601 format YYYY-MM-DD (e.g., '2023-01-01'). Use ge/le for ranges\n\u2022 RecStatus: Recommendation status\n\u2022 RecPriorityFlag: Priority flag for recommendations\n\u2022 SourceDocumentIsRecDoc: Whether the document contains recommendations. Values: 'No', 'Yes'\n\u2022 RecFraudRiskManagementThemePIA: Fraud risk management theme classification\n\u2022 RecMatterForCongressPIA: Whether the matter is for Congressional attention\n\u2022 RecRecommendation: Recommendation text - use contains, eq for text matching\n\u2022 RecAgencyComments: Agency comments on recommendations - use contains, eq for text matching\n\u2022 referenced_agencies: Agencies referenced by documents (collection field). IMPORTANT: Only use this filter when the query is empty (pure filter/facet lookups). Do NOT combine with a text query \u2014 the query already handles relevance matching. Example: (referenced_agencies/any(a: a eq 'Department of Defense (DOD)') or referenced_agencies/any(a: a eq 'Department of Justice (DOJ)')) - for single agency omit outer parentheses and 'or'. Get all values via pia_search_content_facets.\n\nOPERATORS:\n\u2022 Text: contains, eq, ne, startswith, endswith\n\u2022 Exact: eq (equals), ne (not equals), in (in list)\n\u2022 Date: ge (greater/equal), le (less/equal), eq (equals)\n\u2022 Logic: and, or, not, parentheses for grouping\n\nEXAMPLES:\n\u2022 \"SourceDocumentPublishDate ge '2020-01-01'\"\n\u2022 \"SourceDocumentPublishDate ge '2020-01-01' and SourceDocumentPublishDate le '2024-12-31'\"\n\u2022 \"IsIntegrityRelated eq 'True'\"\n\u2022 \"SourceDocumentPublishDate ge '2020-01-01' and SourceDocumentPublishDate le '2024-12-31'\"\n\nTIP: Use pia_search_content_facets tool to get the most current available values.\n\nCOMMON AGENCY NAMES (use EXACT spelling for referenced_agencies):\nDepartment of Defense (DOD), Department of Health and Human Services (HHS),\nDepartment of Homeland Security (DHS), Department of Justice (DOJ),\nDepartment of Education (ED), Department of Veterans Affairs (VA),\nDepartment of the Treasury, Department of Agriculture (USDA),\nDepartment of the Interior (DOI), Department of Transportation (DOT),\nDepartment of Energy (DOE), Department of State, Department of Labor (DOL),\nDepartment of Commerce (DOC), Department of Housing and Urban Development (HUD),\nEnvironmental Protection Agency (EPA),\nNational Aeronautics and Space Administration (NASA),\nSocial Security Administration (SSA), Small Business Administration (SBA),\nOffice of Personnel Management (OPM), General Services Administration (GSA)"
-          },
-          "page": {
-            "type": "integer",
-            "description": "Page number (default: 1)",
-            "default": 1
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "Results per page (default: 10)",
-            "default": 10
-          },
-          "search_mode": {
-            "type": "string",
-            "description": "Search mode (default: content)",
-            "default": "content"
-          },
-          "limit": {
-            "type": "integer",
-            "description": "Maximum results limit"
-          },
-          "include_facets": {
-            "type": "boolean",
-            "description": "Include facets in results",
-            "default": false
-          }
-        },
-        "required": [
-          "query"
-        ]
-      },
-      "outputSchema": {
-        "type": "object",
-        "properties": {
-          "output": {
-            "type": "object",
-            "properties": {
-              "total_count": {
-                "type": "integer"
-              },
-              "query": {
-                "type": "string"
-              },
-              "summary": {
-                "type": "string"
-              },
-              "results": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "title": {
-                      "type": "string"
-                    },
-                    "snippet": {
-                      "type": "string"
-                    },
-                    "score": {
-                      "type": "number"
-                    },
-                    "data_source": {
-                      "type": "string"
-                    },
-                    "url": {
-                      "type": "string"
-                    },
-                    "publication_date": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "title",
-                    "data_source",
-                    "url"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "citations": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "label": {
-                      "type": "string"
-                    },
-                    "url": {
-                      "type": "string"
-                    },
-                    "title": {
-                      "type": "string"
-                    },
-                    "data_source": {
-                      "type": "string"
-                    },
-                    "publication_date": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "title",
-                    "data_source",
-                    "url"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "references": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "govquery_url": {
-                "type": "string",
-                "format": "uri",
-                "description": "GovQuery URL for equivalent results; source data can be found with these links."
-              },
-              "citation_guidance": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "total_count",
-              "results"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "output"
-        ],
-        "additionalProperties": false
+        "additionalProperties": true
       }
     },
     {
@@ -1970,14 +472,14 @@
                 "title",
                 "url"
               ],
-              "additionalProperties": false
+              "additionalProperties": true
             }
           }
         },
         "required": [
           "results"
         ],
-        "additionalProperties": false
+        "additionalProperties": true
       }
     },
     {
@@ -2045,7 +547,7 @@
                 "type": "string"
               }
             },
-            "additionalProperties": false
+            "additionalProperties": true
           }
         },
         "required": [
@@ -2054,39 +556,7 @@
           "text",
           "url"
         ],
-        "additionalProperties": false
-      }
-    },
-    {
-      "name": "pia_filter_snippets",
-      "description": "Filter cached search result snippets by similarity to an AI summary.\n\n    After generating a summary that cites search results with bracket\n    references like [1], [2], etc., call this tool to filter each cited\n    document's snippet to keep only the chunks most similar to the\n    citing sentences.  This produces longer, more relevant excerpts that\n    closely match the information used in the summary.\n\n    Parameters:\n        search_id: The search_id from a previous pia_search_content call.\n        summary_text: The AI-generated summary containing [N] bracket citations.\n        similarity_threshold: Keep chunks with similarity >= this value (0-1, default 0.8).\n    ",
-      "inputSchema": {
-        "properties": {
-          "search_id": {
-            "title": "Search Id",
-            "type": "string"
-          },
-          "summary_text": {
-            "title": "Summary Text",
-            "type": "string"
-          },
-          "similarity_threshold": {
-            "default": 0.8,
-            "title": "Similarity Threshold",
-            "type": "number"
-          }
-        },
-        "required": [
-          "search_id",
-          "summary_text"
-        ],
-        "title": "pia_filter_snippetsArguments",
-        "type": "object"
-      },
-      "annotations": {
-        "readOnlyHint": true,
-        "destructiveHint": false,
-        "openWorldHint": false
+        "additionalProperties": true
       }
     }
   ]

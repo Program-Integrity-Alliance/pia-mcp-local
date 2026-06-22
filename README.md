@@ -63,7 +63,7 @@ For more information on how to use PIA's MCP resources in platforms like Claude 
 6. In 'MCP Toolkit' navigate to 'Clients'
 7. Choose one, eg 'Claude Desktop'
 8. Start your Client
-9. You should now see 'pia_search_content' and other tools
+9. You should now see 'pia_search' and other tools
 
 ### Installing via Smithery
 
@@ -162,235 +162,44 @@ Then add this to your Client, eg Claude ...
 
 ## 💡 Available Tools
 
-The server provides 15 tools for searching the Program Integrity Alliance (PIA) database:
+The server provides 4 tools, forwarded verbatim to the Program Integrity Alliance (PIA) MCP server:
 
-### Core Search Tools
+### 1. `pia_search`
 
-### 1. `pia_search_content`
+**Purpose:** Primary search over the PIA database of government oversight reports, recommendations, and related documents.
 
-**Purpose:** Comprehensive search tool for querying document content and recommendations in the PIA database.
-
-**Description:** Returns comprehensive results with full citation information and clickable links for proper attribution. Each result includes corresponding citations with data source attribution. Major data sources include: Department of Justice (202k+ docs), Congress.gov (31k+ docs), Oversight.gov (24k+ docs), CRS (22k+ docs), GAO (10k+ docs), Federal Register (1k+ executive orders). Use pia_search_content_executive_orders to search only executive orders. Supports complex OData filtering with boolean logic, operators, and grouping.
+**Description:** Returns ranked results with snippets, citations, embedded facets, and a `govquery_url`, with full OData filtering. Consolidates the former per-dataset and agency-specific search tools into one.
 
 **Parameters:**
 - `query` (required): Search query text
 - `filter` (optional): OData filter expression supporting complex boolean logic
-- `page` (optional): Page number (default: 1)
-- `page_size` (optional): Results per page (default: 5)
-- `search_mode` (optional): Search mode (default: content)
-- `limit` (optional): Maximum results limit
-- `include_facets` (optional): Include facets in results (default: false)
+- Additional optional paging / facet / mode parameters — see the tool's `inputSchema`
 
 ### 2. `pia_oversight_recommendations`
 
-**Purpose:** Search oversight recommendations (Open Recommendations dataset) with facets enabled by default.
-
-**Description:** Returns comprehensive recommendation results with full citation information and clickable links for proper attribution. Use this when the user asks specifically about oversight recommendations or open recommendations.
+**Purpose:** Search the Open Recommendations dataset (GAO + Oversight.gov) with facets enabled by default.
 
 **Parameters:**
 - `query` (required): Search query text
-- `filter` (optional): OData filter expression supporting complex boolean logic
-- `page` (optional): Page number (default: 1)
-- `page_size` (optional): Results per page (default: 100)
-- `search_mode` (optional): Search mode (default: content)
-- `limit` (optional): Maximum results limit
-- `include_facets` (optional): Include facets in results (default: true)
+- `filter` (optional): OData filter expression
 
-### 3. `pia_search_content_wide`
+### 3. `search`
 
-**Purpose:** Search across multiple datasets and data sources with result deduplication by document ID.
-
-**Description:** Combines results across datasets and sources with a default small page size because the results are broader. Supports optional dataset and data source filters for targeted wide searches.
+**Purpose:** Simple search interface for ChatGPT connectors (OpenAI MCP spec).
 
 **Parameters:**
-- `query` (required): Search query text
-- `filter` (optional): OData filter expression supporting complex boolean logic
-- `page` (optional): Page number (default: 1)
-- `page_size` (optional): Results per page (default: 5)
-- `search_mode` (optional): Search mode (default: content)
-- `limit` (optional): Maximum results limit
-- `include_facets` (optional): Include facets in results (default: false)
-- `data_sets` (optional): List of `SourceDocumentDataSet` values to search
-- `data_sources` (optional): List of `SourceDocumentDataSource` values to search
-- `data_sets_by_source` (optional): Mapping of data source to dataset list
+- `query` (required): A search query string
 
-### 4. `pia_search_content_facets`
+### 4. `fetch`
 
-**Purpose:** Get available facets (filter values) for the PIA database content search.
-
-**Description:** This can help understand what filter values are available before performing content searches. Major data sources include: Department of Justice (202k+ docs), Congress.gov (31k+ docs), Oversight.gov (24k+ docs), CRS (22k+ docs), GAO (10k+ docs), Federal Register (1k+ executive orders). Use pia_search_content_executive_orders to search only executive orders.
-
-**Parameters:**
-- `query` (optional): Optional query to get facets for (default: "")
-- `filter` (optional): Optional OData filter expression
-
-### 5. `pia_search_titles`
-
-**Purpose:** Search the Program Integrity Alliance (PIA) database for document titles only.
-
-**Description:** Returns document titles and metadata without searching the full content. Useful for finding specific documents by title or discovering available documents. Major data sources include: Department of Justice (202k+ docs), Congress.gov (31k+ docs), Oversight.gov (24k+ docs), CRS (22k+ docs), GAO (10k+ docs), Federal Register (1k+ executive orders). Use pia_search_content_executive_orders to search only executive orders.
-
-**Parameters:**
-- `query` (required): Search query text (searches document titles only)
-- `filter` (optional): OData filter expression supporting complex boolean logic
-- `page` (optional): Page number (default: 1)
-- `page_size` (optional): Results per page (default: 10)
-- `limit` (optional): Maximum results limit
-- `include_facets` (optional): Include facets in results (default: false)
-
-### 6. `pia_search_titles_facets`
-
-**Purpose:** Get available facets (filter values) for the PIA database title search.
-
-**Description:** This can help understand what filter values are available before performing title searches. Major data sources include: Department of Justice (202k+ docs), Congress.gov (31k+ docs), Oversight.gov (24k+ docs), CRS (22k+ docs), GAO (10k+ docs), Federal Register (1k+ executive orders). Use pia_search_content_executive_orders to search only executive orders.
-
-**Parameters:**
-- `query` (optional): Optional query to get facets for (default: "")
-- `filter` (optional): Optional OData filter expression
-
-### Agency-Specific Search Tools
-
-### 7. `pia_search_content_gao`
-
-**Purpose:** Search for GAO document content and recommendations.
-
-**Description:** This tool automatically filters results to only include documents from the Government Accountability Office (GAO). Returns comprehensive results with full citation information and clickable links for proper attribution.
-
-**Parameters:**
-- `query` (required): Search query text
-- `filter` (optional): OData filter expression (SourceDocumentDataSource is automatically set to 'GAO')
-- `page` (optional): Page number (default: 1)
-- `page_size` (optional): Results per page (default: 10)
-- `search_mode` (optional): Search mode (default: content)
-- `limit` (optional): Maximum results limit
-- `include_facets` (optional): Include facets in results (default: false)
-
-### 8. `pia_search_content_oig`
-
-**Purpose:** Search for OIG document content and recommendations.
-
-**Description:** This tool automatically filters results to only include documents from Office of Inspector General (OIG) sources. Returns comprehensive results with full citation information and clickable links for proper attribution.
-
-**Parameters:**
-- `query` (required): Search query text
-- `filter` (optional): OData filter expression (SourceDocumentDataSource is automatically set to 'Oversight.gov')
-- `page` (optional): Page number (default: 1)
-- `page_size` (optional): Results per page (default: 10)
-- `search_mode` (optional): Search mode (default: content)
-- `limit` (optional): Maximum results limit
-- `include_facets` (optional): Include facets in results (default: false)
-
-### 9. `pia_search_content_crs`
-
-**Purpose:** Search for CRS document content and recommendations.
-
-**Description:** This tool automatically filters results to only include documents from Congressional Research Service (CRS). Returns comprehensive results with full citation information and clickable links for proper attribution.
-
-**Parameters:**
-- `query` (required): Search query text
-- `filter` (optional): OData filter expression (SourceDocumentDataSource is automatically set to 'CRS')
-- `page` (optional): Page number (default: 1)
-- `page_size` (optional): Results per page (default: 10)
-- `search_mode` (optional): Search mode (default: content)
-- `limit` (optional): Maximum results limit
-- `include_facets` (optional): Include facets in results (default: false)
-
-### 10. `pia_search_content_doj`
-
-**Purpose:** Search for Department of Justice document content and recommendations.
-
-**Description:** This tool automatically filters results to only include documents from the Department of Justice. Returns comprehensive results with full citation information and clickable links for proper attribution.
-
-**Parameters:**
-- `query` (required): Search query text
-- `filter` (optional): OData filter expression (SourceDocumentDataSource is automatically set to 'Department of Justice')
-- `page` (optional): Page number (default: 1)
-- `page_size` (optional): Results per page (default: 10)
-- `search_mode` (optional): Search mode (default: content)
-- `limit` (optional): Maximum results limit
-- `include_facets` (optional): Include facets in results (default: false)
-
-### 11. `pia_search_content_congress`
-
-**Purpose:** Search for Congress.gov document content and recommendations.
-
-**Description:** This tool automatically filters results to only include documents from Congress.gov. Returns comprehensive results with full citation information and clickable links for proper attribution.
-
-**Parameters:**
-- `query` (required): Search query text
-- `filter` (optional): OData filter expression (SourceDocumentDataSource is automatically set to 'Congress.gov')
-- `page` (optional): Page number (default: 1)
-- `page_size` (optional): Results per page (default: 10)
-- `search_mode` (optional): Search mode (default: content)
-- `limit` (optional): Maximum results limit
-- `include_facets` (optional): Include facets in results (default: false)
-
-### Executive Orders Search Tool
-
-### 12. `pia_search_content_executive_orders`
-
-**Purpose:** Search for Executive Orders document content from the Federal Register.
-
-**Description:** This tool automatically filters results to only include Executive Orders from the Federal Register (https://www.federalregister.gov/). Returns comprehensive results with full citation information and clickable links for proper attribution. Each result includes corresponding citations with data source attribution. Supports complex OData filtering with boolean logic, operators, and grouping.
-
-**Parameters:**
-- `query` (required): Search query text
-- `filter` (optional): OData filter expression (SourceDocumentDataSource is automatically set to 'Federal Register' and SourceDocumentDataSet is set to 'executive orders')
-- `page` (optional): Page number (default: 1)
-- `page_size` (optional): Results per page (default: 10)
-- `search_mode` (optional): Search mode (default: content)
-- `limit` (optional): Maximum results limit
-- `include_facets` (optional): Include facets in results (default: false)
-
-**Executive Orders Coverage:**
-- **Time Period:** Last 7 presidencies
-- **Source:** Federal Register (https://www.federalregister.gov/presidential-documents/executive-orders)
-- **Volume:** 1k+ executive orders
-- **Update Frequency:** Weekly updates
-
-**Example Searches:**
-- Search for cybersecurity executive orders: `{"query": "cybersecurity"}`
-- Search for recent executive orders: `{"query": "artificial intelligence", "filter": "SourceDocumentPublishDate ge '2023-01-01'"}`
-- Search by specific topics: `{"query": "climate change OR environmental"}`
-
-### ChatGPT Connector Tools
-
-### 13. `search`
-
-**Purpose:** Simple search interface for ChatGPT Connectors.
-
-**Description:** Search the Program Integrity Alliance (PIA) database and return a list of potentially relevant search results with titles, snippets, and URLs for citation. This endpoint is one of the supported for OpenAI's MCP spec when integrating ChatGPT Connectors.
-
-**Parameters:**
-- `query` (required): A search query string to find relevant documents in the PIA database
-
-### 14. `fetch`
-
-**Purpose:** Document retrieval by ID for ChatGPT Connectors.
-
-**Description:** Retrieve the full contents of a specific document from the PIA database using its unique identifier. This endpoint is one of the supported for OpenAI's MCP spec when integrating ChatGPT Connectors.
+**Purpose:** Retrieve the full contents of a document by its unique id (ChatGPT connectors / OpenAI MCP spec).
 
 **Parameters:**
 - `id` (required): A unique identifier for the document to retrieve
 
-### 15. `pia_filter_snippets`
-
-**Purpose:** Refine a previous search's snippets to match an AI-generated summary.
-
-**Description:** After generating a summary that cites search results with bracket references like `[1]`, `[2]`, etc., call this tool to filter each cited document's snippet down to the chunks most similar to the citing sentences. This produces longer, more relevant excerpts that closely match the information used in the summary. Unlike the other tools it returns plain text content rather than structured output.
-
-**Parameters:**
-- `search_id` (required): The `search_id` from a previous `pia_search_content` call
-- `summary_text` (required): The AI-generated summary containing `[N]` bracket citations
-- `similarity_threshold` (optional): Minimum similarity score for a chunk to be kept
-
 ## Search Modes
 
-Comprehensive search with OData filtering and faceting. The `filter` parameter uses standard [OData query syntax](https://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part2-url-conventions.html).
-
-- **Content Search** (`pia_search_content`): Searches within document content and recommendations for comprehensive results
-- **Wide Content Search** (`pia_search_content_wide`): Searches across datasets and sources with deduped results
-- **Title Search** (`pia_search_titles`): Searches document titles only - faster and useful for document discovery
+`pia_search` supports OData filtering and faceting. The `filter` parameter uses standard [OData query syntax](https://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part2-url-conventions.html).
 
 **Example Filter Expressions:**
 - Basic filter: `"SourceDocumentDataSource eq 'GAO'"`
@@ -474,42 +283,13 @@ Filter: "(SourceDocumentDataSource eq 'Oversight.gov' or SourceDocumentDataSourc
 
 ## 📝 AI Instruction Prompts
 
-The server provides prompts that instruct the calling LLM on how to effectively use PIA tools and format responses:
+The server exposes one prompt that instructs the calling LLM how to use the PIA tools and format responses:
 
-### 1. Summarization Guidance
-Provides guidance on how to summarize information from PIA search results with proper citations.
+### `pia_assistant_guidance`
 
-**Prompt Name:** `summarization_guidance`
-
-**Purpose:** Ensures LLM creates fact-based summaries with inline citations and proper reference formatting
+Comprehensive guidance for an LLM using the PIA (GovQuery) tools: search strategy, citation format, and response structure.
 
 **Arguments:** None (reusable guidance)
-
-**Returns:** Comprehensive instructions that guide the LLM to:
-- Only include facts that appear in the provided search results (no prior knowledge)
-- Use proper inline citation format [n] for every factual statement
-- Create a References section with format: [n] Document Title — Page X — Source Name — URL
-- Follow objective, factual style guidelines without speculation or filler
-- Include all necessary attribution elements exactly as provided in search results
-- Organize information logically and ensure every fact has supporting citations
-
-### 2. Search Guidance
-Provides guidance on how to perform PIA searches with or without filters.
-
-**Prompt Name:** `search_guidance`
-
-**Purpose:** Guides LLM through proper search workflow including filter discovery and OData syntax for all four search tools
-
-**Arguments:** None (reusable guidance)
-
-**Returns:** Comprehensive instructions that guide the LLM to:
-- Run unfiltered searches by default unless filter criteria are mentioned
-- Choose between content search (comprehensive) and title search (fast discovery)
-- Use `pia_search_content_facets` or `pia_search_titles_facets` to discover available filter fields and values
-- Build valid OData filter expressions with correct syntax and actual field names
-- Apply proper OData operators: `eq`, `ne`, `gt`, `ge`, `lt`, `le`, `and`, `or`
-- Fall back to unfiltered search when filtered search returns no results
-- Validate all filter fields against available facets before use
 
 ## ⚙️ Configuration
 

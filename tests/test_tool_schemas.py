@@ -47,9 +47,3 @@ async def test_structured_tools_have_a_valid_output_schema():
             tool.outputSchema.get("type") == "object"
         ), f"{tool.name} outputSchema is not an object"
         Draft202012Validator.check_schema(tool.outputSchema)
-
-
-@pytest.mark.parametrize("tool_name", sorted(TOOLS_WITHOUT_OUTPUT_SCHEMA))
-async def test_unstructured_tools_are_documented(tool_name):
-    """Tools exempt from the outputSchema contract are actually registered."""
-    assert tool_name in EXPECTED_TOOL_NAMES
