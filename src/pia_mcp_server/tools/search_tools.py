@@ -28,30 +28,18 @@ def _build_tool(name: str) -> types.Tool:
     )
 
 
-pia_search_content_tool = _build_tool("pia_search_content")
+pia_search_tool = _build_tool("pia_search")
 pia_oversight_recommendations_tool = _build_tool("pia_oversight_recommendations")
-pia_search_content_wide_tool = _build_tool("pia_search_content_wide")
-pia_search_content_facets_tool = _build_tool("pia_search_content_facets")
-pia_search_titles_tool = _build_tool("pia_search_titles")
-pia_search_titles_facets_tool = _build_tool("pia_search_titles_facets")
-pia_search_content_gao_tool = _build_tool("pia_search_content_gao")
-pia_search_content_oig_tool = _build_tool("pia_search_content_oig")
-pia_search_content_crs_tool = _build_tool("pia_search_content_crs")
-pia_search_content_doj_tool = _build_tool("pia_search_content_doj")
-pia_search_content_congress_tool = _build_tool("pia_search_content_congress")
-pia_search_content_executive_orders_tool = _build_tool(
-    "pia_search_content_executive_orders"
-)
 search_tool = _build_tool("search")
 fetch_tool = _build_tool("fetch")
 
 
-# Handler functions - using generic handler that forwards to remote server
-async def handle_pia_search_content(
+# Handler functions - thin pass-throughs that forward to the remote server.
+async def handle_pia_search(
     arguments: Dict[str, Any],
 ) -> types.CallToolResult:
-    """Handle PIA content search requests."""
-    return await _forward_to_remote("pia_search_content", arguments)
+    """Handle PIA search requests."""
+    return await _forward_to_remote("pia_search", arguments)
 
 
 async def handle_pia_oversight_recommendations(
@@ -59,76 +47,6 @@ async def handle_pia_oversight_recommendations(
 ) -> types.CallToolResult:
     """Handle PIA oversight recommendations requests."""
     return await _forward_to_remote("pia_oversight_recommendations", arguments)
-
-
-async def handle_pia_search_content_wide(
-    arguments: Dict[str, Any],
-) -> types.CallToolResult:
-    """Handle PIA wide content search requests."""
-    return await _forward_to_remote("pia_search_content_wide", arguments)
-
-
-async def handle_pia_search_content_facets(
-    arguments: Dict[str, Any],
-) -> types.CallToolResult:
-    """Handle PIA content search facets requests."""
-    return await _forward_to_remote("pia_search_content_facets", arguments)
-
-
-async def handle_pia_search_titles(
-    arguments: Dict[str, Any],
-) -> types.CallToolResult:
-    """Handle PIA titles search requests."""
-    return await _forward_to_remote("pia_search_titles", arguments)
-
-
-async def handle_pia_search_titles_facets(
-    arguments: Dict[str, Any],
-) -> types.CallToolResult:
-    """Handle PIA titles search facets requests."""
-    return await _forward_to_remote("pia_search_titles_facets", arguments)
-
-
-async def handle_pia_search_content_gao(
-    arguments: Dict[str, Any],
-) -> types.CallToolResult:
-    """Handle PIA GAO content search requests."""
-    return await _forward_to_remote("pia_search_content_gao", arguments)
-
-
-async def handle_pia_search_content_oig(
-    arguments: Dict[str, Any],
-) -> types.CallToolResult:
-    """Handle PIA OIG content search requests."""
-    return await _forward_to_remote("pia_search_content_oig", arguments)
-
-
-async def handle_pia_search_content_crs(
-    arguments: Dict[str, Any],
-) -> types.CallToolResult:
-    """Handle PIA CRS content search requests."""
-    return await _forward_to_remote("pia_search_content_crs", arguments)
-
-
-async def handle_pia_search_content_doj(
-    arguments: Dict[str, Any],
-) -> types.CallToolResult:
-    """Handle PIA DOJ content search requests."""
-    return await _forward_to_remote("pia_search_content_doj", arguments)
-
-
-async def handle_pia_search_content_congress(
-    arguments: Dict[str, Any],
-) -> types.CallToolResult:
-    """Handle PIA Congress content search requests."""
-    return await _forward_to_remote("pia_search_content_congress", arguments)
-
-
-async def handle_pia_search_content_executive_orders(
-    arguments: Dict[str, Any],
-) -> types.CallToolResult:
-    """Handle PIA Executive Orders content search requests."""
-    return await _forward_to_remote("pia_search_content_executive_orders", arguments)
 
 
 async def handle_search(

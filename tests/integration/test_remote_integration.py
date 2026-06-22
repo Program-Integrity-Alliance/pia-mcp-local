@@ -9,10 +9,9 @@ in CI via the ``PIA_API_KEY`` GitHub Actions secret) and are skipped
 automatically when no key is configured.
 
 What they assert:
-  * the remote ``tools/list`` matches the local snapshot and every structured
-    tool advertises an outputSchema;
+  * every tool the proxy advertises exists on the remote and advertises an
+    outputSchema;
   * each search/content tool returns real, non-empty results;
-  * the facet tools return facets;
   * ``fetch`` returns document text for a real result id.
 """
 
@@ -27,7 +26,6 @@ from pia_mcp_server.tools import search_tools as st
 from tests.tool_contract import (
     CONTENT_RESULT_TOOLS,
     EXPECTED_TOOL_NAMES,
-    FACET_TOOLS,
     TOOLS_WITHOUT_OUTPUT_SCHEMA,
 )
 
@@ -114,21 +112,9 @@ async def test_search_tool_returns_live_results():
     assert results[0].get("title")
 
 
-@pytest.mark.parametrize("tool_name,query", sorted(FACET_TOOLS.items()))
-async def test_facet_tool_returns_live_facets(tool_name, query):
-    """Each facet tool returns a non-empty facets mapping."""
-    handler = getattr(st, f"handle_{tool_name}")
-    result = await handler({"query": query})
-
-    assert result.isError is not True
-    facets = result.structuredContent["output"]["facets"]
-    assert isinstance(facets, dict)
-    assert len(facets) > 0, f"{tool_name} returned no facets"
-
-
 async def test_fetch_returns_document_text():
     """``fetch`` returns document content for a real result id."""
-    search = await st.handle_pia_search_content({"query": "improper payments"})
+    search = await st.handle_pia_search({"query": "improper payments"})
     doc_id = search.structuredContent["output"]["results"][0]["id"]
 
     fetched = await st.handle_fetch({"id": doc_id})
