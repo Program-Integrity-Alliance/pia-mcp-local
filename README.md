@@ -4,7 +4,7 @@
 
 <div align="center">
   <a href="https://programintegrity.org/">
-    <img src="https://programintegrity.org/wp-content/uploads/2024/07/PIA-Logo.svg" alt="Program Integrity Alliance" width="400"/>
+    <img src="https://www.programintegrity.org/api/assets/site-images/brand/docker-mcp-pia-icon-512.png" alt="Program Integrity Alliance" width="400"/>
   </a>
 
 # MCP Server
