@@ -11,8 +11,7 @@ automatically when no key is configured.
 What they assert:
   * every tool the proxy advertises exists on the remote and advertises an
     outputSchema;
-  * each search/content tool returns real, non-empty results;
-  * ``fetch`` returns document text for a real result id.
+  * each search/content tool returns real, non-empty results.
 """
 
 import os
@@ -99,27 +98,3 @@ async def test_content_tool_returns_live_results(tool_name, query):
     first = results[0]
     assert first.get("title"), f"{tool_name} result missing title"
     assert first.get("url"), f"{tool_name} result missing url"
-
-
-async def test_search_tool_returns_live_results():
-    """The simple ``search`` tool returns top-level results."""
-    result = await st.handle_search({"query": "medicaid fraud"})
-
-    assert result.isError is not True
-    results = result.structuredContent["results"]
-    assert isinstance(results, list)
-    assert len(results) > 0
-    assert results[0].get("title")
-
-
-async def test_fetch_returns_document_text():
-    """``fetch`` returns document content for a real result id."""
-    search = await st.handle_pia_search({"query": "improper payments"})
-    doc_id = search.structuredContent["output"]["results"][0]["id"]
-
-    fetched = await st.handle_fetch({"id": doc_id})
-
-    assert fetched.isError is not True
-    document = fetched.structuredContent
-    assert document.get("id")
-    assert document.get("text"), "fetch returned no document text"

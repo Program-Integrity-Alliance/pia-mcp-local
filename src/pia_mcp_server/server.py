@@ -16,14 +16,10 @@ from .config import Settings
 from .tools import (
     handle_pia_search,
     handle_pia_oversight_recommendations,
-    handle_search,
-    handle_fetch,
 )
 from .tools import (
     pia_search_tool,
     pia_oversight_recommendations_tool,
-    search_tool,
-    fetch_tool,
 )
 from .prompts.handlers import list_prompts as handler_list_prompts
 from .prompts.handlers import get_prompt as handler_get_prompt
@@ -54,8 +50,6 @@ async def list_tools() -> List[types.Tool]:
     return [
         pia_search_tool,
         pia_oversight_recommendations_tool,
-        search_tool,
-        fetch_tool,
     ]
 
 
@@ -67,10 +61,6 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[types.TextCont
         return await handle_pia_search(arguments)
     elif name == "pia_oversight_recommendations":
         return await handle_pia_oversight_recommendations(arguments)
-    elif name == "search":
-        return await handle_search(arguments)
-    elif name == "fetch":
-        return await handle_fetch(arguments)
     else:
         return [types.TextContent(type="text", text=f"Error: Unknown tool {name}")]
 

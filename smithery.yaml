@@ -9,7 +9,5 @@ mcp:
   tools:
     - pia_search
     - pia_oversight_recommendations
-    - search
-    - fetch
   prompts:
     - pia_assistant_guidance

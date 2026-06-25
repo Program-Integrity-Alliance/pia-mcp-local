@@ -9,8 +9,6 @@ from unittest.mock import AsyncMock, patch, Mock
 from pia_mcp_server.tools.search_tools import (
     handle_pia_search,
     handle_pia_oversight_recommendations,
-    handle_search,
-    handle_fetch,
 )
 from pia_mcp_server.config import Settings
 
@@ -36,15 +34,6 @@ def build_search_structured_result(
             ],
         }
     }
-
-
-def build_fetch_structured_result(
-    doc_id: str = "doc-123",
-    title: str = "Test Document",
-    text: str = "Full document content here",
-    url: str = "https://example.com/doc-123",
-) -> dict:
-    return {"id": doc_id, "title": title, "text": text, "url": url}
 
 
 def build_tool_result(structured: dict) -> dict:
@@ -75,8 +64,6 @@ HANDLERS = [
         "pia_oversight_recommendations",
         {"query": "fraud"},
     ),
-    (handle_search, "search", {"query": "fraud"}),
-    (handle_fetch, "fetch", {"id": "doc-123"}),
 ]
 
 
@@ -115,19 +102,6 @@ async def test_pia_search_success_returns_structured_content():
                 result.structuredContent["output"]["results"][0]["title"]
                 == "GAO Fraud Report"
             )
-
-
-async def test_fetch_success_returns_document():
-    body = {
-        "jsonrpc": "2.0",
-        "id": 1,
-        "result": build_tool_result(build_fetch_structured_result()),
-    }
-    with patch.object(Settings, "_get_api_key_from_args", return_value="test_key"):
-        with patch("httpx.AsyncClient") as mock_client:
-            _mock_client(mock_client, body)
-            result = await handle_fetch({"id": "doc-123"})
-            assert result.structuredContent["text"] == "Full document content here"
 
 
 @pytest.mark.parametrize("handler,tool_name,args", HANDLERS)

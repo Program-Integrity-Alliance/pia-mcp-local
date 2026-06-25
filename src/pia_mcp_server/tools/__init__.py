@@ -10,10 +10,6 @@ from .search_tools import (
     pia_search_tool,
     handle_pia_oversight_recommendations,
     pia_oversight_recommendations_tool,
-    handle_search,
-    search_tool,
-    handle_fetch,
-    fetch_tool,
 )
 
 __all__ = [
@@ -21,8 +17,4 @@ __all__ = [
     "pia_search_tool",
     "handle_pia_oversight_recommendations",
     "pia_oversight_recommendations_tool",
-    "handle_search",
-    "search_tool",
-    "handle_fetch",
-    "fetch_tool",
 ]
