@@ -3,11 +3,12 @@
     {
       "name": "pia_search",
       "annotations": {
+        "title": "Search U.S. government documents via PIA GovQuery (GAO, IGs, CRS & more)",
         "readOnlyHint": true,
         "destructiveHint": false,
         "openWorldHint": true
       },
-      "description": "Search the Program Integrity Alliance (PIA) database of government oversight reports, recommendations, executive orders, legislation, and integrity data (GAO, OIG/Oversight.gov, CRS, DOJ, Congress.gov, Federal Register). One tool for all document search: scope by source/dataset/agency/date via filter, choose content vs titles via search_mode, sweep every source with wide, or discover filter values with facets_only. IMPORTANT \u2014 your response MUST include: 1) Every factual claim MUST have at least one clickable inline citation [[1]](url) \u2014 renumber sequentially from 1. 2) A References section (each ref on its OWN line) for every item you cited \u2014 omit ONLY for rec count/summary questions. 3) A Find Out More section with the `govquery_url` so the user can view results directly. 4) Caveat any totals from text queries: semantic search matches variations, so counts are approximate. Do NOT omit the Find Out More link. Do NOT put multiple references on one line.",
+      "description": "Search the Program Integrity Alliance (PIA) database of government oversight reports, recommendations, executive orders, legislation, and integrity data (GAO, OIG/Oversight.gov, CRS, DOJ, Congress.gov, Federal Register). One tool for all document search: scope by source/dataset/agency/date via filter, choose content vs titles via search_mode, sweep every source with wide, or discover filter values with facets_only. WHAT THE COUNTS MEAN: in 'content' mode (default) total_count and facet counts are TEXT CHUNKS / EXCERPTS \u2014 a single document is split into many chunks, so these counts are much larger than the number of documents and must NOT be reported as a document/report/article count. In 'titles' mode the counts are whole DOCUMENTS / ARTICLES. Use search_mode='titles' whenever the user asks how many documents, reports, or articles there are. Citations are very important to PIA users, so it is strongly expected that your answer: (1) gives every factual claim at least one clickable inline citation in the form [[1]](url), numbered sequentially from 1; (2) ends with a References section listing every source you cited, each reference on its own line (never multiple references on one line) \u2014 omit this section only for a pure count or summary with nothing specific to cite; and (3) includes a Find Out More section with the `govquery_url` so the user can open the full result set. Please do not present findings from these results without their inline citations and References section. Counts from free-text queries are approximate, because semantic search matches variations of the search terms.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -36,7 +37,7 @@
               "titles"
             ],
             "default": "content",
-            "description": "'content' searches full document text; 'titles' searches document titles only (faster, to locate a specific document)."
+            "description": "'content' searches the full-text (chunked) index \u2014 total_count and facet counts are TEXT CHUNKS / EXCERPTS, NOT documents: one document is split into many chunks, so the counts EXCEED the number of documents. 'titles' searches the document-level index \u2014 total_count and facet counts are whole DOCUMENTS / ARTICLES, and it's faster for locating a specific document. Use 'titles' whenever the user asks how many documents / reports / articles there are."
           },
           "wide": {
             "type": "boolean",
@@ -69,7 +70,8 @@
             "type": "object",
             "properties": {
               "total_count": {
-                "type": "integer"
+                "type": "integer",
+                "description": "Match count, in the unit of the current search_mode. In 'content' mode this counts TEXT CHUNKS / EXCERPTS (a single document contributes many chunks), so it OVER-counts documents \u2014 do NOT report it as a number of documents/reports/articles. In 'titles' mode it counts whole DOCUMENTS / ARTICLES. For a true document count, re-run with search_mode='titles'."
               },
               "query": {
                 "type": "string"
@@ -171,6 +173,7 @@
               },
               "facets": {
                 "type": "object",
+                "description": "Per-dimension value counts (source, status, agency, \u2026). Each count is in the SAME unit as total_count for the current search_mode: TEXT CHUNKS / EXCERPTS in 'content' mode (over-counts documents), whole DOCUMENTS / ARTICLES in 'titles' mode. Don't present content-mode facet counts as document counts.",
                 "additionalProperties": {
                   "type": "array",
                   "items": {
@@ -227,11 +230,12 @@
     {
       "name": "pia_oversight_recommendations",
       "annotations": {
+        "title": "Search open federal recommendations via PIA GovQuery (GAO & IGs)",
         "readOnlyHint": true,
         "destructiveHint": false,
         "openWorldHint": true
       },
-      "description": "Search oversight recommendations (Open Recommendations dataset) with facets enabled by default. Today's date is 2026-06-22. This dataset contains recommendations from GAO and Oversight.gov only \u2014 SourceDocumentDataSource filters for any other source will be ignored. Do NOT filter by SourceDocumentDataSet \u2014 this tool already targets the 'Open Recommendations' dataset automatically. IMPORTANT: When a text query is provided, do NOT add a referenced_agencies filter \u2014 the query handles relevance matching. Only use referenced_agencies when the query is empty (pure filter/facet lookups). IMPORTANT \u2014 your response MUST: 1) Cite `total_count` as the number of OPEN recommendations matching the query AND every filter clause. 2) Summarize the recommendations in `results`; you MAY break the set down using `facets` (status, priority, agency, theme, \u2026). 3) Caveat totals from TEXT queries: semantic matching is approximate; pure filter/agency lookups are exact. 4) ALWAYS include a Find Out More section linking the `govquery_url` so the user can open the full set in Rec Spotlight. Recommendations have NO per-document citations \u2014 do NOT fabricate [[N]](url) citations or a References section; direct users to Rec Spotlight via `govquery_url`.",
+      "description": "Search oversight recommendations (Open Recommendations dataset) with facets enabled by default. Today's date is 2026-06-25. This dataset contains recommendations from GAO and Oversight.gov only \u2014 SourceDocumentDataSource filters for any other source will be ignored. Do NOT filter by SourceDocumentDataSet \u2014 this tool already targets the 'Open Recommendations' dataset automatically. IMPORTANT: When a text query is provided, do NOT add a referenced_agencies filter \u2014 the query handles relevance matching. Only use referenced_agencies when the query is empty (pure filter/facet lookups). `total_count` is the number of OPEN recommendations matching the query and all applied filters \u2014 report it as that count. The `results` are a representative sample to summarize, and `facets` break the set down by status, priority, agency, and theme. Counts from free-text queries are approximate (semantic matching); pure filter or agency lookups are exact. Recommendations have no per-document citations, so it is very important to always include the `govquery_url` for the full set in Rec Spotlight rather than citing individual rows.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -426,135 +430,6 @@
         },
         "required": [
           "output"
-        ],
-        "additionalProperties": true
-      }
-    },
-    {
-      "name": "search",
-      "description": "Search the Program Integrity Alliance (PIA) database and return a list of potentially relevant search results with titles, snippets, and URLs for citation. This endpoint is one of the supported for OpenAI's MCP spec when integrating ChatGPT Connectors.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "query": {
-            "type": "string",
-            "description": "A search query string to find relevant documents in the PIA database"
-          }
-        },
-        "required": [
-          "query"
-        ]
-      },
-      "outputSchema": {
-        "type": "object",
-        "properties": {
-          "results": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string"
-                },
-                "title": {
-                  "type": "string"
-                },
-                "text": {
-                  "type": "string"
-                },
-                "url": {
-                  "type": "string",
-                  "format": "uri"
-                }
-              },
-              "required": [
-                "id",
-                "title",
-                "url"
-              ],
-              "additionalProperties": true
-            }
-          }
-        },
-        "required": [
-          "results"
-        ],
-        "additionalProperties": true
-      }
-    },
-    {
-      "name": "fetch",
-      "description": "Retrieve the full contents of a specific document from the PIA database using its unique identifier. This endpoint is one of the supported for OpenAI's MCP spec when integrating ChatGPT Connectors.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "A unique identifier for the document to retrieve"
-          }
-        },
-        "required": [
-          "id"
-        ]
-      },
-      "outputSchema": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "title": {
-            "type": "string"
-          },
-          "text": {
-            "type": "string"
-          },
-          "url": {
-            "type": "string",
-            "format": "uri"
-          },
-          "metadata": {
-            "type": "object",
-            "properties": {
-              "document_id": {
-                "type": "string"
-              },
-              "original_query": {
-                "type": "string"
-              },
-              "score": {
-                "type": "number"
-              },
-              "data_source": {
-                "type": "string"
-              },
-              "publication_date": {
-                "type": "string"
-              },
-              "author": {
-                "type": "string"
-              },
-              "organization": {
-                "type": "string"
-              },
-              "document_type": {
-                "type": "string"
-              },
-              "page": {
-                "type": "string"
-              },
-              "section_title": {
-                "type": "string"
-              }
-            },
-            "additionalProperties": true
-          }
-        },
-        "required": [
-          "id",
-          "title",
-          "text",
-          "url"
         ],
         "additionalProperties": true
       }

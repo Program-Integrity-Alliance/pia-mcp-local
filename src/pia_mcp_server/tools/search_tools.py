@@ -30,8 +30,6 @@ def _build_tool(name: str) -> types.Tool:
 
 pia_search_tool = _build_tool("pia_search")
 pia_oversight_recommendations_tool = _build_tool("pia_oversight_recommendations")
-search_tool = _build_tool("search")
-fetch_tool = _build_tool("fetch")
 
 
 # Handler functions - thin pass-throughs that forward to the remote server.
@@ -47,20 +45,6 @@ async def handle_pia_oversight_recommendations(
 ) -> types.CallToolResult:
     """Handle PIA oversight recommendations requests."""
     return await _forward_to_remote("pia_oversight_recommendations", arguments)
-
-
-async def handle_search(
-    arguments: Dict[str, Any],
-) -> types.CallToolResult:
-    """Handle simple search requests."""
-    return await _forward_to_remote("search", arguments)
-
-
-async def handle_fetch(
-    arguments: Dict[str, Any],
-) -> types.CallToolResult:
-    """Handle fetch document requests."""
-    return await _forward_to_remote("fetch", arguments)
 
 
 async def _forward_to_remote(

@@ -9,8 +9,6 @@ stay in sync.
 EXPECTED_TOOL_NAMES = {
     "pia_search",
     "pia_oversight_recommendations",
-    "search",
-    "fetch",
 }
 
 # Tools that intentionally do NOT declare an outputSchema. Every current tool

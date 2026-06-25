@@ -162,7 +162,7 @@ Then add this to your Client, eg Claude ...
 
 ## 💡 Available Tools
 
-The server provides 4 tools, forwarded verbatim to the Program Integrity Alliance (PIA) MCP server:
+The server provides 2 tools, forwarded verbatim to the Program Integrity Alliance (PIA) MCP server:
 
 ### 1. `pia_search`
 
@@ -183,19 +183,7 @@ The server provides 4 tools, forwarded verbatim to the Program Integrity Allianc
 - `query` (required): Search query text
 - `filter` (optional): OData filter expression
 
-### 3. `search`
-
-**Purpose:** Simple search interface for ChatGPT connectors (OpenAI MCP spec).
-
-**Parameters:**
-- `query` (required): A search query string
-
-### 4. `fetch`
-
-**Purpose:** Retrieve the full contents of a document by its unique id (ChatGPT connectors / OpenAI MCP spec).
-
-**Parameters:**
-- `id` (required): A unique identifier for the document to retrieve
+> The remote also exposes `search` and `fetch` (OpenAI ChatGPT MCP spec) — this proxy intentionally does **not** expose them; use `pia_search` instead. They are excluded by the sync script (`utils/refresh_tools.py`).
 
 ## Search Modes
 
